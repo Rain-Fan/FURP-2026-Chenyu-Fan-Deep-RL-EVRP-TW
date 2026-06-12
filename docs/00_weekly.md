@@ -30,37 +30,37 @@
 
 <!-- =================  YOUR ENTRIES BELOW  ================= -->
 
-### Week 1 — 2026-06-10
+### Week 1 — 2026-06-12
 
-**Attended this week's meeting:** Yes
+**Attended this week's meeting:** Not recorded
 
 **Progress this week**
 - Set up repository from the FURP template.
-- Configured GitHub authentication (gh auth login) for push access.
 - Initialized `/src` directory structure: `data/`, `experiments/`, `results/`.
-- Added `.gitignore` fix to allow tracking `.gitkeep` in `data/` directories.
-- Implemented and pushed OR-Tools VRP baseline solver (`src/experiments/vrp_ortools_simple.py`):
-  - 4 vehicles, 20 customers, capacity 100
-  - Total distance: 530 (feasible solution)
-  - Runtime: ~5 seconds
-  - Generated route visualization (`src/results/vrp_ortools_route.png`)
-- Exported and committed environment config files:
-  - `requirements.txt` (pip freeze)
-  - `environment.yml` (conda env export)
-- Verified the solver runs successfully in `vrp_env312` (Python 3.12.13, OR-Tools 9.15).
+- Added the Deep RL for EVRP-TW implementation under `src/experiments/deep_rl/`.
+- Implemented a batched PyTorch environment with capacity, time-window,
+  battery, charging-station, and fleet constraints.
+- Added a feasibility-first greedy baseline, REINFORCE, and PPO.
+- Added experiment configurations, training and evaluation scripts,
+  visualisation tools, notebooks, and automated tests.
+- Added representative problem, route, and training figures to `src/results/`.
+- Ran the automated test suite: 10 tests passed.
+- Completed the two-iteration REINFORCE smoke training on Apple MPS.
 
 **Challenges & blockers**
-- `.gitignore` initially blocked `data/` directories entirely — fixed with `data/**` + negation rule for `.gitkeep`.
-- None blocking so far.
+- The cited paper and final benchmark datasets still need to be confirmed.
+- Short smoke runs validate execution but do not establish model performance.
 
 **Next steps**
-- Research truck-drone collaborative delivery literature.
-- Design EVRP-TW mathematical model formulation.
-- Implement electric vehicle constraints (charging stations, battery capacity) on top of the baseline VRP solver.
+- Confirm the paper to reproduce and the required innovation.
+- Run controlled experiments across fixed seeds and customer sizes.
+- Compare feasibility, feasible route cost, runtime, and training stability.
+- Add public EVRP-TW benchmark loaders and stronger optimisation baselines.
 
-**Hours spent (optional):** 4h
+**Hours spent (optional):** Not recorded
 
 **Links (optional):**
-- Repository: https://github.com/Rain-Fan/FURP-2026-Chenyu-Fan-Ground-Air-Collaborative-EVRP-TW
-- OR-Tools VRP solver: `src/experiments/vrp_ortools_simple.py`
-- Route visualization: `src/results/vrp_ortools_route.png`
+- Repository: https://github.com/Rain-Fan/FURP-2026-Chenyu-Fan-Deep-RL-for-Electric-Vehicle-Routing-with-Time-Windows-EVRP-TW
+- Implementation: `src/experiments/deep_rl/`
+- Route visualisation: `src/results/route_visualization.png`
+- Smoke configuration: `src/experiments/deep_rl/experiments/configs/smoke.yaml`

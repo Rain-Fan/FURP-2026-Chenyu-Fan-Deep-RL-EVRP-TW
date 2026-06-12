@@ -1,40 +1,50 @@
-# FURP Project Repository
+# Deep RL for Electric Vehicle Routing with Time Windows (EVRP-TW)
 
 > **Faculty Undergraduate Research Practice (FURP)**
 > Undergraduate Research Group · Faculty of Science and Engineering · University of Nottingham Ningbo China
 
-This is your project home for the FURP programme. **Fork this template**, rename your repo, fill in the content each week, and share it with us (or make it public) so we can follow your progress and review your weekly work.
+This repository contains the FURP research project on attention-based deep
+reinforcement learning for the Electric Vehicle Routing Problem with Time
+Windows (EVRP-TW).
 
 ---
 
-## Getting started (do this in Week 1)
-
-1. **Fork / use this template** to create your own repository.
-2. **Rename your repo** following the naming convention:
-   ```
-   FURP-2025/YourName-ProjectTag
-   # e.g. furp-2025/Jason-ROSBootcamp
-   ```
-3. **Give us access:** either make the repo **public**, or **share it** with the research group accounts (ask your project lead for the usernames to add as collaborators).
-4. **Fill in this README** — replace the placeholders in the *Project Info* section below.
-5. **Start your weekly log** in [`docs/00_weekly.md`](docs/00_weekly.md).
-
----
-
-## Project Info — *fill this in*
+## Project Info
 
 | Field | Your entry |
 |---|---|
 | Student name(s) | _Chenyu Fan_ |
-| Project title | _Ground–Air Collaborative EVRP-TW: Hybrid Optimization for Truck-Drone Delivery_ |
-| Project tag | _e.g. ROSBootcamp_ |
+| Project title | _Deep RL for Electric Vehicle Routing with Time Windows (EVRP-TW)_ |
+| Project tag | _EVRP-TW-DeepRL_ |
 | Track | Research |
-| Supervising faculty | _Tianxiang Cui_ |
-| Project lead | _..._ |
-| Team or individual | _..._ |
-| Cited paper being replicated | _title + link/DOI_ |
+| Supervising faculty | _To be confirmed_ |
+| Project lead | _To be confirmed_ |
+| Team or individual | _Individual_ |
+| Cited paper being replicated | _To be confirmed: add title and link/DOI_ |
 
-**One-line summary:** _What is your project about? (1–2 sentences)_
+**One-line summary:** This project develops and evaluates attention-based
+reinforcement-learning policies that construct feasible electric-vehicle
+routes under capacity, customer time-window, battery, charging, and fleet
+constraints.
+
+---
+
+## Research Scope
+
+The current implementation includes:
+
+- a batched PyTorch EVRP-TW environment;
+- dynamic feasibility masks for capacity, time, energy, and fleet constraints;
+- a deterministic feasibility-first greedy baseline;
+- Transformer node encoding and pointer-style decoding;
+- REINFORCE with a self-critical greedy baseline;
+- PPO with clipped policy updates and a value head;
+- training, evaluation, metrics, visualisation, and automated tests.
+
+The main evaluation metrics are feasibility rate, route cost, distance,
+vehicles used, runtime, and training stability. The initial model assumes
+homogeneous vehicles, deterministic Euclidean travel, linear energy use, and
+full charging at stations.
 
 ---
 
@@ -46,13 +56,16 @@ This structure is **mandatory** — please keep it intact.
 /docs
  ├── 00_weekly.md         ← update EVERY week: progress, challenges, next steps
  └── meeting_notes/       ← key takeaways from all team meetings
-/src                      ← your code / experiments / materials
+/src
+ ├── experiments/deep_rl/ ← implementation, configs, notebooks, and tests
+ └── results/             ← selected figures and compact results
 FURP_Showcase.pdf         ← your poster / presentation PDF, in the repo root
 ```
 
 - **`docs/00_weekly.md`** — your weekly progress log. This is the first thing we check.
 - **`docs/meeting_notes/`** — one file per meeting with key takeaways and action items.
-- **`src/`** — all your code, scripts, notebooks, and experiment materials.
+- **`src/experiments/deep_rl/`** — reproducible implementation and experiments.
+- **`src/results/`** — selected figures and compact research outputs.
 - **`FURP_Showcase.pdf`** — your final poster, placed in the **repo root** with this exact filename.
 
 ---
@@ -95,13 +108,15 @@ Any **leave of absence** or **withdrawal** must be notified to us **by email** �
 
 ---
 
-## Quick checklist
+## Project checklist
 
-- [ ] Forked the template and renamed the repo (`FURP-2025/YourName-ProjectTag`)
-- [ ] Made the repo public **or** shared it with the research group
-- [ ] Filled in the *Project Info* table above
-- [ ] Started `docs/00_weekly.md`
+- [x] Created and published the project repository
+- [x] Added the EVRP-TW environment and feasibility constraints
+- [x] Added greedy, REINFORCE, and PPO methods
+- [x] Added training, evaluation, visualisation, and tests
+- [x] Started `docs/00_weekly.md`
 - [ ] Created my first file in `docs/meeting_notes/`
+- [ ] Confirmed the cited paper and final experimental protocol
 - [ ] (By Showcase) Added `FURP_Showcase.pdf` to the repo root
 
 ---

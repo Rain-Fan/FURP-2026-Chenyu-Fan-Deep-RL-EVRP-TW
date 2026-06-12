@@ -1,25 +1,49 @@
-# `/src` — Ground–Air Collaborative EVRP-TW: Hybrid Optimization
+# `/src` - Deep RL for EVRP-TW
 
-> **Hybrid Optimization for Truck-Drone Electric Vehicle Routing Problem with Time Windows**
+> **Deep Reinforcement Learning for the Electric Vehicle Routing Problem with
+> Time Windows**
 
 ## Directory Structure
 
-```
+```text
 /src
- ├── README.md          ← this file
- ├── data/              ← benchmark instances
- ├── experiments/       ← scripts, notebooks, configs
- └── results/           ← output logs, figures, tables
+  README.md
+  data/                  Shared dataset notes or links
+  experiments/deep_rl/   Reproducible implementation and experiment package
+  results/               Selected figures and compact result summaries
+```
+
+The Deep RL experiment package contains:
+
+```text
+src/                     Environment, models, algorithms, and utilities
+scripts/                 Training, evaluation, and route visualisation
+experiments/configs/     Greedy, REINFORCE, PPO, and smoke configurations
+tests/                   Unit and integration tests
+notebooks/               Research and demonstration notebooks
+docs/                    Proposal, paper notes, and experiment plan
 ```
 
 ## Getting Started
 
-_TBD_
+```bash
+cd src/experiments/deep_rl
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+pytest -q
+python scripts/evaluate.py --config experiments/configs/baseline.yaml
+python scripts/train.py --config experiments/configs/smoke.yaml
+```
+
+Conda users can instead create the environment from `environment.yml`.
 
 ## Notes
 
-- Large datasets or credentials should **not** be committed directly. Use `.gitignore` or external links instead.
+- Generated checkpoints, logs, and large datasets are excluded from Git.
+- Objective values should only be compared for feasible solutions.
+- Exact seeds and YAML configurations should be retained with every result.
 
 ---
 
-_Project by Chenyu Fan · Supervised by Tianxiang Cui · UNNC FURP 2026_
+_Project by Chenyu Fan · UNNC FURP 2026_

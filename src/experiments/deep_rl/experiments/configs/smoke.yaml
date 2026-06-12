@@ -1,0 +1,28 @@
+algorithm: reinforce
+seed: 7
+device: auto
+iterations: 2
+batch_size: 8
+learning_rate: 0.0003
+entropy_coefficient: 0.01
+checkpoint_every: 1
+output_dir: experiments/results/reinforce/smoke
+model:
+  embedding_dim: 32
+  num_heads: 4
+  num_layers: 1
+  dropout: 0.0
+data:
+  num_customers: 5
+  num_stations: 1
+  num_vehicles: 2
+  vehicle_capacity: 25.0
+  battery_capacity: 2.0
+  energy_rate: 1.0
+  speed: 1.0
+  charging_rate: 2.0
+  service_time: 0.05
+  time_horizon: 5.0
+  time_window_width: 2.5
+  demand_min: 1
+  demand_max: 7

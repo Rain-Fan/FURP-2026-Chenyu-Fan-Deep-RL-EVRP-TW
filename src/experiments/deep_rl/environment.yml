@@ -1,0 +1,15 @@
+name: evrp-tw-deeprl
+channels:
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - numpy>=1.26
+  - matplotlib>=3.8
+  - pyyaml>=6.0
+  - pytorch>=2.3
+  - tqdm>=4.66
+  - pytest>=8.0
+  - pip:
+      - -r requirements.txt

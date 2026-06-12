@@ -1,0 +1,28 @@
+algorithm: reinforce
+seed: 42
+device: auto
+iterations: 100
+batch_size: 64
+learning_rate: 0.0001
+entropy_coefficient: 0.01
+checkpoint_every: 25
+output_dir: experiments/results/reinforce
+model:
+  embedding_dim: 128
+  num_heads: 8
+  num_layers: 3
+  dropout: 0.0
+data:
+  num_customers: 10
+  num_stations: 2
+  num_vehicles: 3
+  vehicle_capacity: 30.0
+  battery_capacity: 2.0
+  energy_rate: 1.0
+  speed: 1.0
+  charging_rate: 2.0
+  service_time: 0.05
+  time_horizon: 5.0
+  time_window_width: 2.5
+  demand_min: 1
+  demand_max: 9
