@@ -35,32 +35,40 @@
 **Attended this week's meeting:** Not recorded
 
 **Progress this week**
-- Set up repository from the FURP template.
-- Initialized `/src` directory structure: `data/`, `experiments/`, `results/`.
-- Added the Deep RL for EVRP-TW implementation under `src/experiments/deep_rl/`.
-- Implemented a batched PyTorch environment with capacity, time-window,
-  battery, charging-station, and fleet constraints.
-- Added a feasibility-first greedy baseline, REINFORCE, and PPO.
-- Added experiment configurations, training and evaluation scripts,
-  visualisation tools, notebooks, and automated tests.
-- Added representative problem, route, and training figures to `src/results/`.
-- Ran the automated test suite: 10 tests passed.
-- Completed the two-iteration REINFORCE smoke training on Apple MPS.
+- Developed a structured understanding of TSP, VRP, CVRP, VRPTW, and their
+  relationship to the target EVRP-TW formulation.
+- Configured and validated the research environment, including Python,
+  Google OR-Tools, Matplotlib, Git, and the project repository structure.
+- Reproduced the official Google OR-Tools TSP, VRP, CVRP, and VRPTW
+  demonstration baselines on the 17-node instances.
+- Generated reproducible route tables, machine-readable solver results, and
+  route visualisations for all four baseline problems.
+- Established the principal evaluation rule for later experiments: objective
+  values must be compared only among feasible solutions, with feasibility,
+  route cost, fleet use, and runtime reported separately.
+- Maintained the existing Deep RL EVRP-TW implementation, including the
+  feasibility-first greedy baseline, REINFORCE, PPO, visualisation tools, and
+  automated tests.
 
 **Challenges & blockers**
-- The cited paper and final benchmark datasets still need to be confirmed.
-- Short smoke runs validate execution but do not establish model performance.
+- The cited paper and final public benchmark datasets remain to be confirmed.
+- OR-Tools demonstration instances establish functional correctness but are
+  not sufficient for claims regarding scalability or comparative performance.
 
 **Next steps**
 - Confirm the paper to reproduce and the required innovation.
-- Run controlled experiments across fixed seeds and customer sizes.
-- Compare feasibility, feasible route cost, runtime, and training stability.
+- Formalise a common EVRP-TW evaluation protocol with fixed instances and
+  random seeds.
 - Add public EVRP-TW benchmark loaders and stronger optimisation baselines.
+- Compare greedy, REINFORCE, and PPO using feasibility rate, feasible route
+  cost, fleet use, runtime, and training stability.
 
 **Hours spent (optional):** Not recorded
 
 **Links (optional):**
 - Repository: https://github.com/Rain-Fan/FURP-2026-Chenyu-Fan-Deep-RL-EVRP-TW
+- Week 1 baseline report: `docs/week1_or_tools_baselines.md`
+- Reproducible OR-Tools baselines: `src/experiments/or_tools_baselines/`
 - Implementation: `src/experiments/deep_rl/`
 - Route visualisation: `src/results/route_visualization.png`
 - Smoke configuration: `src/experiments/deep_rl/experiments/configs/smoke.yaml`

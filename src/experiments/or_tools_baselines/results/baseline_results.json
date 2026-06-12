@@ -1,0 +1,319 @@
+[
+  {
+    "problem": "TSP",
+    "objective": 4384,
+    "objective_interpretation": "total distance (m)",
+    "routes": [
+      {
+        "vehicle": 0,
+        "nodes": [
+          0,
+          9,
+          5,
+          8,
+          6,
+          2,
+          10,
+          16,
+          14,
+          13,
+          12,
+          11,
+          15,
+          3,
+          4,
+          1,
+          7,
+          0
+        ],
+        "distance": 4384,
+        "cumulative_time": []
+      }
+    ]
+  },
+  {
+    "problem": "VRP",
+    "objective": 177500,
+    "objective_interpretation": "total distance + 100 x longest-route distance",
+    "total_distance": 6300,
+    "maximum_route_distance": 1712,
+    "routes": [
+      {
+        "vehicle": 0,
+        "nodes": [
+          0,
+          9,
+          10,
+          2,
+          6,
+          5,
+          0
+        ],
+        "distance": 1712,
+        "cumulative_time": []
+      },
+      {
+        "vehicle": 1,
+        "nodes": [
+          0,
+          16,
+          14,
+          8,
+          0
+        ],
+        "distance": 1484,
+        "cumulative_time": []
+      },
+      {
+        "vehicle": 2,
+        "nodes": [
+          0,
+          7,
+          1,
+          4,
+          3,
+          0
+        ],
+        "distance": 1552,
+        "cumulative_time": []
+      },
+      {
+        "vehicle": 3,
+        "nodes": [
+          0,
+          13,
+          15,
+          11,
+          12,
+          0
+        ],
+        "distance": 1552,
+        "cumulative_time": []
+      }
+    ]
+  },
+  {
+    "problem": "CVRP",
+    "objective": 6872,
+    "objective_interpretation": "total distance (m)",
+    "total_distance": 6872,
+    "routes": [
+      {
+        "vehicle": 0,
+        "nodes": [
+          0,
+          1,
+          4,
+          3,
+          15,
+          0
+        ],
+        "distance": 2192,
+        "cumulative_time": [],
+        "load": 15
+      },
+      {
+        "vehicle": 1,
+        "nodes": [
+          0,
+          14,
+          16,
+          10,
+          2,
+          0
+        ],
+        "distance": 2192,
+        "cumulative_time": [],
+        "load": 15
+      },
+      {
+        "vehicle": 2,
+        "nodes": [
+          0,
+          7,
+          13,
+          12,
+          11,
+          0
+        ],
+        "distance": 1324,
+        "cumulative_time": [],
+        "load": 15
+      },
+      {
+        "vehicle": 3,
+        "nodes": [
+          0,
+          9,
+          8,
+          6,
+          5,
+          0
+        ],
+        "distance": 1164,
+        "cumulative_time": [],
+        "load": 15
+      }
+    ]
+  },
+  {
+    "problem": "VRPTW",
+    "objective": 74,
+    "objective_interpretation": "total travel time",
+    "total_travel_time": 74,
+    "routes": [
+      {
+        "vehicle": 0,
+        "nodes": [
+          0,
+          9,
+          14,
+          16,
+          0
+        ],
+        "distance": 16,
+        "cumulative_time": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            7,
+            7
+          ],
+          [
+            11,
+            11
+          ],
+          [
+            18,
+            18
+          ]
+        ]
+      },
+      {
+        "vehicle": 1,
+        "nodes": [
+          0,
+          12,
+          13,
+          15,
+          11,
+          0
+        ],
+        "distance": 21,
+        "cumulative_time": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            6,
+            6
+          ],
+          [
+            11,
+            11
+          ],
+          [
+            15,
+            15
+          ],
+          [
+            21,
+            21
+          ]
+        ]
+      },
+      {
+        "vehicle": 2,
+        "nodes": [
+          0,
+          7,
+          1,
+          4,
+          3,
+          0
+        ],
+        "distance": 17,
+        "cumulative_time": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            7,
+            11
+          ],
+          [
+            10,
+            13
+          ],
+          [
+            16,
+            16
+          ],
+          [
+            24,
+            24
+          ]
+        ]
+      },
+      {
+        "vehicle": 3,
+        "nodes": [
+          0,
+          5,
+          8,
+          6,
+          2,
+          10,
+          0
+        ],
+        "distance": 20,
+        "cumulative_time": [
+          [
+            0,
+            0
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            7,
+            7
+          ],
+          [
+            10,
+            10
+          ],
+          [
+            14,
+            14
+          ],
+          [
+            20,
+            20
+          ]
+        ]
+      }
+    ]
+  }
+]
