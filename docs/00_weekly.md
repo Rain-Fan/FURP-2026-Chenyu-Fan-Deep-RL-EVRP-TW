@@ -60,7 +60,7 @@
 **Hours spent (optional):** Not recorded
 
 **Links (optional):**
-- Repository: https://github.com/Rain-Fan/FURP-2026-Chenyu-Fan-Deep-RL-for-Electric-Vehicle-Routing-with-Time-Windows-EVRP-TW
+- Repository: https://github.com/Rain-Fan/FURP-2026-Chenyu-Fan-Deep-RL-EVRP-TW
 - Implementation: `src/experiments/deep_rl/`
 - Route visualisation: `src/results/route_visualization.png`
 - Smoke configuration: `src/experiments/deep_rl/experiments/configs/smoke.yaml`
