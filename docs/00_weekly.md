@@ -32,7 +32,7 @@
 
 ### Week 1 — 2026-06-12
 
-**Attended this week's meeting:** Not recorded
+**Attended this week's meeting:** Yes
 
 **Progress this week**
 - Developed a structured understanding of TSP, VRP, CVRP, VRPTW, and their
