@@ -17,8 +17,8 @@ Windows (EVRP-TW).
 | Project title | _Deep RL for Electric Vehicle Routing with Time Windows (EVRP-TW)_ |
 | Project tag | _EVRP-TW-DeepRL_ |
 | Track | Research |
-| Supervising faculty | _To be confirmed_ |
-| Project lead | _To be confirmed_ |
+| Supervising faculty | _Tianxiang Cui_ |
+| Project lead | _Tianxiang Cui_ |
 | Team or individual | _Individual_ |
 | Cited paper being replicated | _To be confirmed: add title and link/DOI_ |
 
