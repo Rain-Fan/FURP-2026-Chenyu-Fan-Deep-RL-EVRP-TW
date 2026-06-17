@@ -115,7 +115,7 @@ Any **leave of absence** or **withdrawal** must be notified to us **by email** â
 - [x] Added greedy, REINFORCE, and PPO methods
 - [x] Added training, evaluation, visualisation, and tests
 - [x] Started `docs/00_weekly.md`
-- [ ] Created my first file in `docs/meeting_notes/`
+- [x] Created my first file in `docs/meeting_notes/`
 - [ ] Confirmed the cited paper and final experimental protocol
 - [ ] (By Showcase) Added `FURP_Showcase.pdf` to the repo root
 
