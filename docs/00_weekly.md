@@ -63,7 +63,7 @@
 - Compare greedy, REINFORCE, and PPO using feasibility rate, feasible route
   cost, fleet use, runtime, and training stability.
 
-**Hours spent (optional):** Not recorded
+**Hours spent (optional):** 30 hours
 
 **Links (optional):**
 - Repository: https://github.com/Rain-Fan/FURP-2026-Chenyu-Fan-Deep-RL-EVRP-TW
