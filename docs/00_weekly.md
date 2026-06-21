@@ -30,6 +30,54 @@
 
 <!-- =================  YOUR ENTRIES BELOW  ================= -->
 
+### Week 2 — 2026-06-21
+
+**Attended this week's meeting:** Yes
+
+**Progress this week**
+- Read and followed the Week 2 project-hub task on baseline recreation and
+  method comparison.
+- Implemented a new reproducible Week 2 baseline suite covering POMO-style
+  multi-start construction, GA permutation search with EV/TW repair, and an
+  OR-Tools CVRPTW baseline with charging-station repair.
+- Added electric-vehicle and time-window feasibility checking shared across
+  all methods, including capacity, depot return, battery, charging station,
+  and customer service-window validation.
+- Ran experiments on 50, 100, and 200 customer instances and recorded
+  objective distance, feasibility status, runtime, vehicle count, and
+  convergence notes for every method.
+- Wrote the Week 2 comparison/reflection document explaining objective and
+  runtime differences, challenges in adding E/TW constraints, and implications
+  for the target EVRP-TW model.
+
+**Challenges & blockers**
+- The original POMO repository is CVRP-specific, so a full faithful neural
+  POMO training reproduction would require a larger EVRP-TW state/action
+  redesign.  This week therefore recreates the multi-start masked rollout
+  inference idea with explicit EV/TW constraints.
+- Charging stations are repeatable nodes, which makes them harder to express
+  in a simple OR-Tools CVRPTW model.  The current OR baseline handles customer
+  sequencing in OR-Tools and inserts charging stations as a repair step.
+- GA feasibility depends strongly on repair quality; stronger local search is
+  needed before GA can be considered a competitive quality baseline.
+
+**Next steps**
+- Add stronger local search moves such as 2-opt, relocate, exchange, station
+  relocation, and route-level repair.
+- Use the Week 2 baselines as reference methods for the existing Deep RL
+  EVRP-TW environment.
+- Extend the neural policy evaluation so learned decoding can be compared both
+  directly and as an initial solution for OR/local-search repair.
+
+**Hours spent (optional):** Not recorded
+
+**Links (optional):**
+- Week 2 comparison report: `docs/week2_baseline_comparison.md`
+- Week 2 baseline code: `src/experiments/week2_baselines/`
+- Week 2 results table: `src/experiments/week2_baselines/results/week2_results.md`
+- Week 2 machine-readable results:
+  `src/experiments/week2_baselines/results/week2_results.json`
+
 ### Week 1 — 2026-06-12
 
 **Attended this week's meeting:** Yes
