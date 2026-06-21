@@ -69,7 +69,7 @@
 - Extend the neural policy evaluation so learned decoding can be compared both
   directly and as an initial solution for OR/local-search repair.
 
-**Hours spent (optional):** Not recorded
+**Hours spent (optional):** 30 hours
 
 **Links (optional):**
 - Week 2 comparison report: `docs/week2_baseline_comparison.md`
