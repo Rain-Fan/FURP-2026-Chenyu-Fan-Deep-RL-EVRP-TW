@@ -36,10 +36,20 @@ time-window, battery, fleet, and charging constraints.
 
 The research environment was configured and validated with:
 
+- Operating system: macOS 15.6, build 24G84;
+- Hardware: Apple M4, arm64;
 - Python 3.13.12;
+- Package manager: `pip 26.0.1` from the Miniconda Python environment;
 - Google OR-Tools 9.15.6755;
 - Matplotlib 3.10.9;
 - Git and a reproducible repository structure for code, results, and logs.
+
+The exact dependency installation command is:
+
+```bash
+cd src/experiments/or_tools_baselines
+python -m pip install -r requirements.txt
+```
 
 The baseline implementation is located in
 `src/experiments/or_tools_baselines/run_baselines.py`. A single command
@@ -48,6 +58,25 @@ reproduces all solver outputs, route tables, and route visualisations:
 ```bash
 cd src/experiments/or_tools_baselines
 python run_baselines.py
+```
+
+The runtime was measured with:
+
+```bash
+cd src/experiments/or_tools_baselines
+/usr/bin/time -p python run_baselines.py
+```
+
+Measured output:
+
+```text
+TSP: objective=4384, routes=1
+VRP: objective=177500, routes=4
+CVRP: objective=6872, routes=4
+VRPTW: objective=74, routes=4
+real 1.21
+user 0.80
+sys 0.09
 ```
 
 ## 4. Baseline methodology
@@ -69,12 +98,17 @@ and restricts each customer to its specified service interval.
 
 ## 5. Experimental results
 
-| Problem | Solver objective | Additional metric | Vehicles used |
-|---|---:|---:|---:|
-| TSP | 4,384 | Total distance: 4,384 m | 1 |
-| VRP | 177,500 | Total distance: 6,300 m; maximum route: 1,712 m | 4 |
-| CVRP | 6,872 | Total distance: 6,872 m; load: 15 per route | 4 |
-| VRPTW | 74 | Total travel time: 74 time units | 4 |
+The smoke test instance size is 17 nodes for each classical routing example.
+All four baseline runs returned solver solutions, so the feasibility status is
+recorded as feasible.  The measured runtime for the complete four-baseline
+smoke run was 1.21 seconds.
+
+| Problem | Instance size | Solver objective | Feasibility status | Runtime record | Additional metric | Vehicles used |
+|---|---:|---:|---|---:|---:|---:|
+| TSP | 17 nodes | 4,384 | Feasible | Included in 1.21 s total run | Total distance: 4,384 m | 1 |
+| VRP | 17 nodes | 177,500 | Feasible | Included in 1.21 s total run | Total distance: 6,300 m; maximum route: 1,712 m | 4 |
+| CVRP | 17 nodes | 6,872 | Feasible | Included in 1.21 s total run | Total distance: 6,872 m; load: 15 per route | 4 |
+| VRPTW | 17 nodes | 74 | Feasible | Included in 1.21 s total run | Total travel time: 74 time units | 4 |
 
 The exact numerical outputs and node sequences are retained in
 [`route_tables.md`](../src/experiments/or_tools_baselines/results/route_tables.md).
@@ -99,7 +133,49 @@ objective value and should compare only feasible solutions. Evaluation must
 include at least route cost, feasibility rate, vehicles used, runtime, and
 constraint-specific violations.
 
-## 7. Week 1 outcome and next stage
+## 7. Week 1 checkpoint
+
+### Team info
+
+- Team name: FURP-2026-Chenyu-Fan-Deep-RL-EVRP-TW
+- Members: Chenyu Fan
+- Date: 12 June 2026
+
+### Environment
+
+- [x] Environment created
+- [x] Dependencies installed
+- [x] Repo structure understood
+
+### Baseline run
+
+- [x] Baseline command executed
+- [x] Objective value reported
+- [x] Feasibility status reported
+- [x] Runtime reported
+- [x] Evidence attached as route text and route plot
+
+### Reflection checkpoint
+
+1. Main setup issue: selecting a baseline scope that was small enough for Week
+   1 while still relevant to EVRP-TW.
+2. How it was solved: the OR-Tools VRPTW path was selected, then extended with
+   TSP, VRP, and CVRP smoke tests to clarify the constraint hierarchy.
+3. Current risk for Week 2: the Week 1 OR-Tools examples do not include
+   electric-vehicle battery or charging-station constraints, so Week 2 needs
+   explicit E-constraint implementation or repair logic.
+
+## 8. Required Week 1 reflection
+
+The easiest constraint to understand was the capacity constraint in CVRP,
+because each route has a simple accumulated load that must stay below the
+vehicle capacity.  The most confusing output was the VRP objective value,
+because OR-Tools reported a composite objective that included both total
+distance and a global span penalty for the longest route.  The Week 2 baseline
+target is to compare POMO-style construction, GA, and OR-based methods while
+adding electric-vehicle battery and time-window feasibility checks.
+
+## 9. Week 1 outcome and next stage
 
 Week 1 achieved the following milestones:
 
