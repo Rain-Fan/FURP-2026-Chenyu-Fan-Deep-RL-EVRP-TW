@@ -30,6 +30,69 @@
 
 <!-- =================  YOUR ENTRIES BELOW  ================= -->
 
+### Week 3 — 2026-06-30
+
+**Attended this week's meeting:** Yes
+
+**Progress this week**
+- Converted the Week 3 work from simply recreating a runnable method into a
+  controlled method-evaluation experiment.
+- Defined the tested method as `A_due_time_priority`, which selects the
+  feasible unserved customer with the earliest due-time priority.
+- Defined the comparison baseline as `B_nearest_customer`, which selects the
+  feasible unserved customer with the shortest current travel distance.
+- Kept the comparison fair by using the same generated instance set, random
+  seeds, coordinate data, distance matrix, objective definition, EVRP-TW
+  feasibility checker, vehicle constraints, charging rules, and stopping
+  condition for both methods.
+- Ran local controlled experiments on small, medium, and large EVRP-TW
+  instances: 20, 50, and 100 customers, with 12 generated instances per scale.
+- Recorded objective distance, feasibility rate, runtime, vehicle count,
+  charging count, time-window violations, capacity violations, energy
+  violations, coverage violations, random seed, hardware, and solver
+  parameters.
+- Generated a cleaned summary table, an A-vs-B comparison table, full JSON
+  route records, CSV result tables, a local run log, and a short experimental
+  report with setup, results, discussion, failure cases, and conclusion.
+
+**Challenges & blockers**
+- The tested due-time-priority method did not outperform the nearest-customer
+  baseline on this controlled instance set.
+- Method A had lower feasibility than Baseline B: 0.250 vs 1.000 on 20-customer
+  instances, 0.500 vs 1.000 on 50-customer instances, and 0.917 vs 1.000 on
+  100-customer instances.
+- Method A also had much longer feasible objective distance than Baseline B:
+  +327.701 at 20 customers, +1061.437 at 50 customers, and +2642.877 at 100
+  customers.
+- The main failure mode was coverage: Method A sometimes used all available
+  vehicles before serving every customer, even though time-window, capacity,
+  and energy violations were zero.
+- A due-time-only priority can create spatially inefficient routes, causing
+  more vehicle use and more charging-station visits.
+
+**Next steps**
+- Design a stronger scoring rule that combines distance, due-time slack,
+  remaining battery, route load, and depot-return reserve instead of using due
+  time alone.
+- Re-run the same controlled comparison against `B_nearest_customer` using the
+  same instance set and metrics.
+- Add local-search or route-repair steps to reduce coverage failures and
+  unnecessary charging visits.
+- Preserve the current Week 3 result files as the baseline evidence for later
+  ablation and improvement comparisons.
+
+**Hours spent (optional):** 30 hours
+
+**Links (optional):**
+- Week 3 controlled evaluation report: `docs/week3_baseline_reproduction.md`
+- Week 3 experiment code: `src/experiments/week3_baseline/run_week3_baseline.py`
+- Week 3 experiment README: `src/experiments/week3_baseline/README.md`
+- Week 3 local run log: `src/experiments/week3_baseline/results/run_log.txt`
+- Week 3 summary table: `src/experiments/week3_baseline/results/week3_results.md`
+- Week 3 aggregate results: `src/experiments/week3_baseline/results/week3_results.csv`
+- Week 3 A-vs-B comparison table: `src/experiments/week3_baseline/results/week3_comparison.csv`
+- Week 3 full route and diagnostic records: `src/experiments/week3_baseline/results/week3_results.json`
+
 ### Week 2 — 2026-06-24
 
 **Attended this week's meeting:** Yes
