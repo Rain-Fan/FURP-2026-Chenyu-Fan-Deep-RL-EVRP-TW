@@ -35,48 +35,40 @@
 **Attended this week's meeting:** Yes
 
 **Progress this week**
-- Read and followed the Week 2 project-hub task on baseline recreation and
-  method comparison.
-- Implemented a new reproducible Week 2 baseline suite covering POMO-style
-  multi-start construction, GA permutation search with EV/TW repair, and an
-  OR-Tools CVRPTW baseline with charging-station repair.
-- Added electric-vehicle and time-window feasibility checking shared across
-  all methods, including capacity, depot return, battery, charging station,
-  and customer service-window validation.
-- Ran experiments on 50, 100, and 200 customer instances and recorded
-  objective distance, feasibility status, runtime, vehicle count, and
-  convergence notes for every method.
-- Wrote the Week 2 comparison/reflection document explaining objective and
-  runtime differences, challenges in adding E/TW constraints, and implications
-  for the target EVRP-TW model.
+- Attended the second weekly meeting and participated in the group repository
+  review.
+- Checked each group member's GitHub repository and reviewed whether the
+  project files, reports, and experiment records were organized clearly.
+- Discussed GitHub repository-format issues, including folder structure, file
+  naming, README clarity, weekly-report placement, and links between reports
+  and supporting files.
+- Gave and received suggestions on repository content, including making
+  progress records specific, recording experiment commands and outputs, and
+  keeping evidence easy to inspect.
+- Clarified that the next stage should combine paper reading with independent
+  experiments so that different methods can be compared fairly.
 
 **Challenges & blockers**
-- The original POMO repository is CVRP-specific, so a full faithful neural
-  POMO training reproduction would require a larger EVRP-TW state/action
-  redesign.  This week therefore recreates the multi-start masked rollout
-  inference idea with explicit EV/TW constraints.
-- Charging stations are repeatable nodes, which makes them harder to express
-  in a simple OR-Tools CVRPTW model.  The current OR baseline handles customer
-  sequencing in OR-Tools and inserts charging stations as a repair step.
-- GA feasibility depends strongly on repair quality; stronger local search is
-  needed before GA can be considered a competitive quality baseline.
+- Some repositories still need clearer structure so weekly progress can be
+  inspected quickly.
+- Some reports need more concrete links to code, experiment records, command
+  outputs, or paper notes.
+- A fair method comparison requires consistent experiment settings, metrics,
+  and reproducible records rather than only reading conclusions from papers.
 
 **Next steps**
-- Add stronger local search moves such as 2-opt, relocate, exchange, station
-  relocation, and route-level repair.
-- Use the Week 2 baselines as reference methods for the existing Deep RL
-  EVRP-TW environment.
-- Extend the neural policy evaluation so learned decoding can be compared both
-  directly and as an initial solution for OR/local-search repair.
+- Revise the GitHub repository format according to the meeting feedback,
+  especially README structure, weekly-report links, and experiment records.
+- Read papers covering different EVRP-TW or routing-solver methods.
+- Choose representative methods and run self-contained experiments.
+- Compare different methods using consistent metrics such as feasibility,
+  objective value, runtime, scalability, and implementation difficulty.
 
 **Hours spent (optional):** 30 hours
 
 **Links (optional):**
-- Week 2 comparison report: `docs/week2_baseline_comparison.md`
-- Week 2 baseline code: `src/experiments/week2_baselines/`
-- Week 2 results table: `src/experiments/week2_baselines/results/week2_results.md`
-- Week 2 machine-readable results:
-  `src/experiments/week2_baselines/results/week2_results.json`
+- Week 2 meeting notes: `docs/meeting_notes/2026-06-24.md`
+- Weekly log detail: `src/experiments/deep_rl/docs/weekly_logs/week2.md`
 
 ### Week 1 — 2026-06-12
 

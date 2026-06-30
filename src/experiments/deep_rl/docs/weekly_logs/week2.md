@@ -1,27 +1,27 @@
 # Week 2
 
-## Baseline recreation and comparison
+## Repository review and method-comparison planning
 
-This week focused on the project-hub Week 2 requirement: recreate baseline
-methods and compare results across different EVRP-TW problem scales.
+This week focused on the second weekly meeting.  The main work was checking
+each group member's GitHub repository and discussing how to improve repository
+format, report clarity, and content completeness.
 
 Completed work:
 
-- implemented POMO-style multi-start masked greedy construction;
-- implemented a GA baseline over customer permutations with EV/TW repair;
-- implemented an OR-Tools CVRPTW baseline with charging-station insertion;
-- added a shared feasibility checker for capacity, time windows, depot return,
-  battery consumption, and charging stations;
-- ran 50, 100, and 200 customer experiments;
-- recorded objective values, feasibility status, runtime, vehicle count, and
-  convergence notes;
-- wrote the comparison/reflection report in
-  `docs/week2_baseline_comparison.md`.
+- checked the GitHub repositories of group members;
+- reviewed whether repository structure, file naming, README content, and
+  weekly reports were easy to inspect;
+- discussed how to make progress records more specific and evidence-based;
+- received guidance on linking reports to code, notebooks, experiment
+  commands, and result files;
+- clarified that the next stage should combine paper reading with independent
+  experiments for method comparison.
 
 Main result:
 
-OR-Tools achieved the best route distance under the fixed search budget, the
-POMO-style constructive baseline was much faster and still feasible, and GA
-required repair to stay feasible but produced weaker objective values.  This
-supports using learned decoders as fast initial-solution generators followed
-by OR/local-search improvement.
+The meeting made the repository requirements clearer: weekly progress should
+be recorded in a readable structure, supported by concrete files and experiment
+evidence.  The next task is to read papers on different EVRP-TW or routing
+methods, reproduce selected experiments, and compare methods using consistent
+metrics such as feasibility, objective value, runtime, scalability, and
+implementation difficulty.
