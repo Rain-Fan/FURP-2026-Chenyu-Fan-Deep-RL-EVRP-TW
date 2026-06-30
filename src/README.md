@@ -1,7 +1,6 @@
-# `/src` - Deep RL for EVRP-TW
+# `/src` - EVRP-TW Research Experiments
 
-> **Deep Reinforcement Learning for the Electric Vehicle Routing Problem with
-> Time Windows**
+> **Reproducible baseline experiments for vehicle routing and EVRP-TW**
 
 ## Directory Structure
 
@@ -9,34 +8,33 @@
 /src
   README.md
   data/                  Shared dataset notes or links
-  experiments/deep_rl/   Reproducible implementation and experiment package
+  experiments/week1_or_tools_baselines/
+  experiments/week2_baselines/
+  experiments/week3_baseline/
   results/               Selected figures and compact result summaries
 ```
 
-The Deep RL experiment package contains:
+The experiment packages contain:
 
 ```text
-src/                     Environment, models, algorithms, and utilities
-scripts/                 Training, evaluation, and route visualisation
-experiments/configs/     Greedy, REINFORCE, PPO, and smoke configurations
-tests/                   Unit and integration tests
-notebooks/               Research and demonstration notebooks
-docs/                    Proposal, paper notes, and experiment plan
+week1_or_tools_baselines/  OR-Tools TSP, VRP, CVRP, and VRPTW baselines
+week2_baselines/           EVRP-TW method comparison artifacts
+week3_baseline/            Feasibility-first greedy EVRP-TW baseline run
 ```
 
 ## Getting Started
 
 ```bash
-cd src/experiments/deep_rl
-python3.11 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-pytest -q
-python scripts/evaluate.py --config experiments/configs/baseline.yaml
-python scripts/train.py --config experiments/configs/smoke.yaml
+cd src/experiments/week1_or_tools_baselines
+python -m pip install -r requirements.txt
+python run_baselines.py
 ```
 
-Conda users can instead create the environment from `environment.yml`.
+Week 3 baseline results can be regenerated with:
+
+```bash
+python3 src/experiments/week3_baseline/run_week3_baseline.py --scales 10 25 50 --instances-per-scale 32 --seed 20260630
+```
 
 ## Notes
 

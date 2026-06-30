@@ -68,7 +68,6 @@
 
 **Links (optional):**
 - Week 2 meeting notes: `docs/meeting_notes/2026-06-24.md`
-- Weekly log detail: `src/experiments/deep_rl/docs/weekly_logs/week2.md`
 
 ### Week 1 — 2026-06-12
 
@@ -86,9 +85,8 @@
 - Established the principal evaluation rule for later experiments: objective
   values must be compared only among feasible solutions, with feasibility,
   route cost, fleet use, and runtime reported separately.
-- Maintained the existing Deep RL EVRP-TW implementation, including the
-  feasibility-first greedy baseline, REINFORCE, PPO, visualisation tools, and
-  automated tests.
+- Organized the baseline artifacts and selected route visualisations for
+  later EVRP-TW method comparison.
 
 **Challenges & blockers**
 - The cited paper and final public benchmark datasets remain to be confirmed.
@@ -100,15 +98,13 @@
 - Formalise a common EVRP-TW evaluation protocol with fixed instances and
   random seeds.
 - Add public EVRP-TW benchmark loaders and stronger optimisation baselines.
-- Compare greedy, REINFORCE, and PPO using feasibility rate, feasible route
-  cost, fleet use, runtime, and training stability.
+- Compare later methods using feasibility rate, feasible route cost, fleet
+  use, runtime, and constraint-violation diagnostics.
 
 **Hours spent (optional):** 30 hours
 
 **Links (optional):**
 - Repository: https://github.com/Rain-Fan/FURP-2026-Chenyu-Fan-Deep-RL-EVRP-TW
 - Week 1 baseline report: `docs/week1_or_tools_baselines.md`
-- Reproducible OR-Tools baselines: `src/experiments/or_tools_baselines/`
-- Implementation: `src/experiments/deep_rl/`
+- Reproducible OR-Tools baselines: `src/experiments/week1_or_tools_baselines/`
 - Route visualisation: `src/results/route_visualization.png`
-- Smoke configuration: `src/experiments/deep_rl/experiments/configs/smoke.yaml`

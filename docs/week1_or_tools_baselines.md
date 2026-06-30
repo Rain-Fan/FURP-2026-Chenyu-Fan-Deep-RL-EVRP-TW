@@ -47,23 +47,23 @@ The research environment was configured and validated with:
 The exact dependency installation command is:
 
 ```bash
-cd src/experiments/or_tools_baselines
+cd src/experiments/week1_or_tools_baselines
 python -m pip install -r requirements.txt
 ```
 
 The baseline implementation is located in
-`src/experiments/or_tools_baselines/run_baselines.py`. A single command
+`src/experiments/week1_or_tools_baselines/run_baselines.py`. A single command
 reproduces all solver outputs, route tables, and route visualisations:
 
 ```bash
-cd src/experiments/or_tools_baselines
+cd src/experiments/week1_or_tools_baselines
 python run_baselines.py
 ```
 
 The runtime was measured with:
 
 ```bash
-cd src/experiments/or_tools_baselines
+cd src/experiments/week1_or_tools_baselines
 /usr/bin/time -p python run_baselines.py
 ```
 
@@ -111,10 +111,10 @@ smoke run was 1.21 seconds.
 | VRPTW | 17 nodes | 74 | Feasible | Included in 1.21 s total run | Total travel time: 74 time units | 4 |
 
 The exact numerical outputs and node sequences are retained in
-[`route_tables.md`](../src/experiments/or_tools_baselines/results/route_tables.md).
+[`route_tables.md`](../src/experiments/week1_or_tools_baselines/results/route_tables.md).
 The combined route visualisation is shown below.
 
-![TSP, VRP, CVRP, and VRPTW baseline routes](../src/experiments/or_tools_baselines/results/baseline_routes.png)
+![TSP, VRP, CVRP, and VRPTW baseline routes](../src/experiments/week1_or_tools_baselines/results/baseline_routes.png)
 
 ## 6. Interpretation
 

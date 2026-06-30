@@ -22,10 +22,9 @@ Windows (EVRP-TW).
 | Team or individual | _Individual_ |
 | Cited paper being replicated | _To be confirmed: add title and link/DOI_ |
 
-**One-line summary:** This project develops and evaluates attention-based
-reinforcement-learning policies that construct feasible electric-vehicle
-routes under capacity, customer time-window, battery, charging, and fleet
-constraints.
+**One-line summary:** This project studies reproducible baselines and
+evaluation protocols for vehicle-routing and electric-vehicle-routing problems
+with capacity, time-window, battery, charging, and fleet constraints.
 
 ---
 
@@ -33,16 +32,14 @@ constraints.
 
 The current implementation includes:
 
-- a batched PyTorch EVRP-TW environment;
-- dynamic feasibility masks for capacity, time, energy, and fleet constraints;
-- a deterministic feasibility-first greedy baseline;
-- Transformer node encoding and pointer-style decoding;
-- REINFORCE with a self-critical greedy baseline;
-- PPO with clipped policy updates and a value head;
-- training, evaluation, metrics, visualisation, and automated tests.
+- Week 1 OR-Tools baselines for TSP, VRP, CVRP, and VRPTW;
+- Week 2 EVRP-TW baseline comparison artifacts;
+- Week 3 feasibility-first greedy EVRP-TW baseline reproduction;
+- result tables, route visualisations, run logs, and diagnostic reports.
 
 The main evaluation metrics are feasibility rate, route cost, distance,
-vehicles used, runtime, and training stability. The initial model assumes
+vehicles used, runtime, time-window violations, battery or charging
+violations, and coverage violations. The current experiments assume
 homogeneous vehicles, deterministic Euclidean travel, linear energy use, and
 full charging at stations.
 
@@ -57,14 +54,16 @@ This structure is **mandatory** — please keep it intact.
  ├── 00_weekly.md         ← update EVERY week: progress, challenges, next steps
  └── meeting_notes/       ← key takeaways from all team meetings
 /src
- ├── experiments/deep_rl/ ← implementation, configs, notebooks, and tests
+ ├── experiments/week1_or_tools_baselines/
+ ├── experiments/week2_baselines/
+ ├── experiments/week3_baseline/
  └── results/             ← selected figures and compact results
 FURP_Showcase.pdf         ← your poster / presentation PDF, in the repo root
 ```
 
 - **`docs/00_weekly.md`** — your weekly progress log. This is the first thing we check.
 - **`docs/meeting_notes/`** — one file per meeting with key takeaways and action items.
-- **`src/experiments/deep_rl/`** — reproducible implementation and experiments.
+- **`src/experiments/`** — week-by-week reproducible experiments and results.
 - **`src/results/`** — selected figures and compact research outputs.
 - **`FURP_Showcase.pdf`** — your final poster, placed in the **repo root** with this exact filename.
 
@@ -111,9 +110,9 @@ Any **leave of absence** or **withdrawal** must be notified to us **by email** �
 ## Project checklist
 
 - [x] Created and published the project repository
-- [x] Added the EVRP-TW environment and feasibility constraints
-- [x] Added greedy, REINFORCE, and PPO methods
-- [x] Added training, evaluation, visualisation, and tests
+- [x] Added Week 1 OR-Tools routing baselines
+- [x] Added Week 2 EVRP-TW baseline comparison artifacts
+- [x] Added Week 3 baseline reproduction with runtime and feasibility logs
 - [x] Started `docs/00_weekly.md`
 - [x] Created my first file in `docs/meeting_notes/`
 - [ ] Confirmed the cited paper and final experimental protocol
