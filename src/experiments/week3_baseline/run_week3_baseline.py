@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
-"""Week 3 baseline reproduction for EVRP-TW.
+"""Week 3 controlled method evaluation for EVRP-TW.
 
-This script runs a deterministic feasibility-first greedy construction
-baseline on locally generated EVRP-TW instances.  It records objective value,
-feasibility, runtime, solver parameters, random seeds, route summaries, and
-constraint-level diagnostics.
+The Week 3 goal is not only to make code run.  This script turns two greedy
+construction methods into a fair controlled comparison on the same generated
+EVRP-TW instance set.
+
+Method A is a due-time-priority greedy policy.  Baseline B is a nearest
+customer greedy policy.  Both methods use the same coordinates, distance
+matrix, objective definition, vehicle and charging constraints, and stopping
+condition.
 """
 
 from __future__ import annotations
@@ -13,21 +17,31 @@ import argparse
 import csv
 import json
 import math
-import shlex
-import sys
 import platform
 import random
+import shlex
+import sys
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from statistics import mean, pstdev
-from typing import Iterable
 
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
-DEFAULT_SCALES = (10, 25, 50)
-DEFAULT_INSTANCES_PER_SCALE = 32
+DEFAULT_SCALES = (20, 50, 100)
+DEFAULT_INSTANCES_PER_SCALE = 12
 DEFAULT_SEED = 20260630
+
+METHODS = {
+    "A_due_time_priority": {
+        "role": "tested_method",
+        "description": "Choose the feasible customer with earliest due-time priority.",
+    },
+    "B_nearest_customer": {
+        "role": "baseline",
+        "description": "Choose the feasible customer with shortest current travel distance.",
+    },
+}
 
 
 @dataclass(frozen=True)
@@ -65,10 +79,6 @@ class Instance:
     def customer_ids(self) -> set[int]:
         return {node.idx for node in self.customers}
 
-    @property
-    def station_ids(self) -> set[int]:
-        return {node.idx for node in self.stations}
-
     def node(self, idx: int) -> Node:
         return self.nodes[idx]
 
@@ -84,6 +94,8 @@ class RouteSummary:
 
 @dataclass
 class InstanceResult:
+    method: str
+    method_role: str
     instance: str
     scale: int
     seed: int
@@ -109,7 +121,7 @@ def distance(a: Node, b: Node) -> float:
 
 def generate_instance(scale: int, seed: int) -> Instance:
     rng = random.Random(seed)
-    depot = Node(0, "depot", 50.0, 50.0, 0, 0.0, 900.0, 0.0)
+    depot = Node(0, "depot", 50.0, 50.0, 0, 0.0, 1600.0, 0.0)
     customers: list[Node] = []
     stations: list[Node] = []
 
@@ -117,25 +129,25 @@ def generate_instance(scale: int, seed: int) -> Instance:
         x = rng.uniform(8.0, 92.0)
         y = rng.uniform(8.0, 92.0)
         direct = math.hypot(x - depot.x, y - depot.y)
-        ready = rng.uniform(0.0, 80.0) + direct * 0.35
-        due = ready + rng.uniform(260.0, 380.0)
+        ready = rng.uniform(0.0, 120.0) + direct * 0.25
+        due = ready + rng.uniform(420.0, 560.0)
         customers.append(
             Node(
                 idx=idx,
                 kind="customer",
                 x=x,
                 y=y,
-                demand=rng.randint(1, 6),
+                demand=rng.randint(1, 5),
                 ready=ready,
                 due=due,
-                service=5.0,
+                service=4.0,
             )
         )
 
-    station_count = max(4, math.ceil(scale / 12))
+    station_count = max(5, math.ceil(scale / 14))
     for station_no in range(station_count):
         angle = 2.0 * math.pi * station_no / station_count
-        radius = 22.0 + 12.0 * (station_no % 2)
+        radius = 20.0 + 16.0 * (station_no % 2)
         stations.append(
             Node(
                 idx=scale + 1 + station_no,
@@ -144,7 +156,7 @@ def generate_instance(scale: int, seed: int) -> Instance:
                 y=50.0 + radius * math.sin(angle),
                 demand=0,
                 ready=0.0,
-                due=900.0,
+                due=1600.0,
                 service=0.0,
             )
         )
@@ -156,25 +168,49 @@ def generate_instance(scale: int, seed: int) -> Instance:
         depot=depot,
         customers=customers,
         stations=stations,
-        capacity=45,
-        battery_capacity=155.0,
+        capacity=55,
+        battery_capacity=185.0,
         energy_rate=1.0,
         speed=1.0,
         charge_time=18.0,
-        max_vehicles=max(3, math.ceil(scale / 6)),
+        max_vehicles=max(4, math.ceil(scale / 5)),
     )
 
 
 def nearest_recharge_distance(instance: Instance, node: Node) -> float:
-    recharge_nodes = [instance.depot, *instance.stations]
-    return min(distance(node, recharge) for recharge in recharge_nodes)
+    return min(distance(node, recharge) for recharge in [instance.depot, *instance.stations])
 
 
 def route_distance(instance: Instance, route: list[int]) -> float:
-    return sum(
-        distance(instance.node(a), instance.node(b))
-        for a, b in zip(route, route[1:])
-    )
+    return sum(distance(instance.node(a), instance.node(b)) for a, b in zip(route, route[1:]))
+
+
+def feasible_customer_candidates(
+    instance: Instance,
+    current: Node,
+    unserved: set[int],
+    load: int,
+    battery: float,
+    clock: float,
+) -> list[tuple[float, float, int]]:
+    candidates: list[tuple[float, float, int]] = []
+    for customer_id in unserved:
+        customer = instance.node(customer_id)
+        leg = distance(current, customer)
+        arrival = clock + leg / instance.speed
+        service_start = max(arrival, customer.ready)
+        battery_after = battery - leg * instance.energy_rate
+        if load + customer.demand > instance.capacity:
+            continue
+        if battery_after < -1e-7:
+            continue
+        if service_start > customer.due + 1e-7:
+            continue
+        reserve = nearest_recharge_distance(instance, customer) * instance.energy_rate
+        if battery_after < reserve - 1e-7:
+            continue
+        candidates.append((leg, customer.due, customer_id))
+    return candidates
 
 
 def choose_customer(
@@ -184,28 +220,16 @@ def choose_customer(
     load: int,
     battery: float,
     clock: float,
+    method: str,
 ) -> int | None:
-    candidates: list[tuple[float, float, int]] = []
-    for customer_id in unserved:
-        customer = instance.node(customer_id)
-        leg = distance(current, customer)
-        arrival = clock + leg / instance.speed
-        start = max(arrival, customer.ready)
-        battery_after = battery - leg * instance.energy_rate
-        if load + customer.demand > instance.capacity:
-            continue
-        if battery_after < -1e-7:
-            continue
-        if start > customer.due + 1e-7:
-            continue
-        reserve = nearest_recharge_distance(instance, customer) * instance.energy_rate
-        if battery_after < reserve - 1e-7:
-            continue
-        score = customer.due + leg * 0.1
-        candidates.append((score, leg, customer_id))
+    candidates = feasible_customer_candidates(instance, current, unserved, load, battery, clock)
     if not candidates:
         return None
-    return min(candidates)[2]
+    if method == "A_due_time_priority":
+        return min((due, leg, customer_id) for leg, due, customer_id in candidates)[2]
+    if method == "B_nearest_customer":
+        return min((leg, due, customer_id) for leg, due, customer_id in candidates)[2]
+    raise ValueError(f"Unknown method: {method}")
 
 
 def nearest_reachable_station(
@@ -254,29 +278,27 @@ def close_route(
     violations: list[str],
 ) -> tuple[list[int], float, float]:
     current = instance.node(route[-1])
-    depot = instance.depot
     guard = 0
-    while current.idx != depot.idx and guard < len(instance.stations) + 2:
-        leg_to_depot = distance(current, depot)
-        if leg_to_depot * instance.energy_rate <= battery + 1e-7:
-            route.append(depot.idx)
-            battery, clock = travel_to(instance, current, depot, battery, clock)
+    while current.idx != 0 and guard < len(instance.stations) + 2:
+        if distance(current, instance.depot) * instance.energy_rate <= battery + 1e-7:
+            route.append(0)
+            battery, clock = travel_to(instance, current, instance.depot, battery, clock)
             return route, battery, clock
         station_id = nearest_reachable_station(instance, current, battery, clock)
         if station_id is None:
             violations.append(f"cannot return to depot from node {current.idx}")
             return route, battery, clock
-        route.append(station_id)
         station = instance.node(station_id)
+        route.append(station_id)
         battery, clock = travel_to(instance, current, station, battery, clock)
         current = station
         guard += 1
-    if route[-1] != depot.idx:
+    if route[-1] != 0:
         violations.append(f"route did not close at depot: {route}")
     return route, battery, clock
 
 
-def greedy_solve(instance: Instance) -> tuple[list[list[int]], list[str]]:
+def greedy_solve(instance: Instance, method: str) -> tuple[list[list[int]], list[str]]:
     unserved = set(instance.customer_ids)
     routes: list[list[int]] = []
     violations: list[str] = []
@@ -284,7 +306,7 @@ def greedy_solve(instance: Instance) -> tuple[list[list[int]], list[str]]:
     for _vehicle in range(instance.max_vehicles):
         if not unserved:
             break
-        route = [instance.depot.idx]
+        route = [0]
         current = instance.depot
         load = 0
         battery = instance.battery_capacity
@@ -293,7 +315,7 @@ def greedy_solve(instance: Instance) -> tuple[list[list[int]], list[str]]:
         last_station: int | None = None
 
         for _step in range((instance.scale + len(instance.stations)) * 3):
-            customer_id = choose_customer(instance, current, unserved, load, battery, clock)
+            customer_id = choose_customer(instance, current, unserved, load, battery, clock, method)
             if customer_id is not None:
                 customer = instance.node(customer_id)
                 route.append(customer_id)
@@ -304,32 +326,26 @@ def greedy_solve(instance: Instance) -> tuple[list[list[int]], list[str]]:
                 route_has_customer = True
                 last_station = None
                 if not unserved:
-                    route, battery, clock = close_route(
-                        instance, route, battery, clock, violations
-                    )
+                    route, battery, clock = close_route(instance, route, battery, clock, violations)
                     routes.append(route)
                     return routes, violations
                 continue
 
             if route_has_customer:
-                route, battery, clock = close_route(
-                    instance, route, battery, clock, violations
-                )
+                route, battery, clock = close_route(instance, route, battery, clock, violations)
                 routes.append(route)
                 break
 
             station_id = nearest_reachable_station(instance, current, battery, clock)
             if station_id is not None and station_id != last_station:
-                route.append(station_id)
                 station = instance.node(station_id)
+                route.append(station_id)
                 battery, clock = travel_to(instance, current, station, battery, clock)
                 current = station
                 last_station = station_id
                 continue
 
-            violations.append(
-                f"vehicle cannot serve any remaining customer from node {current.idx}"
-            )
+            violations.append(f"vehicle cannot serve any remaining customer from node {current.idx}")
             routes.append(route)
             break
 
@@ -340,6 +356,7 @@ def greedy_solve(instance: Instance) -> tuple[list[list[int]], list[str]]:
 
 def validate_solution(
     instance: Instance,
+    method: str,
     routes: list[list[int]],
     construction_violations: list[str],
 ) -> InstanceResult:
@@ -373,17 +390,13 @@ def validate_solution(
             battery -= leg * instance.energy_rate
             if battery < -1e-7:
                 energy_violations += 1
-                violations.append(
-                    f"route {route_no} negative battery before node {node_idx}"
-                )
+                violations.append(f"route {route_no} negative battery before node {node_idx}")
             clock += leg / instance.speed
             if clock < node.ready:
                 clock = node.ready
             if clock > node.due + 1e-7:
                 time_window_violations += 1
-                violations.append(
-                    f"route {route_no} misses time window at node {node_idx}"
-                )
+                violations.append(f"route {route_no} misses time window at node {node_idx}")
             clock += node.service
             if node.kind == "customer":
                 load += node.demand
@@ -424,6 +437,8 @@ def validate_solution(
         violations.append(f"duplicate customers: {duplicates[:20]}")
 
     return InstanceResult(
+        method=method,
+        method_role=METHODS[method]["role"],
         instance=instance.name,
         scale=instance.scale,
         seed=instance.seed,
@@ -444,10 +459,10 @@ def validate_solution(
     )
 
 
-def run_instance(instance: Instance) -> InstanceResult:
+def run_instance(instance: Instance, method: str) -> InstanceResult:
     started = time.perf_counter()
-    routes, construction_violations = greedy_solve(instance)
-    result = validate_solution(instance, routes, construction_violations)
+    routes, construction_violations = greedy_solve(instance, method)
+    result = validate_solution(instance, method, routes, construction_violations)
     result.runtime_sec = time.perf_counter() - started
     return result
 
@@ -455,42 +470,76 @@ def run_instance(instance: Instance) -> InstanceResult:
 def aggregate(results: list[InstanceResult]) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     for scale in sorted({result.scale for result in results}):
-        subset = [result for result in results if result.scale == scale]
-        feasible = [result for result in subset if result.feasible]
-        rows.append(
-            {
-                "scale": scale,
-                "instances": len(subset),
-                "feasible_instances": len(feasible),
-                "feasibility_rate": len(feasible) / len(subset),
-                "mean_objective_all": mean(r.objective_distance for r in subset),
-                "mean_objective_feasible": (
-                    mean(r.objective_distance for r in feasible) if feasible else None
-                ),
-                "std_objective_all": pstdev(r.objective_distance for r in subset),
-                "mean_runtime_sec": mean(r.runtime_sec for r in subset),
-                "max_runtime_sec": max(r.runtime_sec for r in subset),
-                "mean_vehicles_used": mean(r.vehicles_used for r in subset),
-                "mean_charge_count": mean(r.charge_count for r in subset),
-                "time_window_violations": sum(r.time_window_violations for r in subset),
-                "capacity_violations": sum(r.capacity_violations for r in subset),
-                "energy_violations": sum(r.energy_violations for r in subset),
-                "coverage_violations": sum(r.coverage_violations for r in subset),
-                "depot_violations": sum(r.depot_violations for r in subset),
-            }
-        )
+        for method in METHODS:
+            subset = [result for result in results if result.scale == scale and result.method == method]
+            feasible = [result for result in subset if result.feasible]
+            rows.append(
+                {
+                    "method": method,
+                    "method_role": METHODS[method]["role"],
+                    "scale": scale,
+                    "instances": len(subset),
+                    "feasible_instances": len(feasible),
+                    "feasibility_rate": len(feasible) / len(subset),
+                    "mean_objective_all": mean(r.objective_distance for r in subset),
+                    "mean_objective_feasible": (
+                        mean(r.objective_distance for r in feasible) if feasible else None
+                    ),
+                    "std_objective_all": pstdev(r.objective_distance for r in subset),
+                    "std_objective_feasible": (
+                        pstdev(r.objective_distance for r in feasible) if len(feasible) > 1 else 0.0
+                    ) if feasible else None,
+                    "mean_runtime_sec": mean(r.runtime_sec for r in subset),
+                    "max_runtime_sec": max(r.runtime_sec for r in subset),
+                    "mean_vehicles_used": mean(r.vehicles_used for r in subset),
+                    "mean_charge_count": mean(r.charge_count for r in subset),
+                    "time_window_violations": sum(r.time_window_violations for r in subset),
+                    "capacity_violations": sum(r.capacity_violations for r in subset),
+                    "energy_violations": sum(r.energy_violations for r in subset),
+                    "coverage_violations": sum(r.coverage_violations for r in subset),
+                    "depot_violations": sum(r.depot_violations for r in subset),
+                }
+            )
     return rows
 
 
-def worst_cases(results: list[InstanceResult], limit: int = 3) -> list[dict[str, object]]:
-    def rank_key(result: InstanceResult) -> tuple[int, float]:
-        return (0 if result.feasible else 1, result.objective_distance)
+def compare_methods(aggregate_rows: list[dict[str, object]]) -> list[dict[str, object]]:
+    comparisons: list[dict[str, object]] = []
+    for scale in sorted({int(row["scale"]) for row in aggregate_rows}):
+        a = next(row for row in aggregate_rows if row["scale"] == scale and row["method"] == "A_due_time_priority")
+        b = next(row for row in aggregate_rows if row["scale"] == scale and row["method"] == "B_nearest_customer")
+        a_feasible_obj = a["mean_objective_feasible"]
+        b_feasible_obj = b["mean_objective_feasible"]
+        comparisons.append(
+            {
+                "scale": scale,
+                "tested_method": "A_due_time_priority",
+                "baseline": "B_nearest_customer",
+                "feasibility_rate_delta": a["feasibility_rate"] - b["feasibility_rate"],
+                "mean_feasible_objective_delta": (
+                    a_feasible_obj - b_feasible_obj
+                    if a_feasible_obj is not None and b_feasible_obj is not None
+                    else None
+                ),
+                "mean_runtime_delta_sec": a["mean_runtime_sec"] - b["mean_runtime_sec"],
+                "coverage_violation_delta": a["coverage_violations"] - b["coverage_violations"],
+            }
+        )
+    return comparisons
 
-    selected = sorted(results, key=rank_key, reverse=True)[:limit]
+
+def diagnostic_cases(results: list[InstanceResult], limit: int = 3) -> list[dict[str, object]]:
+    failures = [result for result in results if not result.feasible]
+    selected = sorted(
+        failures if failures else results,
+        key=lambda result: (result.scale, result.objective_distance),
+        reverse=True,
+    )[:limit]
     cases = []
     for result in selected:
         cases.append(
             {
+                "method": result.method,
                 "instance": result.instance,
                 "scale": result.scale,
                 "seed": result.seed,
@@ -502,7 +551,7 @@ def worst_cases(results: list[InstanceResult], limit: int = 3) -> list[dict[str,
                 "diagnosis": (
                     "infeasible route; inspect listed constraint violations"
                     if not result.feasible
-                    else "feasible but high-distance case for this baseline"
+                    else "feasible but high-distance case"
                 ),
                 "first_route": result.routes[0] if result.routes else [],
             }
@@ -516,6 +565,14 @@ def result_to_dict(result: InstanceResult) -> dict[str, object]:
     return record
 
 
+def fmt_optional(value: object, digits: int = 3) -> str:
+    if value is None:
+        return "NA"
+    if isinstance(value, float):
+        return f"{value:.{digits}f}"
+    return str(value)
+
+
 def write_outputs(
     results: list[InstanceResult],
     args: argparse.Namespace,
@@ -524,27 +581,35 @@ def write_outputs(
 ) -> None:
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     aggregate_rows = aggregate(results)
-    cases = worst_cases(results)
+    comparisons = compare_methods(aggregate_rows)
+    cases = diagnostic_cases(results)
     metadata = {
         "run_started_local": run_started,
         "run_command": " ".join(shlex.quote(part) for part in command),
-        "method": "deterministic feasibility-first greedy construction",
-        "description": (
-            "At each step choose the feasible unserved customer with the "
-            "earliest due-time priority; return to depot or visit a charging "
-            "station when no customer can be served."
+        "research_question": (
+            "Does due-time-priority greedy perform better than nearest-customer "
+            "greedy on small, medium, and large synthetic EVRP-TW instances?"
         ),
+        "tested_method": METHODS["A_due_time_priority"],
+        "baseline": METHODS["B_nearest_customer"],
+        "fairness_controls": [
+            "same instance set and random seeds",
+            "same coordinates and distance matrix",
+            "same objective definition: total route distance",
+            "same EVRP-TW feasibility checker",
+            "same vehicle, battery, charging, and stopping rules",
+        ],
         "scales": args.scales,
         "instances_per_scale": args.instances_per_scale,
         "base_seed": args.seed,
         "solver_parameters": {
-            "capacity": 45,
-            "battery_capacity": 155.0,
+            "capacity": 55,
+            "battery_capacity": 185.0,
             "energy_rate": 1.0,
             "speed": 1.0,
             "charge_time": 18.0,
-            "station_rule": "max(4, ceil(customers / 12))",
-            "max_vehicle_rule": "max(3, ceil(customers / 6))",
+            "station_rule": "max(5, ceil(customers / 14))",
+            "max_vehicle_rule": "max(4, ceil(customers / 5))",
         },
         "hardware": {
             "platform": platform.platform(),
@@ -556,6 +621,7 @@ def write_outputs(
     full_output = {
         "metadata": metadata,
         "aggregate": aggregate_rows,
+        "comparison": comparisons,
         "instances": [result_to_dict(result) for result in results],
         "diagnostic_cases": cases,
     }
@@ -569,43 +635,60 @@ def write_outputs(
         writer.writeheader()
         writer.writerows(aggregate_rows)
 
+    with (RESULTS_DIR / "week3_comparison.csv").open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=list(comparisons[0].keys()))
+        writer.writeheader()
+        writer.writerows(comparisons)
+
     lines = [
-        "# Week 3 Baseline Results",
+        "# Week 3 Controlled Method Evaluation Results",
         "",
         f"Run started: `{run_started}`",
         "",
-        "Method: deterministic feasibility-first greedy construction baseline.",
+        "Research question: Does due-time-priority greedy perform better than "
+        "nearest-customer greedy on small, medium, and large synthetic EVRP-TW instances?",
         "",
-        "| Customers | Instances | Feasible | Feasibility rate | Mean objective | "
-        "Mean feasible objective | Mean runtime (s) | Mean vehicles | Mean charges | "
-        "TW viol. | Capacity viol. | Energy viol. | Coverage viol. |",
-        "|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "A = due-time-priority greedy. B = nearest-customer baseline.",
+        "",
+        "## Summary Table",
+        "",
+        "| Method | Role | Customers | Instances | Feasible | Feasibility rate | Mean objective | "
+        "Mean feasible objective | Std objective | Mean runtime (s) | Mean vehicles | "
+        "Mean charges | TW viol. | Capacity viol. | Energy viol. | Coverage viol. |",
+        "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in aggregate_rows:
-        feasible_obj = row["mean_objective_feasible"]
         lines.append(
-            f"| {row['scale']} | {row['instances']} | {row['feasible_instances']} | "
-            f"{row['feasibility_rate']:.3f} | {row['mean_objective_all']:.3f} | "
-            f"{feasible_obj:.3f} | " if feasible_obj is not None else ""
+            f"| {row['method']} | {row['method_role']} | {row['scale']} | {row['instances']} | "
+            f"{row['feasible_instances']} | {row['feasibility_rate']:.3f} | "
+            f"{row['mean_objective_all']:.3f} | {fmt_optional(row['mean_objective_feasible'])} | "
+            f"{row['std_objective_all']:.3f} | {row['mean_runtime_sec']:.6f} | "
+            f"{row['mean_vehicles_used']:.3f} | {row['mean_charge_count']:.3f} | "
+            f"{row['time_window_violations']} | {row['capacity_violations']} | "
+            f"{row['energy_violations']} | {row['coverage_violations']} |"
         )
-        if feasible_obj is not None:
-            lines[-1] += (
-                f"{row['mean_runtime_sec']:.6f} | {row['mean_vehicles_used']:.3f} | "
-                f"{row['mean_charge_count']:.3f} | {row['time_window_violations']} | "
-                f"{row['capacity_violations']} | {row['energy_violations']} | "
-                f"{row['coverage_violations']} |"
-            )
+
     lines.extend(
         [
             "",
-            "## Diagnostic cases",
+            "## A vs B Comparison",
             "",
+            "| Customers | Feasibility delta | Feasible-objective delta | Runtime delta (s) | Coverage-violation delta |",
+            "|---:|---:|---:|---:|---:|",
         ]
     )
+    for row in comparisons:
+        lines.append(
+            f"| {row['scale']} | {row['feasibility_rate_delta']:.3f} | "
+            f"{fmt_optional(row['mean_feasible_objective_delta'])} | "
+            f"{row['mean_runtime_delta_sec']:.6f} | {row['coverage_violation_delta']} |"
+        )
+
+    lines.extend(["", "## Diagnostic Cases", ""])
     for case in cases:
         lines.extend(
             [
-                f"### {case['instance']}",
+                f"### {case['method']} on {case['instance']}",
                 "",
                 f"- Scale: {case['scale']}",
                 f"- Seed: {case['seed']}",
@@ -622,7 +705,7 @@ def write_outputs(
     (RESULTS_DIR / "week3_results.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     log_lines = [
-        "Week 3 baseline local run log",
+        "Week 3 controlled method evaluation local run log",
         "",
         f"Run started: {run_started}",
         f"Command: {' '.join(shlex.quote(part) for part in command)}",
@@ -634,9 +717,9 @@ def write_outputs(
     ]
     for row in aggregate_rows:
         log_lines.append(
-            "- customers={scale}, instances={instances}, feasible={feasible_instances}, "
-            "feasibility_rate={feasibility_rate:.3f}, mean_objective_all={mean_objective_all:.3f}, "
-            "mean_runtime_sec={mean_runtime_sec:.6f}".format(**row)
+            "- method={method}, customers={scale}, instances={instances}, "
+            "feasible={feasible_instances}, feasibility_rate={feasibility_rate:.3f}, "
+            "mean_objective_all={mean_objective_all:.3f}, mean_runtime_sec={mean_runtime_sec:.6f}".format(**row)
         )
     log_lines.extend(
         [
@@ -644,6 +727,7 @@ def write_outputs(
             "Output files:",
             "- week3_results.json",
             "- week3_results.csv",
+            "- week3_comparison.csv",
             "- week3_results.md",
             "- run_log.txt",
         ]
@@ -667,9 +751,15 @@ def main() -> None:
         for offset in range(args.instances_per_scale):
             seed = args.seed + scale * 1000 + offset
             instance = generate_instance(scale, seed)
-            results.append(run_instance(instance))
+            for method in METHODS:
+                results.append(run_instance(instance, method))
     write_outputs(results, args, run_started, sys.argv)
-    print(json.dumps({"results_dir": str(RESULTS_DIR), "runs": len(results)}, indent=2))
+    print(
+        json.dumps(
+            {"results_dir": str(RESULTS_DIR), "runs": len(results), "methods": list(METHODS)},
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":

@@ -1,50 +1,65 @@
-# Week 3 Baseline Results
+# Week 3 Controlled Method Evaluation Results
 
-Run started: `2026-06-30 15:06:53 CST`
+Run started: `2026-06-30 15:22:02 CST`
 
-Method: deterministic feasibility-first greedy construction baseline.
+Research question: Does due-time-priority greedy perform better than nearest-customer greedy on small, medium, and large synthetic EVRP-TW instances?
 
-| Customers | Instances | Feasible | Feasibility rate | Mean objective | Mean feasible objective | Mean runtime (s) | Mean vehicles | Mean charges | TW viol. | Capacity viol. | Energy viol. | Coverage viol. |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 10 | 32 | 21 | 0.656 | 450.552 | 441.557 | 0.000064 | 3.000 | 1.406 | 0 | 0 | 0 | 11 |
-| 25 | 32 | 1 | 0.031 | 833.218 | 780.085 | 0.000296 | 5.000 | 3.469 | 0 | 0 | 0 | 31 |
-| 50 | 32 | 1 | 0.031 | 1536.332 | 1545.652 | 0.001183 | 9.000 | 7.219 | 0 | 0 | 0 | 31 |
+A = due-time-priority greedy. B = nearest-customer baseline.
 
-## Diagnostic cases
+## Summary Table
 
-### synthetic_evrptw_n50_seed20310635
+| Method | Role | Customers | Instances | Feasible | Feasibility rate | Mean objective | Mean feasible objective | Std objective | Mean runtime (s) | Mean vehicles | Mean charges | TW viol. | Capacity viol. | Energy viol. | Coverage viol. |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| A_due_time_priority | tested_method | 20 | 12 | 3 | 0.250 | 767.700 | 777.501 | 19.563 | 0.000220 | 4.000 | 2.667 | 0 | 0 | 0 | 9 |
+| B_nearest_customer | baseline | 20 | 12 | 12 | 1.000 | 449.799 | 449.799 | 61.118 | 0.000218 | 2.667 | 1.250 | 0 | 0 | 0 | 0 |
+| A_due_time_priority | tested_method | 50 | 12 | 6 | 0.500 | 1907.936 | 1819.997 | 106.148 | 0.001266 | 9.750 | 6.917 | 0 | 0 | 0 | 6 |
+| B_nearest_customer | baseline | 50 | 12 | 12 | 1.000 | 758.561 | 758.561 | 77.587 | 0.001305 | 4.250 | 2.333 | 0 | 0 | 0 | 0 |
+| A_due_time_priority | tested_method | 100 | 12 | 11 | 0.917 | 3779.576 | 3759.097 | 196.922 | 0.006335 | 18.667 | 15.417 | 0 | 0 | 0 | 1 |
+| B_nearest_customer | baseline | 100 | 12 | 12 | 1.000 | 1116.221 | 1116.221 | 64.491 | 0.007054 | 6.583 | 2.083 | 0 | 0 | 0 | 0 |
 
-- Scale: 50
-- Seed: 20310635
-- Objective distance: 1611.423
+## A vs B Comparison
+
+| Customers | Feasibility delta | Feasible-objective delta | Runtime delta (s) | Coverage-violation delta |
+|---:|---:|---:|---:|---:|
+| 20 | -0.750 | 327.701 | 0.000002 | 9 |
+| 50 | -0.500 | 1061.437 | -0.000039 | 6 |
+| 100 | -0.083 | 2642.877 | -0.000719 | 1 |
+
+## Diagnostic Cases
+
+### A_due_time_priority on synthetic_evrptw_n100_seed20360634
+
+- Scale: 100
+- Seed: 20360634
+- Objective distance: 4004.842
 - Feasible: False
-- Vehicles used: 9
-- Charge count: 9
+- Vehicles used: 20
+- Charge count: 15
 - Diagnosis: infeasible route; inspect listed constraint violations
-- Violations: ['unserved customers: [3, 6, 10, 13, 26, 28, 33, 36, 42]', 'missing customers: [3, 6, 10, 13, 26, 28, 33, 36, 42]']
-- First route: `[0, 19, 27, 21, 52, 0]`
+- Violations: ['unserved customers: [89]', 'missing customers: [89]']
+- First route: `[0, 85, 22, 96, 82, 93, 45, 104, 0]`
 
-### synthetic_evrptw_n50_seed20310657
+### A_due_time_priority on synthetic_evrptw_n50_seed20310636
 
 - Scale: 50
-- Seed: 20310657
-- Objective distance: 1607.657
+- Seed: 20310636
+- Objective distance: 2052.955
 - Feasible: False
-- Vehicles used: 9
+- Vehicles used: 10
 - Charge count: 8
 - Diagnosis: infeasible route; inspect listed constraint violations
-- Violations: ['unserved customers: [2, 3, 5, 13, 22, 23, 30, 39]', 'missing customers: [2, 3, 5, 13, 22, 23, 30, 39]']
-- First route: `[0, 4, 34, 28, 1, 43, 54, 0]`
+- Violations: ['unserved customers: [41, 49]', 'missing customers: [41, 49]']
+- First route: `[0, 20, 17, 7, 13, 54, 0]`
 
-### synthetic_evrptw_n50_seed20310644
+### A_due_time_priority on synthetic_evrptw_n50_seed20310633
 
 - Scale: 50
-- Seed: 20310644
-- Objective distance: 1585.864
+- Seed: 20310633
+- Objective distance: 2006.704
 - Feasible: False
-- Vehicles used: 9
-- Charge count: 9
+- Vehicles used: 10
+- Charge count: 8
 - Diagnosis: infeasible route; inspect listed constraint violations
-- Violations: ['unserved customers: [1, 8, 9, 11, 22, 33, 40, 48]', 'missing customers: [1, 8, 9, 11, 22, 33, 40, 48]']
-- First route: `[0, 15, 23, 36, 29, 25, 4, 55, 0]`
+- Violations: ['unserved customers: [7]', 'missing customers: [7]']
+- First route: `[0, 12, 22, 32, 23, 4, 8, 34, 41, 55, 0]`
 

@@ -1,0 +1,4 @@
+scale,tested_method,baseline,feasibility_rate_delta,mean_feasible_objective_delta,mean_runtime_delta_sec,coverage_violation_delta
+20,A_due_time_priority,B_nearest_customer,-0.75,327.70133127947787,2.1977563543865988e-06,9
+50,A_due_time_priority,B_nearest_customer,-0.5,1061.436555549308,-3.911083331331611e-05,6
+100,A_due_time_priority,B_nearest_customer,-0.08333333333333337,2642.876828134866,-0.0007194442538699759,1
