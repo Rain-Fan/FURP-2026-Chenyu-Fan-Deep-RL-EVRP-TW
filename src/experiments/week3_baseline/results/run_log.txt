@@ -1,0 +1,18 @@
+Week 3 baseline local run log
+
+Run started: 2026-06-30 15:06:53 CST
+Command: src/experiments/week3_baseline/run_week3_baseline.py --scales 10 25 50 --instances-per-scale 32 --seed 20260630
+Python: 3.14.0
+Platform: macOS-15.6-arm64-arm-64bit-Mach-O
+Processor: arm
+
+Aggregate results:
+- customers=10, instances=32, feasible=21, feasibility_rate=0.656, mean_objective_all=450.552, mean_runtime_sec=0.000064
+- customers=25, instances=32, feasible=1, feasibility_rate=0.031, mean_objective_all=833.218, mean_runtime_sec=0.000296
+- customers=50, instances=32, feasible=1, feasibility_rate=0.031, mean_objective_all=1536.332, mean_runtime_sec=0.001183
+
+Output files:
+- week3_results.json
+- week3_results.csv
+- week3_results.md
+- run_log.txt
