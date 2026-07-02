@@ -9,6 +9,8 @@ from routing_data import DISTANCE_MATRIX
 
 
 def solve_vrp() -> dict[str, object]:
+    # VRP keeps the same locations as TSP, but allows four vehicles to split
+    # the customer visits. All vehicles still start and end at depot 0.
     manager = pywrapcp.RoutingIndexManager(len(DISTANCE_MATRIX), 4, 0)
     routing = pywrapcp.RoutingModel(manager)
 
@@ -17,6 +19,10 @@ def solve_vrp() -> dict[str, object]:
 
     transit = routing.RegisterTransitCallback(distance_callback)
     routing.SetArcCostEvaluatorOfAllVehicles(transit)
+
+    # The Distance dimension tracks per-route distance. The global span
+    # coefficient penalizes the longest route, so the solver balances vehicles
+    # instead of only minimizing the sum of all arcs.
     routing.AddDimension(transit, 0, 3000, True, "Distance")
     routing.GetDimensionOrDie("Distance").SetGlobalSpanCostCoefficient(100)
     solution = routing.SolveWithParameters(default_search_parameters())

@@ -138,6 +138,9 @@ def generate_instance(scale: int, seed: int) -> Instance:
     stations: list[Node] = []
 
     for idx in range(1, scale + 1):
+        # Each customer receives coordinates, demand, service time, and a wide
+        # service window. The windows are generated from depot distance so far
+        # customers are not automatically impossible.
         x = rng.uniform(8.0, 92.0)
         y = rng.uniform(8.0, 92.0)
         direct = math.hypot(x - depot.x, y - depot.y)
@@ -158,6 +161,8 @@ def generate_instance(scale: int, seed: int) -> Instance:
 
     station_count = max(5, math.ceil(scale / 14))
     for station_no in range(station_count):
+        # Charging stations are arranged around the depot so both greedy methods
+        # can recharge without changing the customer-selection rule.
         angle = 2.0 * math.pi * station_no / station_count
         radius = 20.0 + 16.0 * (station_no % 2)
         stations.append(
@@ -205,6 +210,7 @@ def feasible_customer_candidates(
     battery: float,
     clock: float,
 ) -> list[tuple[float, float, int]]:
+    """Return feasible candidates as (travel_distance, due_time, customer_id)."""
     candidates: list[tuple[float, float, int]] = []
     for customer_id in unserved:
         customer = instance.node(customer_id)
@@ -218,6 +224,8 @@ def feasible_customer_candidates(
             continue
         if service_start > customer.due + 1e-7:
             continue
+        # Reserve enough battery to reach either the depot or a charging station
+        # after serving this customer. This prevents choosing a dead-end node.
         reserve = nearest_recharge_distance(instance, customer) * instance.energy_rate
         if battery_after < reserve - 1e-7:
             continue
@@ -237,6 +245,8 @@ def choose_customer(
     candidates = feasible_customer_candidates(instance, current, unserved, load, battery, clock)
     if not candidates:
         return None
+    # Both algorithms see exactly the same feasible candidate list; only the
+    # ranking function differs, which keeps the comparison controlled.
     if method == DUE_TIME_METHOD:
         return select_due_time_customer(candidates)
     if method == NEAREST_METHOD:
@@ -253,6 +263,8 @@ def nearest_reachable_station(
     options: list[tuple[float, int]] = []
     for station in instance.stations:
         leg = distance(current, station)
+        # A station is reachable only if the current battery and time window
+        # allow the vehicle to arrive there.
         if leg * instance.energy_rate > battery + 1e-7:
             continue
         if clock + leg / instance.speed > station.due + 1e-7:
@@ -270,6 +282,8 @@ def travel_to(
     battery: float,
     clock: float,
 ) -> tuple[float, float]:
+    # Apply distance, time, waiting, service, and recharge effects for a single
+    # move. Keeping this in one helper avoids inconsistent route simulation.
     leg = distance(current, target)
     battery -= leg * instance.energy_rate
     clock += leg / instance.speed
@@ -292,6 +306,8 @@ def close_route(
     current = instance.node(route[-1])
     guard = 0
     while current.idx != 0 and guard < len(instance.stations) + 2:
+        # Prefer returning directly to the depot; otherwise insert the nearest
+        # reachable station and try again after recharging.
         if distance(current, instance.depot) * instance.energy_rate <= battery + 1e-7:
             route.append(0)
             battery, clock = travel_to(instance, current, instance.depot, battery, clock)
@@ -329,6 +345,8 @@ def greedy_solve(instance: Instance, method: str) -> tuple[list[list[int]], list
         for _step in range((instance.scale + len(instance.stations)) * 3):
             customer_id = choose_customer(instance, current, unserved, load, battery, clock, method)
             if customer_id is not None:
+                # When a feasible customer exists, the selected algorithm
+                # chooses one and the route state is advanced immediately.
                 customer = instance.node(customer_id)
                 route.append(customer_id)
                 battery, clock = travel_to(instance, current, customer, battery, clock)
@@ -344,12 +362,16 @@ def greedy_solve(instance: Instance, method: str) -> tuple[list[list[int]], list
                 continue
 
             if route_has_customer:
+                # Once the route has served at least one customer, no feasible
+                # next customer means this vehicle should return to the depot.
                 route, battery, clock = close_route(instance, route, battery, clock, violations)
                 routes.append(route)
                 break
 
             station_id = nearest_reachable_station(instance, current, battery, clock)
             if station_id is not None and station_id != last_station:
+                # At the beginning of a route, a station visit may unlock
+                # customers that cannot be reached on the initial battery path.
                 station = instance.node(station_id)
                 route.append(station_id)
                 battery, clock = travel_to(instance, current, station, battery, clock)
@@ -372,6 +394,7 @@ def validate_solution(
     routes: list[list[int]],
     construction_violations: list[str],
 ) -> InstanceResult:
+    """Replay routes to compute metrics and confirm all constraints."""
     served: list[int] = []
     violations = list(construction_violations)
     route_summaries: list[RouteSummary] = []
@@ -395,6 +418,8 @@ def validate_solution(
         clock = 0.0
         route_charge_count = 0
         for prev_idx, node_idx in zip(route, route[1:]):
+            # Validation intentionally repeats the physical simulation instead
+            # of trusting construction-time assumptions.
             prev = instance.node(prev_idx)
             node = instance.node(node_idx)
             leg = distance(prev, node)
@@ -435,6 +460,8 @@ def validate_solution(
 
     coverage_violations = 0
     served_set = set(served)
+    # Coverage is checked separately from route-level feasibility because a
+    # route may be physically valid while still missing customers.
     if served_set != instance.customer_ids:
         coverage_violations += 1
         missing = sorted(instance.customer_ids - served_set)
@@ -483,6 +510,8 @@ def aggregate(results: list[InstanceResult]) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     for scale in sorted({result.scale for result in results}):
         for method in METHODS:
+            # Aggregate by scale and method so the report compares methods under
+            # identical instance sizes.
             subset = [result for result in results if result.scale == scale and result.method == method]
             feasible = [result for result in subset if result.feasible]
             rows.append(
@@ -518,6 +547,8 @@ def aggregate(results: list[InstanceResult]) -> list[dict[str, object]]:
 def compare_methods(aggregate_rows: list[dict[str, object]]) -> list[dict[str, object]]:
     comparisons: list[dict[str, object]] = []
     for scale in sorted({int(row["scale"]) for row in aggregate_rows}):
+        # Positive objective deltas mean the tested method is worse on distance;
+        # negative feasibility deltas mean it solves fewer instances.
         a = next(row for row in aggregate_rows if row["scale"] == scale and row["method"] == "A_due_time_priority")
         b = next(row for row in aggregate_rows if row["scale"] == scale and row["method"] == "B_nearest_customer")
         a_feasible_obj = a["mean_objective_feasible"]

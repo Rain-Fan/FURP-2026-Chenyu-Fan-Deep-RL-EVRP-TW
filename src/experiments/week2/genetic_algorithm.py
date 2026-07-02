@@ -16,18 +16,26 @@ def solve_genetic_algorithm(
     customer_ids = [node.idx for node in instance.customers]
 
     def fitness(chromosome: list[int]) -> tuple[float, list[list[int]], bool, list[str]]:
+        # A chromosome is only a customer permutation. The split-and-repair step
+        # turns that sequence into routes before feasibility can be evaluated.
         routes = split_and_repair(instance, chromosome)
         feasible, cost, violations = check_solution(instance, routes)
+        # Penalize constraint violations strongly so feasible solutions dominate
+        # infeasible short routes during selection.
         penalty = 100000.0 * len(violations) + 10000.0 * max(0, len(routes) - instance.max_vehicles)
         return cost + penalty, routes, feasible, violations
 
     def crossover(a: list[int], b: list[int]) -> list[int]:
+        # Order crossover keeps a contiguous section from parent A and fills the
+        # rest using parent B without duplicating customers.
         left = rng.randrange(0, len(a))
         right = rng.randrange(left + 1, len(a) + 1)
         section = a[left:right]
         return section + [gene for gene in b if gene not in section]
 
     def mutate(chromosome: list[int]) -> None:
+        # Swap explores local customer assignment changes; segment reversal is a
+        # simple route-shape improvement similar to a weak 2-opt move.
         if rng.random() < 0.45:
             i, j = rng.sample(range(len(chromosome)), 2)
             chromosome[i], chromosome[j] = chromosome[j], chromosome[i]
@@ -35,6 +43,8 @@ def solve_genetic_algorithm(
             i, j = sorted(rng.sample(range(len(chromosome)), 2))
             chromosome[i:j] = reversed(chromosome[i:j])
 
+    # Seed the population with one reasonable time-window order, then add random
+    # permutations so the GA still explores a broad search space.
     base = sorted(customer_ids, key=lambda idx: instance.node(idx).ready)
     population = [base]
     for _ in range(population_size - 1):
@@ -62,6 +72,8 @@ def solve_genetic_algorithm(
         else:
             stagnant += 1
 
+        # Elitism preserves the best current chromosomes while crossover and
+        # mutation generate the next population.
         elites = [chromosome[:] for _, chromosome in ranked[: max(4, population_size // 6)]]
         next_population = elites[:]
         while len(next_population) < population_size:
@@ -72,6 +84,7 @@ def solve_genetic_algorithm(
             next_population.append(child)
         population = next_population
         if best_feasible and stagnant >= 25 and generation >= 35:
+            # Stop early after a feasible solution has stopped improving.
             break
 
     feasible, cost, violations = check_solution(instance, best_routes)

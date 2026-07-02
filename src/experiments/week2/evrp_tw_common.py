@@ -73,6 +73,8 @@ def generate_instance(scale: int, seed: int) -> Instance:
     stations: list[Node] = []
 
     for i in range(1, scale + 1):
+        # Customers are sampled in a square around the depot. Wide time windows
+        # keep the focus on method comparison rather than impossible instances.
         x = rng.uniform(5.0, 95.0)
         y = rng.uniform(5.0, 95.0)
         d0 = math.hypot(x - depot.x, y - depot.y)
@@ -84,6 +86,8 @@ def generate_instance(scale: int, seed: int) -> Instance:
 
     station_count = max(6, math.ceil(scale / 16))
     for j in range(station_count):
+        # Stations alternate between two radii around the depot, giving repair
+        # logic reachable charging options in several directions.
         angle = (2.0 * math.pi * j) / station_count
         radius = 18.0 + 20.0 * (j % 2)
         idx = scale + 1 + j
@@ -115,6 +119,7 @@ def generate_instance(scale: int, seed: int) -> Instance:
 
 
 def check_solution(instance: Instance, routes: list[list[int]]) -> tuple[bool, float, list[str]]:
+    """Validate route feasibility and compute total route distance."""
     served: list[int] = []
     violations: list[str] = []
     total_distance = 0.0
@@ -132,6 +137,8 @@ def check_solution(instance: Instance, routes: list[list[int]]) -> tuple[bool, f
         clock = 0.0
         battery = instance.battery_capacity
         for prev_idx, node_idx in zip(route, route[1:]):
+            # Simulate the route leg by leg so violations can be attributed to
+            # the exact route and node where they occur.
             prev = instance.node(prev_idx)
             node = instance.node(node_idx)
             leg = distance(prev, node)
@@ -151,6 +158,8 @@ def check_solution(instance: Instance, routes: list[list[int]]) -> tuple[bool, f
                 if load > instance.capacity:
                     violations.append(f"route {route_no} capacity exceeded")
             elif node.kind in {"station", "depot"}:
+                # This simplified baseline assumes a full recharge at stations
+                # and a fresh battery when returning to the depot.
                 battery = instance.battery_capacity
 
     expected = instance.customer_ids
@@ -175,6 +184,8 @@ def nearest_reachable_station(
     current_node = instance.node(current)
     target = instance.node(next_node)
     for station in instance.stations:
+        # A station is useful only if the vehicle can reach it now and can then
+        # reach the intended next customer/depot after charging.
         to_station = distance(current_node, station)
         station_to_target = distance(station, target)
         if (
@@ -213,6 +224,7 @@ def repair_route_energy(instance: Instance, raw_route: list[int]) -> list[int]:
 
 
 def split_and_repair(instance: Instance, sequence: Iterable[int]) -> list[list[int]]:
+    """Split a customer sequence into routes, then repair battery feasibility."""
     routes: list[list[int]] = []
     current = [0]
     load = 0
@@ -225,6 +237,8 @@ def split_and_repair(instance: Instance, sequence: Iterable[int]) -> list[list[i
         if projected_arrival < customer.ready:
             projected_arrival = customer.ready
         return_time = projected_arrival + customer.service + distance(customer, instance.depot)
+        # Close the current route before adding a customer that would violate
+        # capacity, miss its due time, or prevent returning to the depot in time.
         should_close = (
             projected_load > instance.capacity
             or projected_arrival > customer.due

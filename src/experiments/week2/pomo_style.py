@@ -15,6 +15,9 @@ def solve_pomo_style(instance: Instance, starts: int = 24) -> EvalResult:
     best_feasible = False
 
     customer_ids = [node.idx for node in instance.customers]
+    # POMO evaluates several rollout starts in parallel. This lightweight
+    # recreation uses several deterministic orderings first, then fills the
+    # remaining starts with nearest-neighbor rollouts from random anchors.
     base_orders = [
         sorted(customer_ids, key=lambda idx: instance.node(idx).ready),
         sorted(customer_ids, key=lambda idx: instance.node(idx).due),
@@ -27,6 +30,8 @@ def solve_pomo_style(instance: Instance, starts: int = 24) -> EvalResult:
         remaining = set(customer_ids) - {anchor}
         while remaining:
             current = instance.node(ordered[-1])
+            # Distance drives route compactness; a small ready-time term nudges
+            # the rollout toward customers that can be served earlier.
             next_id = min(
                 remaining,
                 key=lambda idx: distance(current, instance.node(idx)) + 0.05 * instance.node(idx).ready,
@@ -36,6 +41,8 @@ def solve_pomo_style(instance: Instance, starts: int = 24) -> EvalResult:
         base_orders.append(ordered)
 
     for order in base_orders[:starts]:
+        # Convert each customer order into EVRP-TW routes, then insert charging
+        # stations if battery would otherwise be insufficient.
         routes = split_and_repair(instance, order)
         feasible, cost, _ = check_solution(instance, routes)
         if feasible and cost < best_cost:

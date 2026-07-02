@@ -9,6 +9,8 @@ from routing_data import DEMANDS, DISTANCE_MATRIX, VEHICLE_CAPACITIES
 
 
 def solve_cvrp() -> dict[str, object]:
+    # CVRP adds customer demand to the VRP. The manager still maps solver
+    # indices to the original node ids used by the distance and demand arrays.
     manager = pywrapcp.RoutingIndexManager(
         len(DISTANCE_MATRIX), len(VEHICLE_CAPACITIES), 0
     )
@@ -23,6 +25,9 @@ def solve_cvrp() -> dict[str, object]:
     transit = routing.RegisterTransitCallback(distance_callback)
     demand = routing.RegisterUnaryTransitCallback(demand_callback)
     routing.SetArcCostEvaluatorOfAllVehicles(transit)
+
+    # Capacity is a cumulative resource dimension: as a route visits customers,
+    # demand is accumulated and must stay within the vehicle capacity.
     routing.AddDimensionWithVehicleCapacity(
         demand, 0, VEHICLE_CAPACITIES, True, "Capacity"
     )
@@ -31,6 +36,8 @@ def solve_cvrp() -> dict[str, object]:
         raise RuntimeError("CVRP baseline did not find a solution")
     routes = extract_routes(manager, routing, solution)
     for route in routes:
+        # Load is not part of the printed OR-Tools route by default, so compute
+        # it here to make the capacity result visible in the report.
         route["load"] = sum(DEMANDS[node] for node in route["nodes"])
     return {
         "problem": "CVRP",

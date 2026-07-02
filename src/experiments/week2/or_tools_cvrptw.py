@@ -36,9 +36,13 @@ def solve_or_tools_cvrptw(instance: Instance, time_limit_sec: int = 10) -> EvalR
         )
 
     customers = instance.customers
+    # OR-Tools models depot + customers. Charging stations are handled after
+    # sequencing because stations may be visited repeatedly in EVRP-TW.
     nodes = [instance.depot, *customers]
     manager = pywrapcp.RoutingIndexManager(len(nodes), instance.max_vehicles, 0)
     routing = pywrapcp.RoutingModel(manager)
+    # OR-Tools integer dimensions are easier to control, so Euclidean distances
+    # are scaled by 10 before being passed into callbacks.
     scaled_dist = [[int(round(distance(a, b) * 10.0)) for b in nodes] for a in nodes]
 
     def distance_callback(from_index: int, to_index: int) -> int:
@@ -50,9 +54,11 @@ def solve_or_tools_cvrptw(instance: Instance, time_limit_sec: int = 10) -> EvalR
     transit = routing.RegisterTransitCallback(distance_callback)
     demand = routing.RegisterUnaryTransitCallback(demand_callback)
     routing.SetArcCostEvaluatorOfAllVehicles(transit)
+    # Capacity is exact in the OR model, while battery is repaired later.
     routing.AddDimensionWithVehicleCapacity(
         demand, 0, [instance.capacity] * instance.max_vehicles, True, "Capacity"
     )
+    # The Time dimension enforces customer service windows and allows waiting.
     routing.AddDimension(transit, int(300 * 10), int(1000 * 10), False, "Time")
     time_dimension = routing.GetDimensionOrDie("Time")
     for local_idx, node in enumerate(nodes):
@@ -71,6 +77,7 @@ def solve_or_tools_cvrptw(instance: Instance, time_limit_sec: int = 10) -> EvalR
     solution = routing.SolveWithParameters(params)
     raw_routes: list[list[int]] = []
     if solution is not None:
+        # Extract customer-only OR routes in original node ids before EV repair.
         for vehicle_id in range(instance.max_vehicles):
             index = routing.Start(vehicle_id)
             local_route = [0]
@@ -83,10 +90,14 @@ def solve_or_tools_cvrptw(instance: Instance, time_limit_sec: int = 10) -> EvalR
                 raw_routes.append([*local_route, 0])
 
     if not raw_routes:
+        # If OR-Tools fails within the time limit, keep the experiment
+        # reproducible by falling back to the shared deterministic constructor.
         ordered = sorted(instance.customer_ids, key=lambda idx: instance.node(idx).ready)
         routes = split_and_repair(instance, ordered)
         convergence = f"OR-Tools no solution in {time_limit_sec}s; used deterministic fallback sequence"
     else:
+        # Charging repair inserts stations into the OR customer sequence, then
+        # the common checker validates battery, time, capacity, and coverage.
         routes = [repair_route_energy(instance, route) for route in raw_routes]
         convergence = f"OR-Tools GLS time_limit={time_limit_sec}s; charging stations inserted post hoc"
 
