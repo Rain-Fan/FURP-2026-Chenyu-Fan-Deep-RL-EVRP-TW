@@ -8,32 +8,32 @@
 /src
   README.md
   data/                  Shared dataset notes or links
-  experiments/week1_or_tools_baselines/
-  experiments/week2_baselines/
-  experiments/week3_baseline/
+  experiments/week1/
+  experiments/week2/
+  experiments/week3/
   results/               Selected figures and compact result summaries
 ```
 
 The experiment packages contain:
 
 ```text
-week1_or_tools_baselines/  OR-Tools TSP, VRP, CVRP, and VRPTW baselines
-week2_baselines/           EVRP-TW method comparison artifacts
-week3_baseline/            Feasibility-first greedy EVRP-TW baseline run
+week1/  OR-Tools TSP, VRP, CVRP, and VRPTW algorithm files plus comparison
+week2/  POMO-style, GA, and OR-style algorithm files plus comparison
+week3/  Due-time-priority and nearest-customer greedy files plus comparison
 ```
 
 ## Getting Started
 
 ```bash
-cd src/experiments/week1_or_tools_baselines
+cd src/experiments/week1
 python -m pip install -r requirements.txt
-python run_baselines.py
+python compare_or_tools_baselines.py
 ```
 
 Week 3 baseline results can be regenerated with:
 
 ```bash
-python3 src/experiments/week3_baseline/run_week3_baseline.py --scales 10 25 50 --instances-per-scale 32 --seed 20260630
+python3 src/experiments/week3/compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
 ```
 
 ## Notes

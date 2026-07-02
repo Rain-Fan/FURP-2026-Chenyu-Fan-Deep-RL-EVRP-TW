@@ -14,8 +14,9 @@ feasibility under added electric-vehicle and time-window constraints, runtime,
 and convergence details.
 
 The implementation for this week is in
-`src/experiments/week2_baselines/`.  It uses one deterministic EVRP-TW
-instance generator and one shared feasibility checker for all methods.
+`src/experiments/week2/`.  Each compared algorithm is stored as a separate
+Python file, with one deterministic EVRP-TW instance generator and one shared
+feasibility checker for all methods.
 
 ## 2. Recreated methods
 
@@ -51,14 +52,14 @@ and a fixed random seed.  The tested scales are 50, 100, and 200 customers.
 Run command:
 
 ```bash
-python src/experiments/week2_baselines/run_week2_baselines.py --scales 50 100 200 --seed 20260621 --or-time-limit 8
+python src/experiments/week2/compare_week2_baselines.py --scales 50 100 200 --seed 20260621 --or-time-limit 8
 ```
 
 Outputs:
 
-- `src/experiments/week2_baselines/results/week2_results.json`
-- `src/experiments/week2_baselines/results/week2_results.csv`
-- `src/experiments/week2_baselines/results/week2_results.md`
+- `src/experiments/week2/results/week2_results.json`
+- `src/experiments/week2/results/week2_results.csv`
+- `src/experiments/week2/results/week2_results.md`
 
 ## 4. Results
 

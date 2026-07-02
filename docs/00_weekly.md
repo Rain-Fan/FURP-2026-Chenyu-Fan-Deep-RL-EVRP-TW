@@ -85,13 +85,13 @@
 
 **Links (optional):**
 - Week 3 controlled evaluation report: `docs/week3_baseline_reproduction.md`
-- Week 3 experiment code: `src/experiments/week3_baseline/run_week3_baseline.py`
-- Week 3 experiment README: `src/experiments/week3_baseline/README.md`
-- Week 3 local run log: `src/experiments/week3_baseline/results/run_log.txt`
-- Week 3 summary table: `src/experiments/week3_baseline/results/week3_results.md`
-- Week 3 aggregate results: `src/experiments/week3_baseline/results/week3_results.csv`
-- Week 3 A-vs-B comparison table: `src/experiments/week3_baseline/results/week3_comparison.csv`
-- Week 3 full route and diagnostic records: `src/experiments/week3_baseline/results/week3_results.json`
+- Week 3 experiment code: `src/experiments/week3/compare_week3_baselines.py`
+- Week 3 experiment README: `src/experiments/week3/README.md`
+- Week 3 local run log: `src/experiments/week3/results/run_log.txt`
+- Week 3 summary table: `src/experiments/week3/results/week3_results.md`
+- Week 3 aggregate results: `src/experiments/week3/results/week3_results.csv`
+- Week 3 A-vs-B comparison table: `src/experiments/week3/results/week3_comparison.csv`
+- Week 3 full route and diagnostic records: `src/experiments/week3/results/week3_results.json`
 
 ### Week 2 — 2026-06-24
 
@@ -169,5 +169,5 @@
 **Links (optional):**
 - Repository: https://github.com/Rain-Fan/FURP-2026-Chenyu-Fan-Deep-RL-EVRP-TW
 - Week 1 baseline report: `docs/week1_or_tools_baselines.md`
-- Reproducible OR-Tools baselines: `src/experiments/week1_or_tools_baselines/`
+- Reproducible OR-Tools baselines: `src/experiments/week1/`
 - Route visualisation: `src/results/route_visualization.png`

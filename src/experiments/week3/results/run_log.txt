@@ -1,0 +1,22 @@
+Week 3 controlled method evaluation local run log
+
+Run started: 2026-07-02 14:41:45 CST
+Command: src/experiments/week3/compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
+Python: 3.13.12
+Platform: macOS-15.6-arm64-arm-64bit-Mach-O
+Processor: arm
+
+Aggregate results:
+- method=A_due_time_priority, customers=20, instances=12, feasible=3, feasibility_rate=0.250, mean_objective_all=767.700, mean_runtime_sec=0.000219
+- method=B_nearest_customer, customers=20, instances=12, feasible=12, feasibility_rate=1.000, mean_objective_all=449.799, mean_runtime_sec=0.000206
+- method=A_due_time_priority, customers=50, instances=12, feasible=6, feasibility_rate=0.500, mean_objective_all=1907.936, mean_runtime_sec=0.002045
+- method=B_nearest_customer, customers=50, instances=12, feasible=12, feasibility_rate=1.000, mean_objective_all=758.561, mean_runtime_sec=0.001631
+- method=A_due_time_priority, customers=100, instances=12, feasible=11, feasibility_rate=0.917, mean_objective_all=3779.576, mean_runtime_sec=0.005442
+- method=B_nearest_customer, customers=100, instances=12, feasible=12, feasibility_rate=1.000, mean_objective_all=1116.221, mean_runtime_sec=0.005964
+
+Output files:
+- week3_results.json
+- week3_results.csv
+- week3_comparison.csv
+- week3_results.md
+- run_log.txt

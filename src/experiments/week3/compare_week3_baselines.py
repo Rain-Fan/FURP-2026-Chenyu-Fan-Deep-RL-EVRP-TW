@@ -26,6 +26,18 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from statistics import mean, pstdev
 
+from due_time_priority import (
+    DESCRIPTION as DUE_TIME_DESCRIPTION,
+    METHOD_ID as DUE_TIME_METHOD,
+    METHOD_ROLE as DUE_TIME_ROLE,
+    select_customer as select_due_time_customer,
+)
+from nearest_customer import (
+    DESCRIPTION as NEAREST_DESCRIPTION,
+    METHOD_ID as NEAREST_METHOD,
+    METHOD_ROLE as NEAREST_ROLE,
+    select_customer as select_nearest_customer,
+)
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 DEFAULT_SCALES = (20, 50, 100)
@@ -33,13 +45,13 @@ DEFAULT_INSTANCES_PER_SCALE = 12
 DEFAULT_SEED = 20260630
 
 METHODS = {
-    "A_due_time_priority": {
-        "role": "tested_method",
-        "description": "Choose the feasible customer with earliest due-time priority.",
+    DUE_TIME_METHOD: {
+        "role": DUE_TIME_ROLE,
+        "description": DUE_TIME_DESCRIPTION,
     },
-    "B_nearest_customer": {
-        "role": "baseline",
-        "description": "Choose the feasible customer with shortest current travel distance.",
+    NEAREST_METHOD: {
+        "role": NEAREST_ROLE,
+        "description": NEAREST_DESCRIPTION,
     },
 }
 
@@ -225,10 +237,10 @@ def choose_customer(
     candidates = feasible_customer_candidates(instance, current, unserved, load, battery, clock)
     if not candidates:
         return None
-    if method == "A_due_time_priority":
-        return min((due, leg, customer_id) for leg, due, customer_id in candidates)[2]
-    if method == "B_nearest_customer":
-        return min((leg, due, customer_id) for leg, due, customer_id in candidates)[2]
+    if method == DUE_TIME_METHOD:
+        return select_due_time_customer(candidates)
+    if method == NEAREST_METHOD:
+        return select_nearest_customer(candidates)
     raise ValueError(f"Unknown method: {method}")
 
 

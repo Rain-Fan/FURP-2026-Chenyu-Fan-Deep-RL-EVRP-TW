@@ -10,10 +10,12 @@ greedy baseline on small, medium, and large synthetic EVRP-TW instances?
 
 ## Methods
 
-- `A_due_time_priority`: tested method.  Chooses the feasible unserved customer
+- `due_time_priority.py`: tested method.  Chooses the feasible unserved customer
   with the earliest due-time priority.
-- `B_nearest_customer`: baseline.  Chooses the feasible unserved customer with
+- `nearest_customer.py`: baseline.  Chooses the feasible unserved customer with
   the shortest current travel distance.
+
+`compare_week3_baselines.py` runs the controlled A-vs-B comparison.
 
 Both methods use the same instance set, coordinates, objective definition,
 feasibility checker, vehicle constraints, battery constraints, charging rules,
@@ -22,7 +24,7 @@ and stopping condition.
 ## Run
 
 ```bash
-python3 src/experiments/week3_baseline/run_week3_baseline.py \
+python3 src/experiments/week3/compare_week3_baselines.py \
   --scales 20 50 100 \
   --instances-per-scale 12 \
   --seed 20260630

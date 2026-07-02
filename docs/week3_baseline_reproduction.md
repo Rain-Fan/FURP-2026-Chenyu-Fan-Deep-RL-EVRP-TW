@@ -71,16 +71,16 @@ result table or copied benchmark output was used.
 Command:
 
 ```bash
-python3 src/experiments/week3_baseline/run_week3_baseline.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
+python3 src/experiments/week3/compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
 ```
 
 Output files:
 
-- `src/experiments/week3_baseline/results/run_log.txt`
-- `src/experiments/week3_baseline/results/week3_results.json`
-- `src/experiments/week3_baseline/results/week3_results.csv`
-- `src/experiments/week3_baseline/results/week3_comparison.csv`
-- `src/experiments/week3_baseline/results/week3_results.md`
+- `src/experiments/week3/results/run_log.txt`
+- `src/experiments/week3/results/week3_results.json`
+- `src/experiments/week3/results/week3_results.csv`
+- `src/experiments/week3/results/week3_comparison.csv`
+- `src/experiments/week3/results/week3_results.md`
 
 ## 5. Metrics
 
@@ -185,7 +185,7 @@ important than the runtime difference.
 - Failure reason: customer 7 remained unserved.
 
 Full route sequences and violation lists are stored in
-`src/experiments/week3_baseline/results/week3_results.json`.
+`src/experiments/week3/results/week3_results.json`.
 
 ## 11. Conclusion
 
