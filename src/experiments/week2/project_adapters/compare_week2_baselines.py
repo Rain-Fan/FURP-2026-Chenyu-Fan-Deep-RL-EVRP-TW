@@ -15,7 +15,7 @@ from or_tools_cvrptw import solve_or_tools_cvrptw
 from pomo_style import solve_pomo_style
 
 
-RESULTS_DIR = Path(__file__).resolve().parent / "results"
+RESULTS_DIR = Path(__file__).resolve().parents[1] / "results"
 
 
 def run_comparison(scales: list[int], seed: int, or_time_limit: int) -> list[EvalResult]:

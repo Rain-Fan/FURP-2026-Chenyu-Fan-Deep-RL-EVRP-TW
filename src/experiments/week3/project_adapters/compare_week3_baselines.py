@@ -39,7 +39,7 @@ from nearest_customer import (
     select_customer as select_nearest_customer,
 )
 
-RESULTS_DIR = Path(__file__).resolve().parent / "results"
+RESULTS_DIR = Path(__file__).resolve().parents[1] / "results"
 DEFAULT_SCALES = (20, 50, 100)
 DEFAULT_INSTANCES_PER_SCALE = 12
 DEFAULT_SEED = 20260630

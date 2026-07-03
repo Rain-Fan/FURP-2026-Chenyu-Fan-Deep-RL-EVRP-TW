@@ -15,7 +15,7 @@ from vrp import solve_vrp
 from vrptw import solve_vrptw
 
 
-RESULTS_DIR = Path(__file__).resolve().parent / "results"
+RESULTS_DIR = Path(__file__).resolve().parents[1] / "results"
 
 
 def plot_results(results: list[dict[str, object]]) -> None:

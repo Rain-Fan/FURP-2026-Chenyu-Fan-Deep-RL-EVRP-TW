@@ -71,7 +71,7 @@ result table or copied benchmark output was used.
 Command:
 
 ```bash
-python3 src/experiments/week3/compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
+python3 src/experiments/week3/project_adapters/compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
 ```
 
 Output files:
@@ -145,20 +145,20 @@ time-window, capacity, and energy violations are zero.
 
 | Method | Role | Customers | Instances | Feasible | Feasibility rate | Mean objective | Mean feasible objective | Std objective | Mean runtime (s) | Mean vehicles | Mean charges | TW viol. | Capacity viol. | Energy viol. | Coverage viol. |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| A_due_time_priority | tested_method | 20 | 12 | 3 | 0.250 | 767.700 | 777.501 | 19.563 | 0.000220 | 4.000 | 2.667 | 0 | 0 | 0 | 9 |
-| B_nearest_customer | baseline | 20 | 12 | 12 | 1.000 | 449.799 | 449.799 | 61.118 | 0.000218 | 2.667 | 1.250 | 0 | 0 | 0 | 0 |
-| A_due_time_priority | tested_method | 50 | 12 | 6 | 0.500 | 1907.936 | 1819.997 | 106.148 | 0.001266 | 9.750 | 6.917 | 0 | 0 | 0 | 6 |
-| B_nearest_customer | baseline | 50 | 12 | 12 | 1.000 | 758.561 | 758.561 | 77.587 | 0.001305 | 4.250 | 2.333 | 0 | 0 | 0 | 0 |
-| A_due_time_priority | tested_method | 100 | 12 | 11 | 0.917 | 3779.576 | 3759.097 | 196.922 | 0.006335 | 18.667 | 15.417 | 0 | 0 | 0 | 1 |
-| B_nearest_customer | baseline | 100 | 12 | 12 | 1.000 | 1116.221 | 1116.221 | 64.491 | 0.007054 | 6.583 | 2.083 | 0 | 0 | 0 | 0 |
+| A_due_time_priority | tested_method | 20 | 12 | 3 | 0.250 | 767.700 | 777.501 | 19.563 | 0.000328 | 4.000 | 2.667 | 0 | 0 | 0 | 9 |
+| B_nearest_customer | baseline | 20 | 12 | 12 | 1.000 | 449.799 | 449.799 | 61.118 | 0.000301 | 2.667 | 1.250 | 0 | 0 | 0 | 0 |
+| A_due_time_priority | tested_method | 50 | 12 | 6 | 0.500 | 1907.936 | 1819.997 | 106.148 | 0.001494 | 9.750 | 6.917 | 0 | 0 | 0 | 6 |
+| B_nearest_customer | baseline | 50 | 12 | 12 | 1.000 | 758.561 | 758.561 | 77.587 | 0.001663 | 4.250 | 2.333 | 0 | 0 | 0 | 0 |
+| A_due_time_priority | tested_method | 100 | 12 | 11 | 0.917 | 3779.576 | 3759.097 | 196.922 | 0.006310 | 18.667 | 15.417 | 0 | 0 | 0 | 1 |
+| B_nearest_customer | baseline | 100 | 12 | 12 | 1.000 | 1116.221 | 1116.221 | 64.491 | 0.007109 | 6.583 | 2.083 | 0 | 0 | 0 | 0 |
 
 ## 9. A vs B Comparison
 
 | Customers | Feasibility delta | Feasible-objective delta | Runtime delta (s) | Coverage-violation delta |
 |---:|---:|---:|---:|---:|
-| 20 | -0.750 | 327.701 | 0.000002 | 9 |
-| 50 | -0.500 | 1061.437 | -0.000039 | 6 |
-| 100 | -0.083 | 2642.877 | -0.000719 | 1 |
+| 20 | -0.750 | 327.701 | 0.000026 | 9 |
+| 50 | -0.500 | 1061.437 | -0.000169 | 6 |
+| 100 | -0.083 | 2642.877 | -0.000799 | 1 |
 
 Negative feasibility delta means Method A was less feasible than Baseline B.
 Positive feasible-objective delta means Method A had a longer route distance

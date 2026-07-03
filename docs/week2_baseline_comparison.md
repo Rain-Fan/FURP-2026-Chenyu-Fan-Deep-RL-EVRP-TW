@@ -13,10 +13,10 @@ scales, and the record must include instance scale, objective value,
 feasibility under added electric-vehicle and time-window constraints, runtime,
 and convergence details.
 
-The implementation for this week is in
-`src/experiments/week2/`.  Each compared algorithm is stored as a separate
-Python file, with one deterministic EVRP-TW instance generator and one shared
-feasibility checker for all methods.
+The implementation for this week is in `src/experiments/week2/`.  Official
+upstream files are stored in `pomo_cvrp/` and `or_tools/`; project-written
+comparison adapters are stored in `project_adapters/`, with one deterministic
+EVRP-TW instance generator and one shared feasibility checker for all methods.
 
 ## 2. Recreated methods
 
@@ -52,7 +52,7 @@ and a fixed random seed.  The tested scales are 50, 100, and 200 customers.
 Run command:
 
 ```bash
-python src/experiments/week2/compare_week2_baselines.py --scales 50 100 200 --seed 20260621 --or-time-limit 8
+python src/experiments/week2/project_adapters/compare_week2_baselines.py --scales 50 100 200 --seed 20260621 --or-time-limit 8
 ```
 
 Outputs:

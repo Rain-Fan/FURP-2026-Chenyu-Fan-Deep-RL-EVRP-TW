@@ -214,7 +214,7 @@ def generate_week3_diagnostics_visualization() -> Path:
 
 
 def load_week3_instance(scale: int = 50):
-    sys.path.insert(0, str(ROOT / "src" / "experiments" / "week3"))
+    sys.path.insert(0, str(ROOT / "src" / "experiments" / "week3" / "project_adapters"))
     from compare_week3_baselines import generate_instance
 
     data = load_json(WEEK3_JSON)["instances"]

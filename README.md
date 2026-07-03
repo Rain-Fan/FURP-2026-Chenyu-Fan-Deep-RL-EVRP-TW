@@ -75,9 +75,9 @@ This structure is **mandatory** — please keep it intact.
  └── meeting_notes/       ← key takeaways from all team meetings
 /src
  ├── experiments/official_sources/ ← copied upstream algorithm source files
- ├── experiments/week1_or_tools_baselines/
- ├── experiments/week2_baselines/
- ├── experiments/week3_baseline/
+ ├── experiments/week1/ ← OR-Tools official samples plus project adapters
+ ├── experiments/week2/ ← POMO/OR-Tools official sources plus project adapters
+ ├── experiments/week3/ ← project adapter experiment; no confirmed official source
  └── results/             ← selected figures and compact results
 FURP_Showcase.pdf         ← your poster / presentation PDF, in the repo root
 ```

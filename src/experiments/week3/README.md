@@ -1,35 +1,27 @@
-# Week 3: Controlled Method Evaluation for EVRP-TW
+# Week 3: Project EVRP-TW Controlled Experiment
 
-This directory contains the Week 3 controlled experiment.  The purpose is to
-evaluate a method properly, not only to show that code runs.
+No confirmed official source repository was found for the exact Week 3
+EVRP-TW greedy comparison used in this project.  Therefore the project-written
+files are retained under `project_adapters/` and are explicitly marked as
+adapters, not official algorithm source code.
 
-The Python files in this folder are project-written experiment wrappers and
-greedy selection rules for the controlled comparison.  They are not official
-algorithm source files.  Official upstream source files used as references are
-kept in `../official_sources/`.
+## Project Adapter Files
 
-## Research Question
+| Local file | Role |
+|---|---|
+| `project_adapters/compare_week3_baselines.py` | Controlled A-vs-B experiment runner. |
+| `project_adapters/due_time_priority.py` | Project-written due-time-priority selector. |
+| `project_adapters/nearest_customer.py` | Project-written nearest-customer selector. |
 
-Does a due-time-priority greedy policy perform better than a nearest-customer
-greedy baseline on small, medium, and large synthetic EVRP-TW instances?
+These files follow a clear experiment-runner format: method definition,
+shared instance generation, shared feasibility checks, shared metrics, and
+single-command output generation.  They should not be described as official
+paper code.
 
-## Methods
-
-- `due_time_priority.py`: tested method.  Chooses the feasible unserved customer
-  with the earliest due-time priority.
-- `nearest_customer.py`: baseline.  Chooses the feasible unserved customer with
-  the shortest current travel distance.
-
-`compare_week3_baselines.py` runs the controlled A-vs-B comparison.
-
-Both methods use the same instance set, coordinates, objective definition,
-feasibility checker, vehicle constraints, battery constraints, charging rules,
-and stopping condition.
-
-## Run
+## Run Project Adapter Experiment
 
 ```bash
-python3 src/experiments/week3/compare_week3_baselines.py \
+python3 src/experiments/week3/project_adapters/compare_week3_baselines.py \
   --scales 20 50 100 \
   --instances-per-scale 12 \
   --seed 20260630
@@ -57,9 +49,3 @@ After the standard A-vs-B run, inspect deliberately difficult cases for about
 
 For each failed case, record the instance, violated constraint, route step
 where the issue first appears, and a possible repair strategy.
-
-## Metrics
-
-The result files report objective distance, feasibility rate, runtime,
-time-window violations, capacity violations, energy violations, coverage
-violations, charge count, hardware, random seed, and solver parameters.

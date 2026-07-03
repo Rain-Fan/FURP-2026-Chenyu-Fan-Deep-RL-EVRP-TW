@@ -13,15 +13,7 @@
 # limitations under the License.
 
 # [START program]
-"""Simple Vehicles Routing Problem (VRP).
-
-This is a sample using the routing library python wrapper to solve a VRP
-problem.
-A description of the problem can be found here:
-http://en.wikipedia.org/wiki/Vehicle_routing_problem.
-
-Distances are in meters.
-"""
+"""Capacited Vehicles Routing Problem (CVRP)."""
 
 # [START import]
 from ortools.constraint_solver import routing_enums_pb2
@@ -55,6 +47,10 @@ def create_data_model():
       [662, 1210, 754, 1358, 1244, 708, 480, 856, 514, 468, 354, 844, 730, 536, 194, 798, 0],
         # fmt: on
     ]
+    # [START demands_capacities]
+    data["demands"] = [0, 1, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
+    data["vehicle_capacities"] = [15, 15, 15, 15]
+    # [END demands_capacities]
     data["num_vehicles"] = 4
     data["depot"] = 0
     return data
@@ -66,30 +62,36 @@ def print_solution(data, manager, routing, solution):
     """Prints solution on console."""
     print(f"Objective: {solution.ObjectiveValue()}")
     total_distance = 0
-    for vehicle_index in range(manager.GetNumberOfVehicles()):
-        if not routing.IsVehicleUsed(solution, vehicle_index):
+    total_load = 0
+    for vehicle_id in range(data["num_vehicles"]):
+        if not routing.IsVehicleUsed(solution, vehicle_id):
             continue
-        index = routing.Start(vehicle_index)
-        plan_output = f"Route for vehicle {vehicle_index}:\n"
+        index = routing.Start(vehicle_id)
+        plan_output = f"Route for vehicle {vehicle_id}:\n"
         route_distance = 0
+        route_load = 0
         while not routing.IsEnd(index):
-            plan_output += f" {manager.IndexToNode(index)} ->"
+            node_index = manager.IndexToNode(index)
+            route_load += data["demands"][node_index]
+            plan_output += f" {node_index} Load({route_load}) -> "
             previous_index = index
             index = solution.Value(routing.NextVar(index))
             route_distance += routing.GetArcCostForVehicle(
-                previous_index, index, vehicle_index
+                previous_index, index, vehicle_id
             )
-        plan_output += f" {manager.IndexToNode(index)}\n"
+        plan_output += f" {manager.IndexToNode(index)} Load({route_load})\n"
         plan_output += f"Distance of the route: {route_distance}m\n"
+        plan_output += f"Load of the route: {route_load}\n"
         print(plan_output)
         total_distance += route_distance
-    print(f"Total Distance of all routes: {total_distance}m")
-
-# [END solution_printer]
+        total_load += route_load
+    print(f"Total distance of all routes: {total_distance}m")
+    print(f"Total load of all routes: {total_load}")
+    # [END solution_printer]
 
 
 def main():
-    """Entry point of the program."""
+    """Solve the CVRP problem."""
     # Instantiate the data problem.
     # [START data]
     data = create_data_model()
@@ -124,12 +126,34 @@ def main():
     routing.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
     # [END arc_cost]
 
+    # Add Capacity constraint.
+    # [START capacity_constraint]
+    def demand_callback(from_index):
+        """Returns the demand of the node."""
+        # Convert from routing variable Index to demands NodeIndex.
+        from_node = manager.IndexToNode(from_index)
+        return data["demands"][from_node]
+
+    demand_callback_index = routing.RegisterUnaryTransitCallback(demand_callback)
+    routing.AddDimensionWithVehicleCapacity(
+        demand_callback_index,
+        0,  # null capacity slack
+        data["vehicle_capacities"],  # vehicle maximum capacities
+        True,  # start cumul to zero
+        "Capacity",
+    )
+    # [END capacity_constraint]
+
     # Setting first solution heuristic.
     # [START parameters]
     search_parameters = pywrapcp.DefaultRoutingSearchParameters()
     search_parameters.first_solution_strategy = (
         routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
     )
+    search_parameters.local_search_metaheuristic = (
+        routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH
+    )
+    search_parameters.time_limit.FromSeconds(1)
     # [END parameters]
 
     # Solve the problem.
@@ -141,8 +165,6 @@ def main():
     # [START print_solution]
     if solution:
         print_solution(data, manager, routing, solution)
-    else:
-        print("No solution found !")
     # [END print_solution]
 
 

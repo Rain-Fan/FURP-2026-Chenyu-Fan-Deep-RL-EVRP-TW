@@ -1,6 +1,6 @@
 # Week 3 Controlled Method Evaluation Results
 
-Run started: `2026-07-02 14:41:45 CST`
+Run started: `2026-07-03 12:23:50 CST`
 
 Research question: Does due-time-priority greedy perform better than nearest-customer greedy on small, medium, and large synthetic EVRP-TW instances?
 
@@ -10,20 +10,20 @@ A = due-time-priority greedy. B = nearest-customer baseline.
 
 | Method | Role | Customers | Instances | Feasible | Feasibility rate | Mean objective | Mean feasible objective | Std objective | Mean runtime (s) | Mean vehicles | Mean charges | TW viol. | Capacity viol. | Energy viol. | Coverage viol. |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| A_due_time_priority | tested_method | 20 | 12 | 3 | 0.250 | 767.700 | 777.501 | 19.563 | 0.000219 | 4.000 | 2.667 | 0 | 0 | 0 | 9 |
-| B_nearest_customer | baseline | 20 | 12 | 12 | 1.000 | 449.799 | 449.799 | 61.118 | 0.000206 | 2.667 | 1.250 | 0 | 0 | 0 | 0 |
-| A_due_time_priority | tested_method | 50 | 12 | 6 | 0.500 | 1907.936 | 1819.997 | 106.148 | 0.002045 | 9.750 | 6.917 | 0 | 0 | 0 | 6 |
-| B_nearest_customer | baseline | 50 | 12 | 12 | 1.000 | 758.561 | 758.561 | 77.587 | 0.001631 | 4.250 | 2.333 | 0 | 0 | 0 | 0 |
-| A_due_time_priority | tested_method | 100 | 12 | 11 | 0.917 | 3779.576 | 3759.097 | 196.922 | 0.005442 | 18.667 | 15.417 | 0 | 0 | 0 | 1 |
-| B_nearest_customer | baseline | 100 | 12 | 12 | 1.000 | 1116.221 | 1116.221 | 64.491 | 0.005964 | 6.583 | 2.083 | 0 | 0 | 0 | 0 |
+| A_due_time_priority | tested_method | 20 | 12 | 3 | 0.250 | 767.700 | 777.501 | 19.563 | 0.000328 | 4.000 | 2.667 | 0 | 0 | 0 | 9 |
+| B_nearest_customer | baseline | 20 | 12 | 12 | 1.000 | 449.799 | 449.799 | 61.118 | 0.000301 | 2.667 | 1.250 | 0 | 0 | 0 | 0 |
+| A_due_time_priority | tested_method | 50 | 12 | 6 | 0.500 | 1907.936 | 1819.997 | 106.148 | 0.001494 | 9.750 | 6.917 | 0 | 0 | 0 | 6 |
+| B_nearest_customer | baseline | 50 | 12 | 12 | 1.000 | 758.561 | 758.561 | 77.587 | 0.001663 | 4.250 | 2.333 | 0 | 0 | 0 | 0 |
+| A_due_time_priority | tested_method | 100 | 12 | 11 | 0.917 | 3779.576 | 3759.097 | 196.922 | 0.006310 | 18.667 | 15.417 | 0 | 0 | 0 | 1 |
+| B_nearest_customer | baseline | 100 | 12 | 12 | 1.000 | 1116.221 | 1116.221 | 64.491 | 0.007109 | 6.583 | 2.083 | 0 | 0 | 0 | 0 |
 
 ## A vs B Comparison
 
 | Customers | Feasibility delta | Feasible-objective delta | Runtime delta (s) | Coverage-violation delta |
 |---:|---:|---:|---:|---:|
-| 20 | -0.750 | 327.701 | 0.000013 | 9 |
-| 50 | -0.500 | 1061.437 | 0.000414 | 6 |
-| 100 | -0.083 | 2642.877 | -0.000522 | 1 |
+| 20 | -0.750 | 327.701 | 0.000026 | 9 |
+| 50 | -0.500 | 1061.437 | -0.000169 | 6 |
+| 100 | -0.083 | 2642.877 | -0.000799 | 1 |
 
 ## Diagnostic Cases
 

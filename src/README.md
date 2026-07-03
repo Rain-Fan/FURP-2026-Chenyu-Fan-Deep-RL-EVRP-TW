@@ -18,10 +18,10 @@
 The experiment packages contain:
 
 ```text
-official_sources/  Upstream official algorithm source files and provenance
-week1/             OR-Tools wrapper experiments and comparison artifacts
-week2/             EVRP-TW comparison wrappers and generated result artifacts
-week3/             Controlled greedy-policy experiment wrappers and results
+official_sources/  Shared upstream official algorithm source files and provenance
+week1/             OR-Tools official samples plus project adapters
+week2/             POMO/OR-Tools official sources plus project adapters
+week3/             Project adapter experiment where no official source is confirmed
 ```
 
 Algorithm provenance rule:
@@ -38,13 +38,16 @@ Algorithm provenance rule:
 ```bash
 cd src/experiments/week1
 python -m pip install -r requirements.txt
-python compare_or_tools_baselines.py
+python tsp.py
+python vrp.py
+python vrp_capacity.py
+python vrp_time_windows.py
 ```
 
 Week 3 baseline results can be regenerated with:
 
 ```bash
-python3 src/experiments/week3/compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
+python3 src/experiments/week3/project_adapters/compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
 ```
 
 Research visualizations can be regenerated from the existing result JSON files
