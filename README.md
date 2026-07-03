@@ -43,6 +43,21 @@ violations, and coverage violations. The current experiments assume
 homogeneous vehicles, deterministic Euclidean travel, linear energy use, and
 full charging at stations.
 
+## Research Visualizations
+
+Selected research figures are stored in [`src/results`](src/results):
+
+- [`week2_baseline_comparison.svg`](src/results/week2_baseline_comparison.svg) — Week 2 objective and runtime comparison.
+- [`week3_performance_summary.svg`](src/results/week3_performance_summary.svg) — Week 3 feasibility and feasible-objective comparison.
+- [`week3_diagnostic_summary.svg`](src/results/week3_diagnostic_summary.svg) — Week 3 vehicles, charging visits, and coverage failures.
+- [`week3_representative_routes.svg`](src/results/week3_representative_routes.svg) — route footprint comparison on the same 50-customer instance.
+
+The figures can be regenerated with:
+
+```bash
+python3 src/results/generate_research_visualizations.py
+```
+
 ---
 
 ## Repository structure

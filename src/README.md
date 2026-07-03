@@ -36,6 +36,21 @@ Week 3 baseline results can be regenerated with:
 python3 src/experiments/week3/compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
 ```
 
+Research visualizations can be regenerated from the existing result JSON files
+with:
+
+```bash
+python3 src/results/generate_research_visualizations.py
+```
+
+Generated visual outputs:
+
+- `results/week2_baseline_comparison.svg`
+- `results/week3_performance_summary.svg`
+- `results/week3_diagnostic_summary.svg`
+- `results/week3_representative_routes.svg`
+- `results/research_visualizations.md`
+
 ## Notes
 
 - Generated checkpoints, logs, and large datasets are excluded from Git.
