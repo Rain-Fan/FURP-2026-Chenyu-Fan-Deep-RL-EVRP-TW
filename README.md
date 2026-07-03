@@ -37,11 +37,6 @@ The current implementation includes:
 - Week 3 feasibility-first greedy EVRP-TW baseline reproduction;
 - result tables, route visualisations, run logs, and diagnostic reports.
 
-Official upstream algorithm source files are stored under
-`src/experiments/official_sources/`.  Week-specific Python files are project
-wrappers, adapters, comparison runners, or synthetic experiment scripts unless
-their local README explicitly identifies them as copied official source files.
-
 The main evaluation metrics are feasibility rate, route cost, distance,
 vehicles used, runtime, time-window violations, battery or charging
 violations, and coverage violations. The current experiments assume
@@ -52,6 +47,7 @@ full charging at stations.
 
 Selected research figures are stored in [`src/results`](src/results):
 
+- [`LOCAL_RUNS.md`](src/results/LOCAL_RUNS.md) — commands used to regenerate committed results locally.
 - [`week2_baseline_comparison.svg`](src/results/week2_baseline_comparison.svg) — Week 2 objective and runtime comparison.
 - [`week3_performance_summary.svg`](src/results/week3_performance_summary.svg) — Week 3 feasibility and feasible-objective comparison.
 - [`week3_diagnostic_summary.svg`](src/results/week3_diagnostic_summary.svg) — Week 3 vehicles, charging visits, and coverage failures.
@@ -74,10 +70,9 @@ This structure is **mandatory** — please keep it intact.
  ├── 00_weekly.md         ← update EVERY week: progress, challenges, next steps
  └── meeting_notes/       ← key takeaways from all team meetings
 /src
- ├── experiments/official_sources/ ← copied upstream algorithm source files
- ├── experiments/week1/ ← OR-Tools official samples plus project adapters
- ├── experiments/week2/ ← POMO/OR-Tools official sources plus project adapters
- ├── experiments/week3/ ← project adapter experiment; no confirmed official source
+ ├── experiments/week1/    ← OR-Tools routing baselines
+ ├── experiments/week2/    ← EVRP-TW baseline comparison
+ ├── experiments/week3/    ← controlled greedy-policy comparison
  └── results/             ← selected figures and compact results
 FURP_Showcase.pdf         ← your poster / presentation PDF, in the repo root
 ```

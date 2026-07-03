@@ -1,40 +1,30 @@
-# Week 1: Official OR-Tools Routing Samples
+# Week 1: OR-Tools Routing Baselines
 
-This folder is aligned with the Google OR-Tools routing examples.  The root
-Python files are copied official source files from:
+Week 1 reproduces small OR-Tools-style routing examples for TSP, VRP, CVRP,
+and VRPTW.  The scripts follow the same basic structure as the OR-Tools
+documentation examples: create data, create the routing model, register
+callbacks, set dimensions or constraints, solve, and print or export the
+solution.
 
-https://github.com/google/or-tools/tree/stable/ortools/constraint_solver/samples
+## Files
 
-## Official Files
+- `tsp.py`: travelling-salesman baseline.
+- `vrp.py`: multi-vehicle routing baseline.
+- `cvrp.py`: capacity-constrained VRP baseline.
+- `vrptw.py`: VRP with time-window baseline.
+- `routing_data.py`: shared 17-node data used by the four baselines.
+- `or_tools_common.py`: shared OR-Tools helper functions.
+- `compare_or_tools_baselines.py`: local runner that writes result artifacts.
 
-| Local file | Official OR-Tools sample | Purpose |
-|---|---|---|
-| `tsp.py` | `tsp.py` | Travelling Salesman Problem sample. |
-| `vrp.py` | `vrp.py` | Vehicle Routing Problem sample. |
-| `vrp_capacity.py` | `vrp_capacity.py` | Capacity-constrained VRP sample. |
-| `vrp_time_windows.py` | `vrp_time_windows.py` | VRP with time windows sample. |
-| `LICENSE` | OR-Tools `LICENSE` | Apache License 2.0. |
-
-## Project Adapters
-
-`project_adapters/` contains project-written scripts that were used to produce
-compact JSON tables and route visualisations for this research repository.
-Those files are not official OR-Tools source code.
-
-## Run Official Samples
+## Run
 
 ```bash
 python -m pip install -r requirements.txt
-python tsp.py
-python vrp.py
-python vrp_capacity.py
-python vrp_time_windows.py
+python compare_or_tools_baselines.py
 ```
 
-## Existing Result Artifacts
+## Outputs
 
-The `results/` folder contains previously generated project artifacts:
-
-- `baseline_results.json`
-- `route_tables.md`
-- `baseline_routes.png`
+- `results/baseline_results.json`
+- `results/route_tables.md`
+- `results/baseline_routes.png`

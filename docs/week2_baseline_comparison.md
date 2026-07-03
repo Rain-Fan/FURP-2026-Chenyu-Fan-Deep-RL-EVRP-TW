@@ -13,10 +13,9 @@ scales, and the record must include instance scale, objective value,
 feasibility under added electric-vehicle and time-window constraints, runtime,
 and convergence details.
 
-The implementation for this week is in `src/experiments/week2/`.  Official
-upstream files are stored in `pomo_cvrp/` and `or_tools/`; project-written
-comparison adapters are stored in `project_adapters/`, with one deterministic
-EVRP-TW instance generator and one shared feasibility checker for all methods.
+The implementation for this week is in `src/experiments/week2/`, with one
+deterministic EVRP-TW instance generator and one shared feasibility checker for
+all methods.
 
 ## 2. Recreated methods
 
@@ -52,7 +51,7 @@ and a fixed random seed.  The tested scales are 50, 100, and 200 customers.
 Run command:
 
 ```bash
-python src/experiments/week2/project_adapters/compare_week2_baselines.py --scales 50 100 200 --seed 20260621 --or-time-limit 8
+python src/experiments/week2/compare_week2_baselines.py --scales 50 100 200 --seed 20260621 --or-time-limit 8
 ```
 
 Outputs:
@@ -65,15 +64,15 @@ Outputs:
 
 | Method | Customers | Objective distance | Feasible under E/TW | Runtime (s) | Vehicles | Convergence / notes |
 |---|---:|---:|---|---:|---:|---|
-| POMO-style multi-start masked greedy | 50 | 669.88 | Yes | 0.012 | 4 | 24 parallel-style starts; best feasible rollout selected |
-| GA permutation + EV/TW repair | 50 | 1670.61 | Yes | 0.307 | 4 | population=48, generations_run=56, best_feasible=True |
-| OR-Tools CVRPTW + charging repair | 50 | 536.84 | Yes | 8.010 | 4 | OR-Tools GLS time_limit=8s; charging stations inserted post hoc |
-| POMO-style multi-start masked greedy | 100 | 1159.84 | Yes | 0.055 | 7 | 24 parallel-style starts; best feasible rollout selected |
-| GA permutation + EV/TW repair | 100 | 4942.38 | Yes | 1.167 | 7 | population=48, generations_run=80, best_feasible=True |
-| OR-Tools CVRPTW + charging repair | 100 | 1012.07 | Yes | 8.002 | 7 | OR-Tools GLS time_limit=8s; charging stations inserted post hoc |
-| POMO-style multi-start masked greedy | 200 | 2090.49 | Yes | 0.270 | 14 | 24 parallel-style starts; best feasible rollout selected |
-| GA permutation + EV/TW repair | 200 | 9602.82 | Yes | 2.670 | 14 | population=48, generations_run=68, best_feasible=True |
-| OR-Tools CVRPTW + charging repair | 200 | 1661.91 | Yes | 8.006 | 14 | OR-Tools GLS time_limit=8s; charging stations inserted post hoc |
+| POMO-style multi-start masked greedy | 50 | 669.88 | Yes | 0.013 | 4 | 24 parallel-style starts; best feasible rollout selected |
+| GA permutation + EV/TW repair | 50 | 1670.61 | Yes | 0.306 | 4 | population=48, generations_run=56, best_feasible=True |
+| OR-Tools CVRPTW + charging repair | 50 | 536.84 | Yes | 8.003 | 4 | OR-Tools GLS time_limit=8s; charging stations inserted post hoc |
+| POMO-style multi-start masked greedy | 100 | 1159.84 | Yes | 0.062 | 7 | 24 parallel-style starts; best feasible rollout selected |
+| GA permutation + EV/TW repair | 100 | 4942.38 | Yes | 1.269 | 7 | population=48, generations_run=80, best_feasible=True |
+| OR-Tools CVRPTW + charging repair | 100 | 1012.07 | Yes | 8.004 | 7 | OR-Tools GLS time_limit=8s; charging stations inserted post hoc |
+| POMO-style multi-start masked greedy | 200 | 2090.49 | Yes | 0.290 | 14 | 24 parallel-style starts; best feasible rollout selected |
+| GA permutation + EV/TW repair | 200 | 9602.82 | Yes | 2.839 | 14 | population=48, generations_run=68, best_feasible=True |
+| OR-Tools CVRPTW + charging repair | 200 | 1665.01 | Yes | 8.005 | 14 | OR-Tools GLS time_limit=8s; charging stations inserted post hoc |
 
 ## 5. Method comparison
 

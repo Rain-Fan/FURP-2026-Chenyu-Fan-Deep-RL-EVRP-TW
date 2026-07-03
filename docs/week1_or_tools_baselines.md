@@ -51,20 +51,21 @@ cd src/experiments/week1
 python -m pip install -r requirements.txt
 ```
 
-The baseline implementation is located in `src/experiments/week1/`.  The root
-Python files are official OR-Tools samples, and the project-specific comparison
-runner is stored under `project_adapters/`:
+The baseline implementation is located in `src/experiments/week1/`.  Each
+baseline follows the OR-Tools documentation pattern of creating a data model,
+building a routing model, registering callbacks, solving, and exporting the
+solution:
 
 ```bash
 cd src/experiments/week1
-python project_adapters/compare_or_tools_baselines.py
+python compare_or_tools_baselines.py
 ```
 
 The runtime was measured with:
 
 ```bash
 cd src/experiments/week1
-/usr/bin/time -p python project_adapters/compare_or_tools_baselines.py
+/usr/bin/time -p python compare_or_tools_baselines.py
 ```
 
 Measured output:
