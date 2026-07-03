@@ -110,7 +110,38 @@ Output files:
 | Charging station rule | `max(5, ceil(customers / 14))` |
 | Max vehicle rule | `max(4, ceil(customers / 5))` |
 
-## 7. Summary Results
+## 7. Focused Failure-Case Experiment Procedure
+
+In addition to the standard A-vs-B comparison, the Week 3 experiment includes a
+2-hour focused failure-case analysis session.  The purpose is to deliberately
+construct and inspect infeasible or poor-quality cases, so the report explains
+why a method fails rather than only reporting the final aggregate table.
+
+The failure-case analysis follows three stress scenarios:
+
+| Scenario | Controlled change | Expected issue | What to inspect |
+|---|---|---|---|
+| Tight time windows | Reduce selected customer due times or make service windows narrower. | No feasible solution, or route construction stops early. | Which customer time windows cause the first infeasibility. |
+| Too few vehicles or too little capacity | Lower the maximum vehicle count or vehicle capacity. | No feasible solution because the fleet cannot cover all demand. | Minimum fleet size or capacity needed to recover feasibility. |
+| Uneven customer distribution | Place customers in separated or highly clustered regions. | Routes become very long or spatially inefficient. | Whether the route geometry is reasonable and where detours appear. |
+
+For every failed case, the experiment record should include:
+
+- the instance name, scale, seed, and method;
+- the violated constraint type;
+- the route and step where the problem first appears;
+- the affected customer or station IDs;
+- the likely cause, such as tight due time, insufficient fleet capacity, or
+  uneven spatial distribution;
+- one possible repair strategy, such as increasing fleet size, widening time
+  windows, adding a route-repair step, or changing the customer scoring rule.
+
+This procedure connects the quantitative metrics with concrete routing
+behavior.  It is especially useful for Method A because the aggregate results
+show that due-time-only priority often creates coverage failures even when
+time-window, capacity, and energy violations are zero.
+
+## 8. Summary Results
 
 | Method | Role | Customers | Instances | Feasible | Feasibility rate | Mean objective | Mean feasible objective | Std objective | Mean runtime (s) | Mean vehicles | Mean charges | TW viol. | Capacity viol. | Energy viol. | Coverage viol. |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -121,7 +152,7 @@ Output files:
 | A_due_time_priority | tested_method | 100 | 12 | 11 | 0.917 | 3779.576 | 3759.097 | 196.922 | 0.006335 | 18.667 | 15.417 | 0 | 0 | 0 | 1 |
 | B_nearest_customer | baseline | 100 | 12 | 12 | 1.000 | 1116.221 | 1116.221 | 64.491 | 0.007054 | 6.583 | 2.083 | 0 | 0 | 0 | 0 |
 
-## 8. A vs B Comparison
+## 9. A vs B Comparison
 
 | Customers | Feasibility delta | Feasible-objective delta | Runtime delta (s) | Coverage-violation delta |
 |---:|---:|---:|---:|---:|
@@ -133,7 +164,7 @@ Negative feasibility delta means Method A was less feasible than Baseline B.
 Positive feasible-objective delta means Method A had a longer route distance
 among feasible solutions.
 
-## 9. Discussion
+## 10. Discussion
 
 The due-time-priority method did not outperform the nearest-customer baseline
 on this controlled instance set.  Baseline B was feasible on all tested
@@ -152,7 +183,7 @@ Runtime differences were very small.  Method A was slightly faster at 50 and
 100 customers, but the route quality and feasibility loss were much more
 important than the runtime difference.
 
-## 10. Failure Cases
+## 11. Failure Cases
 
 ### Case 1
 
@@ -187,7 +218,7 @@ important than the runtime difference.
 Full route sequences and violation lists are stored in
 `src/experiments/week3/results/week3_results.json`.
 
-## 11. Conclusion
+## 12. Conclusion
 
 For this Week 3 controlled experiment, the nearest-customer baseline is better
 than the due-time-priority method under the current instance generator and

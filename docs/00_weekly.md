@@ -84,6 +84,7 @@
 **Hours spent (optional):** 30 hours
 
 **Links (optional):**
+- Week 3 meeting notes: `docs/meeting_notes/2026-07-01.md`
 - Week 3 controlled evaluation report: `docs/week3_baseline_reproduction.md`
 - Week 3 experiment code: `src/experiments/week3/compare_week3_baselines.py`
 - Week 3 experiment README: `src/experiments/week3/README.md`

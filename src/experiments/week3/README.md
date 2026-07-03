@@ -39,6 +39,20 @@ Outputs are written to `results/`:
 - `week3_comparison.csv`: A-vs-B comparison table;
 - `week3_results.md`: cleaned summary table and diagnostic cases.
 
+## Focused Failure-Case Procedure
+
+After the standard A-vs-B run, inspect deliberately difficult cases for about
+2 hours:
+
+- tight time windows: identify which customer window causes infeasibility;
+- too few vehicles or too little capacity: estimate the minimum fleet size or
+  capacity needed to recover feasibility;
+- uneven customer distribution: check whether the longer routes are spatially
+  reasonable.
+
+For each failed case, record the instance, violated constraint, route step
+where the issue first appears, and a possible repair strategy.
+
 ## Metrics
 
 The result files report objective distance, feasibility rate, runtime,
