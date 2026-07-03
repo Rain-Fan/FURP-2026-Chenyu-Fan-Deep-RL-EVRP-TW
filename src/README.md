@@ -8,6 +8,7 @@
 /src
   README.md
   data/                  Shared dataset notes or links
+  experiments/official_sources/
   experiments/week1/
   experiments/week2/
   experiments/week3/
@@ -17,10 +18,20 @@
 The experiment packages contain:
 
 ```text
-week1/  OR-Tools TSP, VRP, CVRP, and VRPTW algorithm files plus comparison
-week2/  POMO-style, GA, and OR-style algorithm files plus comparison
-week3/  Due-time-priority and nearest-customer greedy files plus comparison
+official_sources/  Upstream official algorithm source files and provenance
+week1/             OR-Tools wrapper experiments and comparison artifacts
+week2/             EVRP-TW comparison wrappers and generated result artifacts
+week3/             Controlled greedy-policy experiment wrappers and results
 ```
+
+Algorithm provenance rule:
+
+- Official algorithm source files live in `experiments/official_sources/`.
+- Week-specific scripts are project wrappers, adapters, synthetic data
+  generators, comparison runners, or reports unless their README explicitly
+  points to an official upstream file.
+- Project-written wrappers must not be described as official algorithm source
+  code.
 
 ## Getting Started
 

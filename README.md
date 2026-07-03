@@ -37,6 +37,11 @@ The current implementation includes:
 - Week 3 feasibility-first greedy EVRP-TW baseline reproduction;
 - result tables, route visualisations, run logs, and diagnostic reports.
 
+Official upstream algorithm source files are stored under
+`src/experiments/official_sources/`.  Week-specific Python files are project
+wrappers, adapters, comparison runners, or synthetic experiment scripts unless
+their local README explicitly identifies them as copied official source files.
+
 The main evaluation metrics are feasibility rate, route cost, distance,
 vehicles used, runtime, time-window violations, battery or charging
 violations, and coverage violations. The current experiments assume
@@ -69,6 +74,7 @@ This structure is **mandatory** — please keep it intact.
  ├── 00_weekly.md         ← update EVERY week: progress, challenges, next steps
  └── meeting_notes/       ← key takeaways from all team meetings
 /src
+ ├── experiments/official_sources/ ← copied upstream algorithm source files
  ├── experiments/week1_or_tools_baselines/
  ├── experiments/week2_baselines/
  ├── experiments/week3_baseline/

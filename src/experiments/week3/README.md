@@ -3,6 +3,11 @@
 This directory contains the Week 3 controlled experiment.  The purpose is to
 evaluate a method properly, not only to show that code runs.
 
+The Python files in this folder are project-written experiment wrappers and
+greedy selection rules for the controlled comparison.  They are not official
+algorithm source files.  Official upstream source files used as references are
+kept in `../official_sources/`.
+
 ## Research Question
 
 Does a due-time-priority greedy policy perform better than a nearest-customer
