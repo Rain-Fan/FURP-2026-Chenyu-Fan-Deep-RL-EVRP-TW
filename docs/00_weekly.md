@@ -30,6 +30,36 @@
 
 <!-- =================  YOUR ENTRIES BELOW  ================= -->
 
+### Week 4 — 2026-07-06
+
+**Attended this week's meeting:** Yes
+
+**Progress this week**
+- Completed a focused literature-reading round for the EVRP-TW deep reinforcement learning project.
+- Read and organized notes for four key papers: Attention Model, DRL for EVRPTW, POMO, and Schneider's classical EVRP-TW formulation.
+- Compared learning-based routing methods with traditional EVRP-TW metaheuristics.
+- Identified reusable ideas for the project, including attention-based encoder-decoder modeling, rollout/shared baselines, multi-mask feasibility handling, station dummy-copy modeling, and EVRP-TW benchmark construction.
+- Recorded reproducibility issues, assumptions, experiment metrics, open questions, and next action items for each paper.
+
+**Challenges & blockers**
+- The DRL EVRPTW paper is directly relevant but does not appear to provide easily reusable public code.
+- POMO is powerful for TSP/CVRP, but its multi-start symmetry does not transfer directly to EVRP-TW because time windows and battery state break many route symmetries.
+- Schneider's EVRP-TW model assumes full recharging at stations, while the project may need a more flexible partial-charging model.
+
+**Next steps**
+- Download or reconstruct the Schneider EVRP-TW benchmark format.
+- Implement an EVRP-TW feasibility checker covering customer service, capacity, time windows, battery use, charging, depot return, and customer coverage.
+- Decide whether the project model will use full charging, discrete partial charging, or continuous partial charging.
+- Use the paper notes to choose the first DRL architecture and training baseline to implement.
+
+**Hours spent (optional):** 30 hours
+
+**Links (optional):**
+- Attention Model reading note: `docs/reading_notes/week4/01_Attention_Model_Kool2018.md`
+- DRL EVRPTW reading note: `docs/reading_notes/week4/02_DRL_EVRPTW_Lin2021.md`
+- POMO reading note: `docs/reading_notes/week4/03_POMO_Kwon2020.md`
+- Schneider EVRP-TW reading note: `docs/reading_notes/week4/04_EVRPTW_Schneider2014.md`
+
 ### Week 3 — 2026-06-30
 
 **Attended this week's meeting:** Yes
