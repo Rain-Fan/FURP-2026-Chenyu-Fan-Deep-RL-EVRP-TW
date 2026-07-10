@@ -1,42 +1,45 @@
 # Week 3: Controlled Greedy-Policy Comparison
 
-Week 3 compares two greedy customer-selection policies under the same EVRP-TW
-instance generator, feasibility checker, and metrics.  The code keeps method
-selection separate from the experiment runner so the comparison is easy to
-inspect.
+This folder is intended for the Week 3 controlled greedy-policy experiments.
+If scripts are not yet present, this README documents the expected layout and
+how to prepare the environment.
 
-## Files
+Expected files (when implemented):
 
-- `due_time_priority.py`: selects the feasible customer with the earliest due
-  time.
-- `nearest_customer.py`: selects the feasible customer with the shortest
-  current travel distance.
-- `compare_week3_baselines.py`: local runner that generates instances, runs
-  both policies, validates routes, and writes result artifacts.
+- `compare_week3_baselines.py` — runner that evaluates the controlled greedy
+  policy vs baselines and writes `results/week3_results.json` with `aggregate`,
+  `instances`, and `comparison` sections consumed by visualization scripts.
+- `results/week3_results.json` — aggregated results used by `src/results`.
 
-## Run
+## Environment
+
+- Recommended Python: 3.10 or 3.11
+
+Create and activate a virtual environment, then install dependencies:
 
 ```bash
-python3 compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
+# create venv
+python -m venv .venv
+# activate (macOS / Linux)
+source .venv/bin/activate
+# activate (Windows PowerShell)
+.\.venv\Scripts\Activate.ps1
+
+# upgrade pip and install dependencies
+python -m pip install --upgrade pip
+# Option A (recommended): install top-level requirements for the whole repo
+python -m pip install -r ../../../requirements.txt
+# Option B: if a per-experiment requirements.txt is added later
+python -m pip install -r requirements.txt
 ```
 
-## Outputs
+## Run (example)
 
-- `results/run_log.txt`
-- `results/week3_results.json`
-- `results/week3_results.csv`
-- `results/week3_comparison.csv`
-- `results/week3_results.md`
+```bash
+# placeholder — replace with the actual runner once implemented
+python compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
+```
 
-## Failure-Case Review
+## Notes
 
-After the standard run, inspect difficult cases for about 2 hours:
-
-- tight time windows: identify which customer window causes infeasibility;
-- too few vehicles or too little capacity: estimate the minimum fleet size or
-  capacity needed to recover feasibility;
-- uneven customer distribution: check whether the longer routes are spatially
-  reasonable.
-
-For each failed case, record the instance, violated constraint, route step
-where the issue first appears, and a possible repair strategy.
+- `src/results/generate_research_visualizations.py` expects `results/week3_results.json` with the fields used in its generators (`aggregate`, `instances`, `comparison`). Make sure the runner writes the JSON in the expected format.
