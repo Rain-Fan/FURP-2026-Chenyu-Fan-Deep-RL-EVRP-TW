@@ -40,13 +40,31 @@
 - Compared learning-based routing methods with traditional EVRP-TW metaheuristics.
 - Identified reusable ideas for the project, including attention-based encoder-decoder modeling, rollout/shared baselines, multi-mask feasibility handling, station dummy-copy modeling, and EVRP-TW benchmark construction.
 - Recorded reproducibility issues, assumptions, experiment metrics, open questions, and next action items for each paper.
+- Implemented the method improvement recommended at the end of Week 3: a new
+  tested method `C_composite_score` (composite-score greedy) followed by a
+  feasibility-aware 2-opt local search.
+- Ran a new controlled experiment comparing Method C against the Week 3
+  due-time method (A) and the nearest-customer baseline (B) on the same
+  instance generator, across scales 20/50/100 and three parameter-sensitivity
+  profiles (baseline, tight time windows, small battery): 324 total runs.
+- Method C raised overall feasibility from Method A's 41.7% (45/108) to 99.1%
+  (107/108) and cut feasible route distance by up to ~2700 units versus A,
+  while staying competitive with baseline B (winning at n=20 and n=100, and
+  trailing slightly at n=50).
+- Added four matplotlib visualizations (feasibility, objective, 2-opt gain, and
+  representative route geometry) and a full Week 4 report with setup, results,
+  discussion, and failure analysis.
 
 **Challenges & blockers**
 - The DRL EVRPTW paper is directly relevant but does not appear to provide easily reusable public code.
 - POMO is powerful for TSP/CVRP, but its multi-start symmetry does not transfer directly to EVRP-TW because time windows and battery state break many route symmetries.
 - Schneider's EVRP-TW model assumes full recharging at stations, while the project may need a more flexible partial-charging model.
+- Method C beats the nearest-customer baseline at small and large scales but is
+  slightly worse at 50 customers, so the improvement is real but not universal.
 
 **Next steps**
+- Make the composite-score weights scale-aware and add inter-route local-search
+  moves (or-opt, swap) to close the medium-scale gap against baseline B.
 - Download or reconstruct the Schneider EVRP-TW benchmark format.
 - Implement an EVRP-TW feasibility checker covering customer service, capacity, time windows, battery use, charging, depot return, and customer coverage.
 - Decide whether the project model will use full charging, discrete partial charging, or continuous partial charging.
@@ -59,6 +77,12 @@
 - DRL EVRPTW reading note: `docs/reading_notes/week4/02_DRL_EVRPTW_Lin2021.md`
 - POMO reading note: `docs/reading_notes/week4/03_POMO_Kwon2020.md`
 - Schneider EVRP-TW reading note: `docs/reading_notes/week4/04_EVRPTW_Schneider2014.md`
+- Week 4 method-improvement report: `docs/week4_method_improvement.md`
+- Week 4 experiment code: `src/experiments/week4/compare_week4_methods.py`
+- Week 4 experiment README: `src/experiments/week4/README.md`
+- Week 4 summary table: `src/experiments/week4/results/week4_results.md`
+- Week 4 A/B/C comparison table: `src/experiments/week4/results/week4_comparison.csv`
+- Week 4 figures: `src/experiments/week4/results/week4_*.png`
 
 ### Week 3 — 2026-06-30
 
