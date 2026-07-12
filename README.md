@@ -11,7 +11,7 @@ Windows (EVRP-TW).
 
 ## Project Info
 
-| Field | Your entry |
+| Field | Entry |
 |---|---|
 | Student name(s) | _Chenyu Fan_ |
 | Project title | _Deep RL for Electric Vehicle Routing with Time Windows (EVRP-TW)_ |
@@ -20,43 +20,49 @@ Windows (EVRP-TW).
 | Supervising faculty | _Tianxiang Cui_ |
 | Project lead | _Tianxiang Cui_ |
 | Team or individual | _Individual_ |
-| Cited paper being replicated | _To be confirmed: add title and link/DOI_ |
+| Cited papers / reading notes | See `docs/reading_notes/` (examples: `01_Attention_Model_Kool2018.md`, `02_DRL_EVRPTW_Lin2021.md`, `03_POMO_Kwon2020.md`, `04_EVRPTW_Schneider2014.md`) |
 
-**One-line summary:** This project studies reproducible baselines and
+**One-line summary:** This project implements reproducible baselines and
 evaluation protocols for vehicle-routing and electric-vehicle-routing problems
-with capacity, time-window, battery, charging, and fleet constraints.
+with capacity, time-window, battery, charging, and fleet constraints, and
+explores attention-based deep-RL approaches and feasibility-aware heuristics.
 
 ---
 
 ## Research Scope
 
-The current implementation includes:
+The repository contains reproducible experiments, baseline methods, and result
+artifacts developed over the weekly cadence of the FURP project. Current
+implemented and committed components include:
 
-- Week 1 OR-Tools baselines for TSP, VRP, CVRP, and VRPTW;
-- Week 2 EVRP-TW baseline comparison artifacts;
-- Week 3 feasibility-first greedy EVRP-TW baseline reproduction;
-- result tables, route visualisations, run logs, and diagnostic reports.
+- Week 1: OR-Tools baselines and runnable examples for TSP, VRP, CVRP, and VRPTW (see `src/experiments/week1/`).
+- Week 2: EVRP-TW baseline comparison scripts and result exporters (see `src/experiments/week2/`).
+- Week 3: Controlled greedy-policy comparison and a feasibility-first greedy baseline reproduction (see `src/experiments/week3/`).
+- Week 4: Composite-score greedy method `C_composite_score` with feasibility-aware 2-opt local search and controlled experiments comparing methods A/B/C (see `src/experiments/week4/`).
+- Result tables, route visualisations, run logs, and diagnostic reports under `src/experiments/*/results/` and `src/results/`.
 
-The main evaluation metrics are feasibility rate, route cost, distance,
-vehicles used, runtime, time-window violations, battery or charging
-violations, and coverage violations. The current experiments assume
-homogeneous vehicles, deterministic Euclidean travel, linear energy use, and
-full charging at stations.
+Main evaluation metrics used in experiments: feasibility rate, feasible route cost (objective), route distance, vehicles used, runtime, time-window violations, battery/charging violations, and coverage violations. Experiments currently assume homogeneous vehicles, deterministic Euclidean travel distances, linear energy consumption, and full recharging at stations unless noted in the experiment README.
+
+---
 
 ## Research Visualizations
 
-Selected research figures are stored in [`src/results`](src/results):
+Selected research figures and supporting regeneration instructions are stored in `src/results` and per-week `results/` folders:
 
-- [`LOCAL_RUNS.md`](src/results/LOCAL_RUNS.md) — commands used to regenerate committed results locally.
-- [`week2_baseline_comparison.svg`](src/results/week2_baseline_comparison.svg) — Week 2 objective and runtime comparison.
-- [`week3_performance_summary.svg`](src/results/week3_performance_summary.svg) — Week 3 feasibility and feasible-objective comparison.
-- [`week3_diagnostic_summary.svg`](src/results/week3_diagnostic_summary.svg) — Week 3 vehicles, charging visits, and coverage failures.
-- [`week3_representative_routes.svg`](src/results/week3_representative_routes.svg) — route footprint comparison on the same 50-customer instance.
+- `src/results/LOCAL_RUNS.md` — commands used to regenerate committed results locally.
+- Week-specific figure files can be found in `src/experiments/week*/results/` (e.g. week3 & week4 figures).
 
-The figures can be regenerated with:
+The committed visualisations can be regenerated with the per-week commands (examples below) or with the top-level results script:
 
 ```bash
+# Top-level results generator (if present)
 python3 src/results/generate_research_visualizations.py
+
+# Or run per-week experiment runners:
+python3 src/experiments/week1/compare_or_tools_baselines.py
+python3 src/experiments/week2/compare_week2_baselines.py --scales 50 100 200 --seed 20260621 --or-time-limit 8
+python3 src/experiments/week3/compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
+python3 src/experiments/week4/compare_week4_methods.py
 ```
 
 ---
@@ -70,10 +76,13 @@ This structure is **mandatory** — please keep it intact.
  ├── 00_weekly.md         ← update EVERY week: progress, challenges, next steps
  └── meeting_notes/       ← key takeaways from all team meetings
 /src
- ├── experiments/week1/    ← OR-Tools routing baselines
- ├── experiments/week2/    ← EVRP-TW baseline comparison
- ├── experiments/week3/    ← controlled greedy-policy comparison
- └── results/             ← selected figures and compact results
+ ├── data/                 dataset notes or placeholders
+ ├── experiments/
+ │   ├── week1/            ← OR-Tools routing baselines
+ │   ├── week2/            ← EVRP-TW baseline comparison
+ │   ├── week3/            ← controlled greedy-policy comparison
+ │   └── week4/            ← composite-score method and further experiments
+ └── results/              ← selected figures and compact results
 FURP_Showcase.pdf         ← your poster / presentation PDF, in the repo root
 ```
 
@@ -129,10 +138,11 @@ Any **leave of absence** or **withdrawal** must be notified to us **by email** �
 - [x] Added Week 1 OR-Tools routing baselines
 - [x] Added Week 2 EVRP-TW baseline comparison artifacts
 - [x] Added Week 3 baseline reproduction with runtime and feasibility logs
+- [x] Added Week 4 composite-score method and controlled experiments
 - [x] Started `docs/00_weekly.md`
 - [x] Created my first file in `docs/meeting_notes/`
-- [ ] Confirmed the cited paper and final experimental protocol
-- [ ] (By Showcase) Added `FURP_Showcase.pdf` to the repo root
+- [ ] Confirm the final cited paper and formal experimental protocol (see `docs/reading_notes/`)
+- [ ] Add `FURP_Showcase.pdf` to the repo root before the Showcase
 
 ---
 
