@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = Path(__file__).resolve().parent
 WEEK2_JSON = ROOT / "src" / "experiments" / "week2" / "results" / "week2_results.json"
 WEEK3_JSON = ROOT / "src" / "experiments" / "week3" / "results" / "week3_results.json"
+WEEK4_JSON = ROOT / "src" / "experiments" / "week4" / "results" / "week4_results.json"
 
 PALETTE = {
     "tested": "#dc2626",
@@ -139,6 +140,7 @@ def short_method(name: str) -> str:
         "OR-Tools CVRPTW + charging repair": "OR-Tools repair",
         "A_due_time_priority": "A: due-time",
         "B_nearest_customer": "B: nearest",
+        "C_composite_score": "C: composite+2opt",
     }
     return mapping.get(name, name)
 
@@ -271,13 +273,141 @@ def generate_week3_route_visualization() -> Path:
     return path
 
 
+# ---------------------------------------------------------------------------
+# Week 4: method-improvement visualizations
+# ---------------------------------------------------------------------------
+
+def generate_week4_performance_visualization() -> Path:
+    """Feasibility rate and mean feasible objective for C vs A vs B, baseline profile only."""
+    data = load_json(WEEK4_JSON)["aggregate"]
+    baseline = [row for row in data if row["profile"] == "baseline"]
+    scales = sorted({int(row["scale"]) for row in baseline})
+    methods = ["C_composite_score", "A_due_time_priority", "B_nearest_customer"]
+    colors = {
+        "C_composite_score": PALETTE["tested"],
+        "A_due_time_priority": PALETTE["amber"],
+        "B_nearest_customer": PALETTE["baseline"],
+    }
+    body = [
+        text(40, 42, "Week 4 method improvement: performance (baseline profile)", 26, "800"),
+        text(40, 68, "Composite-score greedy + 2-opt (C) vs due-time greedy (A) vs nearest-customer (B)", 14, "400", PALETTE["muted"]),
+        panel(40, 95, 500, 520, "Feasibility rate", "Fraction of instances satisfying all EVRP-TW constraints"),
+        panel(560, 95, 500, 520, "Mean feasible objective", "Total route distance — lower is better"),
+        draw_grouped_bars(baseline, 105, 180, 390, 330, scales, methods, "feasibility_rate", colors),
+        draw_grouped_bars(baseline, 625, 180, 390, 330, scales, methods, "mean_objective_feasible", colors),
+        text(300, 560, "Customers", 13, "700", PALETTE["slate"], "middle"),
+        text(820, 560, "Customers", 13, "700", PALETTE["slate"], "middle"),
+        legend([(short_method(m), colors[m]) for m in methods], 180, 650),
+    ]
+    path = OUT_DIR / "week4_performance_summary.svg"
+    write_svg(path, "\n".join(body), 1100, 700)
+    return path
+
+
+def generate_week4_profiles_visualization() -> Path:
+    """Feasibility rate for Method C across all three stress profiles."""
+    data = load_json(WEEK4_JSON)["aggregate"]
+    profiles = ["baseline", "tight_tw", "small_battery"]
+    profile_labels = {
+        "baseline": "Baseline",
+        "tight_tw": "Tight TW (60%)",
+        "small_battery": "Small battery (75%)",
+    }
+    scales = sorted({int(row["scale"]) for row in data})
+    colors = {
+        "baseline": PALETTE["green"],
+        "tight_tw": PALETTE["purple"],
+        "small_battery": PALETTE["amber"],
+    }
+
+    # draw_grouped_bars groups by scale and series-by-method; here we remap the
+    # stress profile onto the "method" key so each profile becomes one bar.
+    c_rows: list[dict[str, object]] = []
+    a_rows: list[dict[str, object]] = []
+    for profile in profiles:
+        for scale in scales:
+            for src, dst in (("C_composite_score", c_rows), ("A_due_time_priority", a_rows)):
+                row = next(
+                    (r for r in data if r["profile"] == profile
+                     and int(r["scale"]) == scale and r["method"] == src),
+                    None,
+                )
+                if row:
+                    dst.append({
+                        "scale": scale,
+                        "method": profile,
+                        "feasibility_rate": row["feasibility_rate"],
+                        "mean_two_opt_gain": row.get("mean_two_opt_gain", 0.0),
+                    })
+
+    body = [
+        text(40, 42, "Week 4 method improvement: stress-profile sensitivity", 26, "800"),
+        text(40, 68, "How feasibility rate changes under tighter time windows and smaller battery", 14, "400", PALETTE["muted"]),
+        panel(40, 95, 325, 520, "Method C feasibility rate", "Composite + 2-opt under each stress profile"),
+        panel(387, 95, 325, 520, "Method A feasibility rate", "Due-time greedy — reference from Week 3"),
+        panel(735, 95, 325, 520, "2-opt gain (Method C)", "Mean distance removed by local search"),
+        draw_grouped_bars(c_rows, 92, 180, 230, 330, scales, profiles, "feasibility_rate", colors),
+        draw_grouped_bars(a_rows, 439, 180, 230, 330, scales, profiles, "feasibility_rate", colors),
+        draw_grouped_bars(c_rows, 787, 180, 230, 330, scales, profiles, "mean_two_opt_gain", colors),
+        text(207, 560, "Customers", 13, "700", PALETTE["slate"], "middle"),
+        text(554, 560, "Customers", 13, "700", PALETTE["slate"], "middle"),
+        text(902, 560, "Customers", 13, "700", PALETTE["slate"], "middle"),
+        legend([(profile_labels[p], colors[p]) for p in profiles], 250, 650),
+    ]
+    path = OUT_DIR / "week4_profile_sensitivity.svg"
+    write_svg(path, "\n".join(body), 1100, 700)
+    return path
+
+
+def load_week4_instance(scale: int = 50):
+    """Load one Week 4 instance and its per-method result rows."""
+    sys.path.insert(0, str(ROOT / "src" / "experiments" / "week4"))
+    from compare_week4_methods import DEFAULT_SEED, apply_profile, generate_instance  # noqa: E402
+
+    data = load_json(WEEK4_JSON)["instances"]
+    # Pick the first baseline seed for this scale
+    baseline_rows = [
+        r for r in data
+        if int(r["scale"]) == scale and r["profile"] == "baseline"
+    ]
+    selected_seed = min(int(r["seed"]) for r in baseline_rows)
+    instance = apply_profile(generate_instance(scale, selected_seed), "baseline")
+    rows = [r for r in baseline_rows if int(r["seed"]) == selected_seed]
+    return instance, rows
+
+
+def generate_week4_route_visualization() -> Path:
+    """Three-panel route footprint: Method B, A, and C on the same instance."""
+    instance, rows = load_week4_instance(scale=50)
+    by_method = {str(row["method"]): row for row in rows}
+    colors = {
+        "A_due_time_priority": PALETTE["amber"],
+        "B_nearest_customer": PALETTE["baseline"],
+        "C_composite_score": PALETTE["tested"],
+    }
+    panels = []
+    panel_w, panel_h = 330, 520
+    for i, method in enumerate(["A_due_time_priority", "B_nearest_customer", "C_composite_score"]):
+        px = 40 + i * (panel_w + 20)
+        row = by_method.get(method, {})
+        panels.append(draw_route_panel(instance, row, px, 95, panel_w, panel_h, colors[method]))
+    body = [
+        text(40, 42, "Week 4 representative route footprint (3 methods)", 26, "800"),
+        text(40, 68, "Same 50-customer instance: A is vehicle-heavy, C is most compact", 14, "400", PALETTE["muted"]),
+        *panels,
+    ]
+    path = OUT_DIR / "week4_representative_routes.svg"
+    write_svg(path, "\n".join(body), 1060, 660)
+    return path
+
+
 def generate_index(paths: list[Path]) -> Path:
     week3 = load_json(WEEK3_JSON)
     comparison = week3["comparison"]
     lines = [
         "# Research Visualization Index",
         "",
-        "Generated from the existing Week 2 and Week 3 experiment result files.",
+        "Generated from the existing Week 2, Week 3, and Week 4 experiment result files.",
         "",
         "## Figures",
         "",
@@ -307,6 +437,35 @@ def generate_index(paths: list[Path]) -> Path:
             "",
         ]
     )
+
+    week4 = load_json(WEEK4_JSON)
+    week4_cmp = week4["comparison"]
+    lines.extend(
+        [
+            "## Week 4 headline deltas (Method C vs references, baseline profile)",
+            "",
+            "| Customers | Reference | Feasibility delta C-ref | Feasible objective delta C-ref |",
+            "|---:|---|---:|---:|",
+        ]
+    )
+    for row in week4_cmp:
+        if row["profile"] != "baseline":
+            continue
+        obj_delta = row["mean_feasible_objective_delta"]
+        obj_text = f"{obj_delta:.3f}" if obj_delta is not None else "NA"
+        lines.append(
+            f"| {row['scale']} | {short_method(row['reference'])} | "
+            f"{row['feasibility_rate_delta']:.3f} | {obj_text} |"
+        )
+    lines.extend(
+        [
+            "",
+            "C is `C_composite_score` (composite-score greedy + feasibility-aware 2-opt).",
+            "Positive feasibility delta means C solved more instances than the reference.",
+            "Negative objective delta means C found shorter feasible routes.",
+            "",
+        ]
+    )
     path = OUT_DIR / "research_visualizations.md"
     path.write_text("\n".join(lines), encoding="utf-8")
     return path
@@ -318,6 +477,9 @@ def main() -> None:
         generate_week3_performance_visualization(),
         generate_week3_diagnostics_visualization(),
         generate_week3_route_visualization(),
+        generate_week4_performance_visualization(),
+        generate_week4_profiles_visualization(),
+        generate_week4_route_visualization(),
     ]
     index = generate_index(paths)
     for path in [*paths, index]:

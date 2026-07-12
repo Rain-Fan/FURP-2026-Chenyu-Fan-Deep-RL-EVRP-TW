@@ -6,7 +6,7 @@ have a current reproducible generation path.
 
 ## Reproduced Locally
 
-Run date: 2026-07-03
+Run date: 2026-07-03 (Weeks 1-3), 2026-07-12 (Week 4)
 
 Week 1:
 
@@ -49,6 +49,26 @@ Generated:
 - `src/experiments/week3/results/week3_comparison.csv`
 - `src/experiments/week3/results/week3_results.md`
 
+Week 4:
+
+```bash
+cd src/experiments/week4
+python3 compare_week4_methods.py --scales 20 50 100 --instances-per-scale 12 --seed 20260706
+python3 visualize_week4.py
+```
+
+Generated:
+
+- `src/experiments/week4/results/run_log.txt`
+- `src/experiments/week4/results/week4_results.json`
+- `src/experiments/week4/results/week4_results.csv`
+- `src/experiments/week4/results/week4_comparison.csv`
+- `src/experiments/week4/results/week4_results.md`
+- `src/experiments/week4/results/week4_feasibility_by_profile.png`
+- `src/experiments/week4/results/week4_objective_by_profile.png`
+- `src/experiments/week4/results/week4_two_opt_gain.png`
+- `src/experiments/week4/results/week4_representative_routes.png`
+
 Visualizations:
 
 ```bash
@@ -61,4 +81,7 @@ Generated:
 - `src/results/week3_performance_summary.svg`
 - `src/results/week3_diagnostic_summary.svg`
 - `src/results/week3_representative_routes.svg`
+- `src/results/week4_performance_summary.svg`
+- `src/results/week4_profile_sensitivity.svg`
+- `src/results/week4_representative_routes.svg`
 - `src/results/research_visualizations.md`
