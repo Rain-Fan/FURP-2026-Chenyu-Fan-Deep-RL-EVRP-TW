@@ -12,7 +12,7 @@ src/
     week1/              OR-Tools routing baselines
     week2/              EVRP-TW baseline comparison
     week3/              controlled greedy-policy comparison
-    week4/              deep-RL training and evaluation (new)
+    week4/              composite-score method improvement + 2-opt (new)
   results/              figures generated from local result files
 ```
 
@@ -41,20 +41,11 @@ python3 src/experiments/week3/compare_week3_baselines.py --scales 20 50 100 --in
 Week 4:
 
 ```bash
-# Enter the week4 experiment folder
-cd src/experiments/week4
+# Run the controlled A/B/C comparison across scales and stress profiles
+python3 src/experiments/week4/compare_week4_methods.py --scales 20 50 100 --instances-per-scale 12 --seed 20260706
 
-# Install any (separate) requirements for week4 experiments
-python -m pip install -r requirements.txt
-
-# Train a deep-RL agent (example flags — adjust to match the scripts in week4/)
-python train_deep_rl_agent.py --env evrp_tw --episodes 2000 --seed 20260705 --log-dir runs/week4
-
-# Evaluate a trained checkpoint on evaluation instances
-python evaluate_agent.py --checkpoint runs/week4/checkpoint_latest.pt --instances 50 --seed 20260705
-
-# Generate week4 visualizations and aggregated results
-python3 ../../results/generate_week4_visualizations.py
+# Generate the week4 matplotlib figures from the committed results
+python3 src/experiments/week4/visualize_week4.py
 ```
 
 Research visualizations:
