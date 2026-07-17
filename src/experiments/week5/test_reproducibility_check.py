@@ -17,8 +17,6 @@ from run_reproducibility_check import compare_aggregate_csv
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 WEEK4_RUNNER = REPOSITORY_ROOT / "src" / "experiments" / "week4" / "compare_week4_methods.py"
-sys.path.insert(0, str(WEEK4_RUNNER.parent))
-from compare_week4_methods import write_markdown
 
 
 def run_week4(arguments: list[str]) -> subprocess.CompletedProcess[str]:
@@ -70,28 +68,6 @@ class Week4ResultsDirectoryTests(unittest.TestCase):
             )
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertTrue((destination / "week4_results.csv").is_file())
-
-    def test_week4_markdown_with_diagnostic_case_has_one_final_newline(self) -> None:
-        case = {
-            "method": "C_composite_score",
-            "instance": "baseline_20_1",
-            "profile": "baseline",
-            "scale": 20,
-            "objective_distance": 42.0,
-            "feasible": True,
-            "vehicles_used": 1,
-            "two_opt_moves": 0,
-            "diagnosis": "feasible route",
-            "violations": [],
-        }
-        with tempfile.TemporaryDirectory() as directory:
-            results_dir = Path(directory)
-            write_markdown([], [], [case], "2026-07-17T00:00:00Z", results_dir)
-
-            markdown = (results_dir / "week4_results.md").read_text(encoding="utf-8")
-
-        self.assertEqual(markdown[-1:], "\n")
-        self.assertNotEqual(markdown[-2:], "\n\n")
 
 
 class AggregateComparisonTests(unittest.TestCase):

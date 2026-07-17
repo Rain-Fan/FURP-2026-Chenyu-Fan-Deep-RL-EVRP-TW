@@ -739,6 +739,7 @@ def write_markdown(
                 f"- 2-opt moves: {case['two_opt_moves']}",
                 f"- Diagnosis: {case['diagnosis']}",
                 f"- Violations: {case['violations'] if case['violations'] else 'none'}",
+                "",
             ]
         )
     (results_dir / "week4_results.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
