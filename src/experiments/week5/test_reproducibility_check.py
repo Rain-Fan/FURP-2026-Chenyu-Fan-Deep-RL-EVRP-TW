@@ -150,5 +150,15 @@ class ReproducibilityIntegrationTests(unittest.TestCase):
             self.assertIn('"deterministic_match": true', summary_path.read_text(encoding="utf-8"))
 
 
+class Week5CheckpointDocumentationTests(unittest.TestCase):
+    def test_checkpoint_cites_generated_evidence_and_next_steps(self) -> None:
+        text = Path("docs/week5_project_checkpoint.md").read_text(encoding="utf-8")
+        self.assertIn("Current Project Status", text)
+        self.assertIn("Evidence of Progress", text)
+        self.assertIn("Problems and Limitations", text)
+        self.assertIn("Next Step", text)
+        self.assertIn("week5_reproducibility.md", text)
+
+
 if __name__ == "__main__":
     unittest.main()

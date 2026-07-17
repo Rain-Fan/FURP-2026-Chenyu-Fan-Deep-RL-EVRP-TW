@@ -30,6 +30,33 @@
 
 <!-- =================  YOUR ENTRIES BELOW  ================= -->
 
+### Week 5 — 2026-07-17
+
+**Attended this week's meeting:** Yes
+
+**Progress this week**
+- Ran the Week 4 controlled comparison twice with the fixed Week 5
+  configuration and saved the two local output sets.
+- Checked the aggregate result fields for deterministic agreement; the
+  generated summary reports a match and no differences.
+- Added a checkpoint that links the local reproducibility summary and the
+  first-run aggregate table.
+
+**Challenges & blockers**
+- Runtime is measured but cannot be used as deterministic reproducibility
+  evidence because it varies with machine load.
+- The current heuristic evaluation is not a public-benchmark or paper
+  reproduction.
+
+**Next steps**
+- Harden the EVRP-TW feasibility checker.
+- Add a public EVRP-TW benchmark loader.
+
+**Links (optional):**
+- Week 5 checkpoint: `docs/week5_project_checkpoint.md`
+- Generated reproducibility summary: `src/experiments/week5/results/week5_reproducibility.md`
+- First-run aggregate table: `src/experiments/week5/results/run_1/week4_results.csv`
+
 ### Week 4 — 2026-07-06
 
 **Attended this week's meeting:** Yes
