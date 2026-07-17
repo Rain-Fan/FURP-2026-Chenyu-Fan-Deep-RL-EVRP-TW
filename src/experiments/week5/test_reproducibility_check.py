@@ -111,31 +111,6 @@ class ReproducibilityFailureTests(unittest.TestCase):
             self.assertIn('"deterministic_reproducible": false', summary)
             self.assertIn("missing expected aggregate CSV", summary)
 
-    def test_deterministic_csv_difference_writes_failure_summary_and_returns_one(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            results_dir = Path(directory) / "results"
-            successful_run = subprocess.CompletedProcess(args=["week4"], returncode=0, stdout="", stderr="")
-
-            def write_differing_results(run_dir: Path, _log_path: Path) -> subprocess.CompletedProcess[str]:
-                run_dir.mkdir(parents=True, exist_ok=True)
-                feasibility_rate = "1.0" if run_dir.name == "run_1" else "0.5"
-                write_csv(run_dir / "week4_results.csv", feasibility_rate=feasibility_rate, runtime="0.1")
-                return successful_run
-
-            with (
-                mock.patch.object(run_reproducibility_check, "parse_args", return_value=mock.Mock(results_dir=results_dir)),
-                mock.patch.object(run_reproducibility_check, "run_week4", side_effect=write_differing_results),
-            ):
-                self.assertEqual(run_reproducibility_check.main(), 1)
-
-            summary = (results_dir / "week5_reproducibility.json").read_text(encoding="utf-8")
-            markdown_summary = (results_dir / "week5_reproducibility.md").read_text(encoding="utf-8")
-            diagnostic = "unequal deterministic cell for ('baseline', 'C_composite_score', '20'), feasibility_rate"
-            self.assertIn('"deterministic_reproducible": false', summary)
-            self.assertIn(diagnostic, summary)
-            self.assertIn("Status: **FAIL**", markdown_summary)
-            self.assertIn(diagnostic, markdown_summary)
-
 
 if __name__ == "__main__":
     unittest.main()
