@@ -645,9 +645,8 @@ def write_json_csv(
     aggregate_rows: list[dict[str, object]],
     comparisons: list[dict[str, object]],
     metadata: dict[str, object],
-    results_dir: Path,
 ) -> None:
-    results_dir.mkdir(parents=True, exist_ok=True)
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     full_output = {
         "metadata": metadata,
         "aggregate": aggregate_rows,
@@ -655,14 +654,14 @@ def write_json_csv(
         "instances": [result_to_dict(r) for r in results],
         "diagnostic_cases": diagnostic_cases(results),
     }
-    (results_dir / "week4_results.json").write_text(
+    (RESULTS_DIR / "week4_results.json").write_text(
         json.dumps(full_output, indent=2) + "\n", encoding="utf-8"
     )
-    with (results_dir / "week4_results.csv").open("w", newline="", encoding="utf-8") as fh:
+    with (RESULTS_DIR / "week4_results.csv").open("w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(aggregate_rows[0].keys()))
         writer.writeheader()
         writer.writerows(aggregate_rows)
-    with (results_dir / "week4_comparison.csv").open("w", newline="", encoding="utf-8") as fh:
+    with (RESULTS_DIR / "week4_comparison.csv").open("w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(comparisons[0].keys()))
         writer.writeheader()
         writer.writerows(comparisons)
@@ -673,7 +672,6 @@ def write_markdown(
     comparisons: list[dict[str, object]],
     cases: list[dict[str, object]],
     run_started: str,
-    results_dir: Path,
 ) -> None:
     lines = [
         "# Week 4 Method-Improvement Results",
@@ -742,14 +740,13 @@ def write_markdown(
                 "",
             ]
         )
-    (results_dir / "week4_results.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (RESULTS_DIR / "week4_results.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def write_run_log(
     aggregate_rows: list[dict[str, object]],
     run_started: str,
     command: list[str],
-    results_dir: Path,
 ) -> None:
     log_lines = [
         "Week 4 method-improvement local run log",
@@ -781,7 +778,7 @@ def write_run_log(
             "- run_log.txt",
         ]
     )
-    (results_dir / "run_log.txt").write_text("\n".join(log_lines) + "\n", encoding="utf-8")
+    (RESULTS_DIR / "run_log.txt").write_text("\n".join(log_lines) + "\n", encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:
@@ -789,12 +786,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--scales", nargs="+", type=int, default=list(DEFAULT_SCALES))
     parser.add_argument("--instances-per-scale", type=int, default=DEFAULT_INSTANCES_PER_SCALE)
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
-    parser.add_argument(
-        "--results-dir",
-        type=Path,
-        default=RESULTS_DIR,
-        help="Directory for generated result files.",
-    )
     parser.add_argument(
         "--profiles",
         nargs="+",
@@ -821,13 +812,13 @@ def main() -> None:
     aggregate_rows = aggregate(results)
     comparisons = compare_methods(aggregate_rows)
     metadata = build_metadata(args, run_started, sys.argv)
-    write_json_csv(results, aggregate_rows, comparisons, metadata, args.results_dir)
-    write_markdown(aggregate_rows, comparisons, diagnostic_cases(results), run_started, args.results_dir)
-    write_run_log(aggregate_rows, run_started, sys.argv, args.results_dir)
+    write_json_csv(results, aggregate_rows, comparisons, metadata)
+    write_markdown(aggregate_rows, comparisons, diagnostic_cases(results), run_started)
+    write_run_log(aggregate_rows, run_started, sys.argv)
     print(
         json.dumps(
             {
-                "results_dir": str(args.results_dir),
+                "results_dir": str(RESULTS_DIR),
                 "runs": len(results),
                 "profiles": args.profiles,
                 "methods": list(METHODS),
