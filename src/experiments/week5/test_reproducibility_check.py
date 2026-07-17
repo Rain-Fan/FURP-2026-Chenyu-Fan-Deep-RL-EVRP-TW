@@ -8,8 +8,10 @@ import tempfile
 import unittest
 import csv
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import run_reproducibility_check
 from run_reproducibility_check import compare_aggregate_csv
 
 
@@ -77,6 +79,37 @@ class AggregateComparisonTests(unittest.TestCase):
             changed = write_csv(temporary_path / "changed.csv", feasibility_rate="0.5", runtime="0.1")
             self.assertEqual(compare_aggregate_csv(first, equal), [])
             self.assertIn("feasibility_rate", "\n".join(compare_aggregate_csv(first, changed)))
+
+
+class ReproducibilityFailureTests(unittest.TestCase):
+    def test_nonzero_week4_run_writes_failure_summary_and_returns_one(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            results_dir = Path(directory) / "results"
+            failed_run = subprocess.CompletedProcess(args=["week4"], returncode=7, stdout="", stderr="failed")
+            successful_run = subprocess.CompletedProcess(args=["week4"], returncode=0, stdout="", stderr="")
+            with (
+                mock.patch.object(run_reproducibility_check, "parse_args", return_value=mock.Mock(results_dir=results_dir)),
+                mock.patch.object(run_reproducibility_check, "run_week4", side_effect=[failed_run, successful_run]),
+            ):
+                self.assertEqual(run_reproducibility_check.main(), 1)
+
+            summary = (results_dir / "week5_reproducibility.json").read_text(encoding="utf-8")
+            self.assertIn('"deterministic_reproducible": false', summary)
+            self.assertIn("Week 4 run 1 exited with 7", summary)
+
+    def test_missing_aggregate_csv_writes_failure_summary_and_returns_one(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            results_dir = Path(directory) / "results"
+            successful_run = subprocess.CompletedProcess(args=["week4"], returncode=0, stdout="", stderr="")
+            with (
+                mock.patch.object(run_reproducibility_check, "parse_args", return_value=mock.Mock(results_dir=results_dir)),
+                mock.patch.object(run_reproducibility_check, "run_week4", side_effect=[successful_run, successful_run]),
+            ):
+                self.assertEqual(run_reproducibility_check.main(), 1)
+
+            summary = (results_dir / "week5_reproducibility.json").read_text(encoding="utf-8")
+            self.assertIn('"deterministic_reproducible": false', summary)
+            self.assertIn("missing expected aggregate CSV", summary)
 
 
 if __name__ == "__main__":
