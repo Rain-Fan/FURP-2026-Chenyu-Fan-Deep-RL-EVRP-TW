@@ -93,10 +93,8 @@ def write_summary(
     differences: list[str],
 ) -> None:
     """Write machine- and human-readable reproducibility evidence."""
-    deterministic_match = not differences and all(result.returncode == 0 for result in run_results)
     summary = {
-        "deterministic_match": deterministic_match,
-        "deterministic_reproducible": deterministic_match,
+        "deterministic_reproducible": not differences and all(result.returncode == 0 for result in run_results),
         "configuration": {"week4_arguments": list(WEEK4_ARGUMENTS)},
         "runs": [
             {"returncode": result.returncode, "results_dir": str(results_dir / f"run_{index}")}
@@ -112,7 +110,7 @@ def write_summary(
         json.dumps(summary, indent=2) + "\n", encoding="utf-8"
     )
 
-    status = "PASS" if deterministic_match else "FAIL"
+    status = "PASS" if summary["deterministic_reproducible"] else "FAIL"
     lines = [
         "# Week 5 Reproducibility Check",
         "",
@@ -136,13 +134,7 @@ def write_summary(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--output-dir",
-        "--results-dir",
-        dest="results_dir",
-        type=Path,
-        default=DEFAULT_RESULTS_DIR,
-    )
+    parser.add_argument("--results-dir", type=Path, default=DEFAULT_RESULTS_DIR)
     return parser.parse_args()
 
 

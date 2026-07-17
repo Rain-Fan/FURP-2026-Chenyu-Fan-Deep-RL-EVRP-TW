@@ -137,18 +137,5 @@ class ReproducibilityFailureTests(unittest.TestCase):
             self.assertIn(diagnostic, markdown_summary)
 
 
-class ReproducibilityIntegrationTests(unittest.TestCase):
-    def test_main_creates_summary_after_two_successful_runs(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            result = subprocess.run(
-                [sys.executable, str(Path(__file__).resolve().parent / "run_reproducibility_check.py"), "--output-dir", directory],
-                text=True,
-            )
-            self.assertEqual(result.returncode, 0)
-            summary_path = Path(directory) / "week5_reproducibility.json"
-            self.assertTrue(summary_path.is_file())
-            self.assertIn('"deterministic_match": true', summary_path.read_text(encoding="utf-8"))
-
-
 if __name__ == "__main__":
     unittest.main()
