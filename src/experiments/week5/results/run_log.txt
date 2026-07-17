@@ -1,0 +1,43 @@
+Week 5 consolidation experiment local run log
+
+Run started: 2026-07-17 17:57:38 CST
+Command: compare_week5_methods.py
+Python: 3.13.12
+Platform: macOS-15.6-arm64-arm-64bit-Mach-O
+Processor: arm
+
+Aggregate results:
+- profile=baseline, method=D_composite_inter_route, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=407.3176442302528, mean_inter_route_moves=5.917, mean_runtime_sec=0.005611
+- profile=baseline, method=C_composite_score, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=453.7435150165326, mean_inter_route_moves=0.000, mean_runtime_sec=0.000913
+- profile=baseline, method=B_nearest_customer, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=467.816190945167, mean_inter_route_moves=0.000, mean_runtime_sec=0.000202
+- profile=baseline, method=D_composite_inter_route, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=663.6649618599937, mean_inter_route_moves=22.417, mean_runtime_sec=0.104582
+- profile=baseline, method=C_composite_score, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=748.2512189894712, mean_inter_route_moves=0.000, mean_runtime_sec=0.007302
+- profile=baseline, method=B_nearest_customer, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=736.5116183017552, mean_inter_route_moves=0.000, mean_runtime_sec=0.001256
+- profile=baseline, method=D_composite_inter_route, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=987.154286918287, mean_inter_route_moves=60.000, mean_runtime_sec=0.831418
+- profile=baseline, method=C_composite_score, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1150.150074026173, mean_inter_route_moves=0.000, mean_runtime_sec=0.029434
+- profile=baseline, method=B_nearest_customer, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1119.5914366544278, mean_inter_route_moves=0.000, mean_runtime_sec=0.006014
+- profile=tight_tw, method=D_composite_inter_route, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=396.79147468089525, mean_inter_route_moves=8.250, mean_runtime_sec=0.005873
+- profile=tight_tw, method=C_composite_score, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=455.4857940911515, mean_inter_route_moves=0.000, mean_runtime_sec=0.000972
+- profile=tight_tw, method=B_nearest_customer, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=467.816190945167, mean_inter_route_moves=0.000, mean_runtime_sec=0.000211
+- profile=tight_tw, method=D_composite_inter_route, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=658.7934742718178, mean_inter_route_moves=24.500, mean_runtime_sec=0.108563
+- profile=tight_tw, method=C_composite_score, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=754.3594922819142, mean_inter_route_moves=0.000, mean_runtime_sec=0.006840
+- profile=tight_tw, method=B_nearest_customer, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=736.5412343550146, mean_inter_route_moves=0.000, mean_runtime_sec=0.001201
+- profile=tight_tw, method=D_composite_inter_route, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=990.9834712104036, mean_inter_route_moves=74.667, mean_runtime_sec=0.987321
+- profile=tight_tw, method=C_composite_score, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1176.0926292936806, mean_inter_route_moves=0.000, mean_runtime_sec=0.026742
+- profile=tight_tw, method=B_nearest_customer, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1112.1037467268131, mean_inter_route_moves=0.000, mean_runtime_sec=0.006104
+- profile=small_battery, method=D_composite_inter_route, customers=20, feasible=10/12, feasibility_rate=0.833, mean_feasible_objective=422.0915388423905, mean_inter_route_moves=5.417, mean_runtime_sec=0.004988
+- profile=small_battery, method=C_composite_score, customers=20, feasible=10/12, feasibility_rate=0.833, mean_feasible_objective=452.0699023090498, mean_inter_route_moves=0.000, mean_runtime_sec=0.000618
+- profile=small_battery, method=B_nearest_customer, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=468.65261041935923, mean_inter_route_moves=0.000, mean_runtime_sec=0.000206
+- profile=small_battery, method=D_composite_inter_route, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=720.9416483725016, mean_inter_route_moves=27.583, mean_runtime_sec=0.090635
+- profile=small_battery, method=C_composite_score, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=822.2432550521414, mean_inter_route_moves=0.000, mean_runtime_sec=0.004415
+- profile=small_battery, method=B_nearest_customer, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=794.9470391647825, mean_inter_route_moves=0.000, mean_runtime_sec=0.001188
+- profile=small_battery, method=D_composite_inter_route, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1050.8392372697217, mean_inter_route_moves=71.833, mean_runtime_sec=0.821121
+- profile=small_battery, method=C_composite_score, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1242.7666272499841, mean_inter_route_moves=0.000, mean_runtime_sec=0.021150
+- profile=small_battery, method=B_nearest_customer, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1173.5183040542918, mean_inter_route_moves=0.000, mean_runtime_sec=0.005649
+
+Output files:
+- week5_results.json
+- week5_results.csv
+- week5_comparison.csv
+- week5_results.md
+- run_log.txt

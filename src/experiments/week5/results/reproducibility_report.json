@@ -1,0 +1,9 @@
+{
+  "run_started_local": "2026-07-17 17:58:15 CST",
+  "repeats_per_instance": 3,
+  "checks_total": 135,
+  "checks_stable": 135,
+  "checks_unstable": 0,
+  "all_stable": true,
+  "unstable_examples": []
+}

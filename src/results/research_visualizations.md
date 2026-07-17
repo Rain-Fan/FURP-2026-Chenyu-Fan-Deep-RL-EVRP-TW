@@ -1,6 +1,6 @@
 # Research Visualization Index
 
-Generated from the existing Week 2, Week 3, and Week 4 experiment result files.
+Generated from the existing Week 2, Week 3, Week 4, and Week 5 experiment result files.
 
 ## Figures
 
@@ -11,6 +11,8 @@ Generated from the existing Week 2, Week 3, and Week 4 experiment result files.
 - [week4_performance_summary.svg](week4_performance_summary.svg)
 - [week4_profile_sensitivity.svg](week4_profile_sensitivity.svg)
 - [week4_representative_routes.svg](week4_representative_routes.svg)
+- [week5_performance_summary.svg](week5_performance_summary.svg)
+- [week5_representative_routes.svg](week5_representative_routes.svg)
 
 ## Week 3 headline deltas
 
@@ -38,3 +40,18 @@ longer feasible routes.
 C is `C_composite_score` (composite-score greedy + feasibility-aware 2-opt).
 Positive feasibility delta means C solved more instances than the reference.
 Negative objective delta means C found shorter feasible routes.
+
+## Week 5 headline deltas (Method D vs references, baseline profile)
+
+| Customers | Reference | Feasibility delta D-ref | Objective delta D-ref (%) |
+|---:|---|---:|---:|
+| 20 | C: composite+2opt | 0.000 | -10.23 |
+| 20 | B: nearest | 0.000 | -12.93 |
+| 50 | C: composite+2opt | 0.000 | -11.30 |
+| 50 | B: nearest | 0.000 | -9.89 |
+| 100 | C: composite+2opt | 0.000 | -14.17 |
+| 100 | B: nearest | 0.000 | -11.83 |
+
+D is `D_composite_inter_route` (Method C plus inter-route or-opt + swap).
+Negative objective percent means D found shorter feasible routes; at n=50 and
+n=100 D is now below the baseline, closing the Week 4 medium-scale gap.

@@ -39,6 +39,7 @@ implemented and committed components include:
 - Week 2: EVRP-TW baseline comparison scripts and result exporters (see `src/experiments/week2/`).
 - Week 3: Controlled greedy-policy comparison and a feasibility-first greedy baseline reproduction (see `src/experiments/week3/`).
 - Week 4: Composite-score greedy method `C_composite_score` with feasibility-aware 2-opt local search and controlled experiments comparing methods A/B/C (see `src/experiments/week4/`).
+- Week 5: Consolidation week — Method D `D_composite_inter_route` adds inter-route local search (or-opt relocation + swap) on top of Method C, a reproducibility/determinism check, and a project checkpoint note (see `src/experiments/week5/` and `docs/week5_checkpoint.md`).
 - Result tables, route visualisations, run logs, and diagnostic reports under `src/experiments/*/results/` and `src/results/`.
 
 Main evaluation metrics used in experiments: feasibility rate, feasible route cost (objective), route distance, vehicles used, runtime, time-window violations, battery/charging violations, and coverage violations. Experiments currently assume homogeneous vehicles, deterministic Euclidean travel distances, linear energy consumption, and full recharging at stations unless noted in the experiment README.
@@ -63,6 +64,7 @@ python3 src/experiments/week1/compare_or_tools_baselines.py
 python3 src/experiments/week2/compare_week2_baselines.py --scales 50 100 200 --seed 20260621 --or-time-limit 8
 python3 src/experiments/week3/compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
 python3 src/experiments/week4/compare_week4_methods.py
+python3 src/experiments/week5/compare_week5_methods.py --scales 20 50 100 --instances-per-scale 12 --seed 20260713
 ```
 
 ---
@@ -81,7 +83,8 @@ This structure is **mandatory** — please keep it intact.
  │   ├── week1/            ← OR-Tools routing baselines
  │   ├── week2/            ← EVRP-TW baseline comparison
  │   ├── week3/            ← controlled greedy-policy comparison
- │   └── week4/            ← composite-score method and further experiments
+ │   ├── week4/            ← composite-score method and further experiments
+ │   └── week5/            ← inter-route local search + consolidation checkpoint
  └── results/              ← selected figures and compact results
 FURP_Showcase.pdf         ← your poster / presentation PDF, in the repo root
 ```
@@ -139,6 +142,7 @@ Any **leave of absence** or **withdrawal** must be notified to us **by email** �
 - [x] Added Week 2 EVRP-TW baseline comparison artifacts
 - [x] Added Week 3 baseline reproduction with runtime and feasibility logs
 - [x] Added Week 4 composite-score method and controlled experiments
+- [x] Added Week 5 inter-route local search, reproducibility check, and checkpoint note
 - [x] Started `docs/00_weekly.md`
 - [x] Created my first file in `docs/meeting_notes/`
 - [ ] Confirm the final cited paper and formal experimental protocol (see `docs/reading_notes/`)

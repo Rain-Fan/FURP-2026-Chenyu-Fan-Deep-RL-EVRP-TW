@@ -12,7 +12,8 @@ src/
     week1/              OR-Tools routing baselines
     week2/              EVRP-TW baseline comparison
     week3/              controlled greedy-policy comparison
-    week4/              composite-score method improvement + 2-opt (new)
+    week4/              composite-score method improvement + 2-opt
+    week5/              inter-route local search + consolidation (new)
   results/              figures generated from local result files
 ```
 
@@ -46,6 +47,19 @@ python3 src/experiments/week4/compare_week4_methods.py --scales 20 50 100 --inst
 
 # Generate the week4 matplotlib figures from the committed results
 python3 src/experiments/week4/visualize_week4.py
+```
+
+Week 5:
+
+```bash
+# Controlled A/B/C/D comparison (adds inter-route local search on top of week 4)
+python3 src/experiments/week5/compare_week5_methods.py --scales 20 50 100 --instances-per-scale 12 --seed 20260713
+
+# Determinism / reproducibility check across repeated runs
+python3 src/experiments/week5/reproducibility_check.py --scales 20 50 100 --instances-per-scale 5 --repeats 3
+
+# Generate the week5 matplotlib figures from the committed results
+python3 src/experiments/week5/visualize_week5.py
 ```
 
 Research visualizations:

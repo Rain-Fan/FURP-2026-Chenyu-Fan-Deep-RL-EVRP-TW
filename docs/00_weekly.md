@@ -27,8 +27,63 @@
 **Links (optional):** _commits, notebooks, docs, datasets..._
 
 ---
-
 <!-- =================  YOUR ENTRIES BELOW  ================= -->
+
+
+### Week 5 — 2026-07-13
+
+**Attended this week's meeting:** Yes
+
+**Progress this week**
+- Treated Week 5 as the consolidation week described in the lab, following Track
+  B (consolidate/verify) and Track C (one focused extension) since Weeks 1-4
+  were already complete.
+- Track C: implemented Method D = the Week 4 composite-score + 2-opt method plus
+  feasibility-aware inter-route local search (or-opt relocation and customer
+  swap), which is exactly the next step the Week 4 report recommended.
+- Reused the Week 3 instance generator and the Week 4 construction / 2-opt /
+  feasibility code unchanged, so Method D differs from Method C only by the new
+  inter-route step (controlled comparison).
+- Ran the controlled A/B/C/D comparison over 3 scales x 3 stress profiles x 12
+  instances = 324 runs, all locally.
+- Result: Method D closes the Week 4 medium-scale gap. Method C was worse than
+  the nearest-customer baseline at n=50 (+1.6%) and n=100 (+2.7%); Method D is
+  now shorter than the baseline on every scale and profile by about 9-16%, and
+  beats Method C by about 6-16%, while keeping the same feasibility.
+- Track B: wrote a reproducibility check that solves each instance 3 times and
+  confirms identical routes and objective. All 135 checks pass, so the results
+  are deterministic with a fixed seed.
+- Added four matplotlib figures (objective, gap-vs-baseline, local-search gain,
+  representative routes), two cross-week SVGs, and the required project
+  checkpoint note.
+
+**Challenges & blockers**
+- Two small-battery n=20 instances stay infeasible for both C and D because the
+  failure happens during greedy construction; inter-route moves only reorder an
+  already feasible solution, so they cannot repair coverage.
+- Inter-route search is O(n^2) per route pair, so Method D at n=100 takes about
+  0.85 s per instance versus 0.03 s for Method C. Fine at these scales but needs
+  a neighbourhood restriction before large benchmark instances.
+
+**Next steps**
+- Add a construction-stage / station-insertion repair so the two infeasible
+  small-battery instances can be recovered, then re-run for 108/108 feasibility.
+- Reconstruct the Schneider EVRP-TW benchmark format and run Method D on a few
+  standard instances to compare against published baselines.
+
+**Hours spent (optional):** 28 hours
+
+**Links (optional):**
+- Week 5 project checkpoint note: `docs/week5_checkpoint.md`
+- Week 5 experiment code: `src/experiments/week5/compare_week5_methods.py`
+- Week 5 inter-route operators: `src/experiments/week5/inter_route_moves.py`
+- Week 5 reproducibility check: `src/experiments/week5/reproducibility_check.py`
+- Week 5 experiment README: `src/experiments/week5/README.md`
+- Week 5 summary table: `src/experiments/week5/results/week5_results.md`
+- Week 5 D-vs-references table: `src/experiments/week5/results/week5_comparison.csv`
+- Week 5 reproducibility report: `src/experiments/week5/results/reproducibility_report.md`
+- Week 5 figures: `src/experiments/week5/results/week5_*.png`
+
 
 ### Week 4 — 2026-07-06
 

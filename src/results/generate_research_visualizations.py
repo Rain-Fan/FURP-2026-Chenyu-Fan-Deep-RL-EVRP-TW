@@ -15,6 +15,7 @@ OUT_DIR = Path(__file__).resolve().parent
 WEEK2_JSON = ROOT / "src" / "experiments" / "week2" / "results" / "week2_results.json"
 WEEK3_JSON = ROOT / "src" / "experiments" / "week3" / "results" / "week3_results.json"
 WEEK4_JSON = ROOT / "src" / "experiments" / "week4" / "results" / "week4_results.json"
+WEEK5_JSON = ROOT / "src" / "experiments" / "week5" / "results" / "week5_results.json"
 
 PALETTE = {
     "tested": "#dc2626",
@@ -141,6 +142,7 @@ def short_method(name: str) -> str:
         "A_due_time_priority": "A: due-time",
         "B_nearest_customer": "B: nearest",
         "C_composite_score": "C: composite+2opt",
+        "D_composite_inter_route": "D: +inter-route",
     }
     return mapping.get(name, name)
 
@@ -401,13 +403,88 @@ def generate_week4_route_visualization() -> Path:
     return path
 
 
+# ---------------------------------------------------------------------------
+# Week 5: inter-route local-search visualizations
+# ---------------------------------------------------------------------------
+
+def generate_week5_performance_visualization() -> Path:
+    """Mean feasible objective for D vs C vs B across scales (baseline profile)."""
+    data = load_json(WEEK5_JSON)["aggregate"]
+    baseline = [row for row in data if row["profile"] == "baseline"]
+    scales = sorted({int(row["scale"]) for row in baseline})
+    methods = ["D_composite_inter_route", "C_composite_score", "B_nearest_customer"]
+    colors = {
+        "D_composite_inter_route": PALETTE["tested"],
+        "C_composite_score": PALETTE["amber"],
+        "B_nearest_customer": PALETTE["baseline"],
+    }
+    body = [
+        text(40, 42, "Week 5 inter-route local search: performance (baseline profile)", 24, "800"),
+        text(40, 68, "Composite + 2-opt + inter-route LS (D) vs composite + 2-opt (C) vs nearest-customer (B)", 14, "400", PALETTE["muted"]),
+        panel(40, 95, 500, 520, "Mean feasible objective", "Total route distance — lower is better"),
+        panel(560, 95, 500, 520, "Mean vehicles used", "Fewer vehicles usually means tighter routing"),
+        draw_grouped_bars(baseline, 105, 180, 390, 330, scales, methods, "mean_objective_feasible", colors),
+        draw_grouped_bars(baseline, 625, 180, 390, 330, scales, methods, "mean_vehicles_used", colors),
+        text(300, 560, "Customers", 13, "700", PALETTE["slate"], "middle"),
+        text(820, 560, "Customers", 13, "700", PALETTE["slate"], "middle"),
+        legend([(short_method(m), colors[m]) for m in methods], 180, 650),
+    ]
+    path = OUT_DIR / "week5_performance_summary.svg"
+    write_svg(path, "\n".join(body), 1100, 700)
+    return path
+
+
+def load_week5_instance(scale: int = 50):
+    """Load one Week 5 instance and its per-method result rows (baseline profile)."""
+    sys.path.insert(0, str(ROOT / "src" / "experiments" / "week3"))
+    sys.path.insert(0, str(ROOT / "src" / "experiments" / "week4"))
+    sys.path.insert(0, str(ROOT / "src" / "experiments" / "week5"))
+    from compare_week3_baselines import generate_instance  # noqa: E402
+    from compare_week4_methods import apply_profile  # noqa: E402
+
+    data = load_json(WEEK5_JSON)["instances"]
+    baseline_rows = [
+        r for r in data
+        if int(r["scale"]) == scale and r["profile"] == "baseline"
+    ]
+    selected_seed = min(int(r["seed"]) for r in baseline_rows)
+    instance = apply_profile(generate_instance(scale, selected_seed), "baseline")
+    rows = [r for r in baseline_rows if int(r["seed"]) == selected_seed]
+    return instance, rows
+
+
+def generate_week5_route_visualization() -> Path:
+    """Three-panel route footprint: Method B, C, and D on the same instance."""
+    instance, rows = load_week5_instance(scale=50)
+    by_method = {str(row["method"]): row for row in rows}
+    colors = {
+        "B_nearest_customer": PALETTE["baseline"],
+        "C_composite_score": PALETTE["amber"],
+        "D_composite_inter_route": PALETTE["tested"],
+    }
+    panels = []
+    panel_w, panel_h = 330, 520
+    for i, method in enumerate(["B_nearest_customer", "C_composite_score", "D_composite_inter_route"]):
+        px = 40 + i * (panel_w + 20)
+        row = by_method.get(method, {})
+        panels.append(draw_route_panel(instance, row, px, 95, panel_w, panel_h, colors[method]))
+    body = [
+        text(40, 42, "Week 5 representative route footprint (3 methods)", 26, "800"),
+        text(40, 68, "Same 50-customer instance: inter-route moves (D) remove crossings C left behind", 14, "400", PALETTE["muted"]),
+        *panels,
+    ]
+    path = OUT_DIR / "week5_representative_routes.svg"
+    write_svg(path, "\n".join(body), 1060, 660)
+    return path
+
+
 def generate_index(paths: list[Path]) -> Path:
     week3 = load_json(WEEK3_JSON)
     comparison = week3["comparison"]
     lines = [
         "# Research Visualization Index",
         "",
-        "Generated from the existing Week 2, Week 3, and Week 4 experiment result files.",
+        "Generated from the existing Week 2, Week 3, Week 4, and Week 5 experiment result files.",
         "",
         "## Figures",
         "",
@@ -466,6 +543,35 @@ def generate_index(paths: list[Path]) -> Path:
             "",
         ]
     )
+
+    week5 = load_json(WEEK5_JSON)
+    week5_cmp = week5["comparison"]
+    lines.extend(
+        [
+            "## Week 5 headline deltas (Method D vs references, baseline profile)",
+            "",
+            "| Customers | Reference | Feasibility delta D-ref | Objective delta D-ref (%) |",
+            "|---:|---|---:|---:|",
+        ]
+    )
+    for row in week5_cmp:
+        if row["profile"] != "baseline":
+            continue
+        pct = row["mean_feasible_objective_pct"]
+        pct_text = f"{pct:.2f}" if pct is not None else "NA"
+        lines.append(
+            f"| {row['scale']} | {short_method(row['reference'])} | "
+            f"{row['feasibility_rate_delta']:.3f} | {pct_text} |"
+        )
+    lines.extend(
+        [
+            "",
+            "D is `D_composite_inter_route` (Method C plus inter-route or-opt + swap).",
+            "Negative objective percent means D found shorter feasible routes; at n=50 and",
+            "n=100 D is now below the baseline, closing the Week 4 medium-scale gap.",
+            "",
+        ]
+    )
     path = OUT_DIR / "research_visualizations.md"
     path.write_text("\n".join(lines), encoding="utf-8")
     return path
@@ -480,6 +586,8 @@ def main() -> None:
         generate_week4_performance_visualization(),
         generate_week4_profiles_visualization(),
         generate_week4_route_visualization(),
+        generate_week5_performance_visualization(),
+        generate_week5_route_visualization(),
     ]
     index = generate_index(paths)
     for path in [*paths, index]:
