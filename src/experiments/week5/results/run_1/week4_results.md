@@ -104,3 +104,4 @@ Positive feasibility delta = C is more often feasible. Negative objective delta 
 - 2-opt moves: 0
 - Diagnosis: infeasible route; inspect listed constraint violations
 - Violations: ['unserved customers: [7, 20, 23, 31, 89, 94, 99]', 'missing customers: [7, 20, 23, 31, 89, 94, 99]']
+
