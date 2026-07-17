@@ -1,39 +1,39 @@
 Week 4 method-improvement local run log
 
-Run started: 2026-07-17 16:21:07 CST
+Run started: 2026-07-17 15:49:37 CST
 Command: /Users/rain/Desktop/EVRP-TW-Research/src/experiments/week4/compare_week4_methods.py --scales 20 50 100 --instances-per-scale 12 --seed 20260706 --profiles baseline tight_tw small_battery --results-dir /Users/rain/Desktop/EVRP-TW-Research/src/experiments/week5/results/run_1
 Python: 3.14.0
 Platform: macOS-15.6-arm64-arm-64bit-Mach-O
 Processor: arm
 
 Aggregate results:
-- profile=baseline, method=C_composite_score, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=437.0192146020888, mean_runtime_sec=0.001088
+- profile=baseline, method=C_composite_score, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=437.0192146020888, mean_runtime_sec=0.001016
 - profile=baseline, method=A_due_time_priority, customers=20, feasible=3/12, feasibility_rate=0.250, mean_feasible_objective=753.5389466322067, mean_runtime_sec=0.000254
-- profile=baseline, method=B_nearest_customer, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=449.47872800577693, mean_runtime_sec=0.000249
-- profile=baseline, method=C_composite_score, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=759.2254683446766, mean_runtime_sec=0.006590
-- profile=baseline, method=A_due_time_priority, customers=50, feasible=7/12, feasibility_rate=0.583, mean_feasible_objective=1929.1378778256587, mean_runtime_sec=0.001343
-- profile=baseline, method=B_nearest_customer, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=724.768676734124, mean_runtime_sec=0.001392
-- profile=baseline, method=C_composite_score, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1115.3842894215659, mean_runtime_sec=0.029165
-- profile=baseline, method=A_due_time_priority, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=3833.4164371104407, mean_runtime_sec=0.006575
-- profile=baseline, method=B_nearest_customer, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1132.4842447129522, mean_runtime_sec=0.007267
-- profile=tight_tw, method=C_composite_score, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=436.8721625205666, mean_runtime_sec=0.000988
-- profile=tight_tw, method=A_due_time_priority, customers=20, feasible=4/12, feasibility_rate=0.333, mean_feasible_objective=767.741015318293, mean_runtime_sec=0.000251
-- profile=tight_tw, method=B_nearest_customer, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=449.47872800577693, mean_runtime_sec=0.000243
-- profile=tight_tw, method=C_composite_score, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=768.4601626609933, mean_runtime_sec=0.007115
-- profile=tight_tw, method=A_due_time_priority, customers=50, feasible=8/12, feasibility_rate=0.667, mean_feasible_objective=1912.129595266696, mean_runtime_sec=0.001350
-- profile=tight_tw, method=B_nearest_customer, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=723.9983384258211, mean_runtime_sec=0.001378
-- profile=tight_tw, method=C_composite_score, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1211.183071989535, mean_runtime_sec=0.028287
-- profile=tight_tw, method=A_due_time_priority, customers=100, feasible=11/12, feasibility_rate=0.917, mean_feasible_objective=3853.1213877382083, mean_runtime_sec=0.006502
-- profile=tight_tw, method=B_nearest_customer, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1123.095708462787, mean_runtime_sec=0.007191
-- profile=small_battery, method=C_composite_score, customers=20, feasible=11/12, feasibility_rate=0.917, mean_feasible_objective=464.91860998932464, mean_runtime_sec=0.000616
-- profile=small_battery, method=A_due_time_priority, customers=20, feasible=0/12, feasibility_rate=0.000, mean_feasible_objective=None, mean_runtime_sec=0.000229
-- profile=small_battery, method=B_nearest_customer, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=471.6821093282319, mean_runtime_sec=0.000246
-- profile=small_battery, method=C_composite_score, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=834.312451131749, mean_runtime_sec=0.004268
-- profile=small_battery, method=A_due_time_priority, customers=50, feasible=0/12, feasibility_rate=0.000, mean_feasible_objective=None, mean_runtime_sec=0.001277
-- profile=small_battery, method=B_nearest_customer, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=843.9795576114701, mean_runtime_sec=0.001353
-- profile=small_battery, method=C_composite_score, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1225.5243257719887, mean_runtime_sec=0.022052
-- profile=small_battery, method=A_due_time_priority, customers=100, feasible=0/12, feasibility_rate=0.000, mean_feasible_objective=None, mean_runtime_sec=0.006254
-- profile=small_battery, method=B_nearest_customer, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1168.7922279242564, mean_runtime_sec=0.006702
+- profile=baseline, method=B_nearest_customer, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=449.47872800577693, mean_runtime_sec=0.000255
+- profile=baseline, method=C_composite_score, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=759.2254683446766, mean_runtime_sec=0.006713
+- profile=baseline, method=A_due_time_priority, customers=50, feasible=7/12, feasibility_rate=0.583, mean_feasible_objective=1929.1378778256587, mean_runtime_sec=0.001372
+- profile=baseline, method=B_nearest_customer, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=724.768676734124, mean_runtime_sec=0.001416
+- profile=baseline, method=C_composite_score, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1115.3842894215659, mean_runtime_sec=0.030139
+- profile=baseline, method=A_due_time_priority, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=3833.4164371104407, mean_runtime_sec=0.006694
+- profile=baseline, method=B_nearest_customer, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1132.4842447129522, mean_runtime_sec=0.007361
+- profile=tight_tw, method=C_composite_score, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=436.8721625205666, mean_runtime_sec=0.000993
+- profile=tight_tw, method=A_due_time_priority, customers=20, feasible=4/12, feasibility_rate=0.333, mean_feasible_objective=767.741015318293, mean_runtime_sec=0.000254
+- profile=tight_tw, method=B_nearest_customer, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=449.47872800577693, mean_runtime_sec=0.000244
+- profile=tight_tw, method=C_composite_score, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=768.4601626609933, mean_runtime_sec=0.007208
+- profile=tight_tw, method=A_due_time_priority, customers=50, feasible=8/12, feasibility_rate=0.667, mean_feasible_objective=1912.129595266696, mean_runtime_sec=0.001379
+- profile=tight_tw, method=B_nearest_customer, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=723.9983384258211, mean_runtime_sec=0.001391
+- profile=tight_tw, method=C_composite_score, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1211.183071989535, mean_runtime_sec=0.029145
+- profile=tight_tw, method=A_due_time_priority, customers=100, feasible=11/12, feasibility_rate=0.917, mean_feasible_objective=3853.1213877382083, mean_runtime_sec=0.006657
+- profile=tight_tw, method=B_nearest_customer, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1123.095708462787, mean_runtime_sec=0.007313
+- profile=small_battery, method=C_composite_score, customers=20, feasible=11/12, feasibility_rate=0.917, mean_feasible_objective=464.91860998932464, mean_runtime_sec=0.000625
+- profile=small_battery, method=A_due_time_priority, customers=20, feasible=0/12, feasibility_rate=0.000, mean_feasible_objective=None, mean_runtime_sec=0.000231
+- profile=small_battery, method=B_nearest_customer, customers=20, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=471.6821093282319, mean_runtime_sec=0.000241
+- profile=small_battery, method=C_composite_score, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=834.312451131749, mean_runtime_sec=0.004324
+- profile=small_battery, method=A_due_time_priority, customers=50, feasible=0/12, feasibility_rate=0.000, mean_feasible_objective=None, mean_runtime_sec=0.001292
+- profile=small_battery, method=B_nearest_customer, customers=50, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=843.9795576114701, mean_runtime_sec=0.001370
+- profile=small_battery, method=C_composite_score, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1225.5243257719887, mean_runtime_sec=0.022845
+- profile=small_battery, method=A_due_time_priority, customers=100, feasible=0/12, feasibility_rate=0.000, mean_feasible_objective=None, mean_runtime_sec=0.006427
+- profile=small_battery, method=B_nearest_customer, customers=100, feasible=12/12, feasibility_rate=1.000, mean_feasible_objective=1168.7922279242564, mean_runtime_sec=0.006849
 
 Output files:
 - week4_results.json
