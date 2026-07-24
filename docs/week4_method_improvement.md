@@ -8,6 +8,12 @@ results with evidence.
 
 ---
 
+## Meeting Notes
+
+**Week 4 Meeting:** No meeting was held due to weather conditions.
+
+---
+
 ## 1. Motivation
 
 Week 3 ran a controlled comparison between two greedy customer-selection
