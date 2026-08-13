@@ -75,6 +75,9 @@ class Week7ExperimentTests(unittest.TestCase):
             self.assertEqual(len(payload["instances"]), 4)
             self.assertGreater(len(payload["action_trace"]), 0)
             self.assertGreater((output_dir / "dqn_checkpoint.npz").stat().st_size, 1000)
+            aggregate_bytes = (output_dir / "week7_aggregate.csv").read_bytes()
+            self.assertIn(b"\n", aggregate_bytes)
+            self.assertNotIn(b"\r\n", aggregate_bytes)
 
 
 if __name__ == "__main__":
