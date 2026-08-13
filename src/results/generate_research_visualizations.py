@@ -16,6 +16,7 @@ WEEK2_JSON = ROOT / "src" / "experiments" / "week2" / "results" / "week2_results
 WEEK3_JSON = ROOT / "src" / "experiments" / "week3" / "results" / "week3_results.json"
 WEEK4_JSON = ROOT / "src" / "experiments" / "week4" / "results" / "week4_results.json"
 WEEK5_JSON = ROOT / "src" / "experiments" / "week5" / "results" / "week5_results.json"
+WEEK6_JSON = ROOT / "src" / "experiments" / "week6" / "results" / "week6_results.json"
 
 PALETTE = {
     "tested": "#dc2626",
@@ -143,6 +144,8 @@ def short_method(name: str) -> str:
         "B_nearest_customer": "B: nearest",
         "C_composite_score": "C: composite+2opt",
         "D_composite_inter_route": "D: +inter-route",
+        "E_fixed_portfolio": "E-fixed: portfolio",
+        "E_adaptive_portfolio": "E-adaptive: UCB1",
     }
     return mapping.get(name, name)
 
@@ -478,13 +481,191 @@ def generate_week5_route_visualization() -> Path:
     return path
 
 
+# ---------------------------------------------------------------------------
+# Week 6: portfolio + adaptive operator-selection visualizations
+# ---------------------------------------------------------------------------
+
+def draw_annotated_grouped_bars(
+    rows: list[dict[str, object]],
+    x: int,
+    y: int,
+    w: int,
+    h: int,
+    groups: list[int],
+    series: list[str],
+    value_key: str,
+    colors: dict[str, str],
+    decimals: int,
+) -> str:
+    """Draw grouped bars and print the measured value above each bar."""
+    parts = [draw_grouped_bars(rows, x, y, w, h, groups, series, value_key, colors)]
+    values = [float(row[value_key] or 0) for row in rows]
+    max_value = max(values) * 1.15 if values else 1.0
+    group_w = w / len(groups)
+    bar_gap = 5
+    bar_w = min(42, (group_w - 28) / max(1, len(series)) - bar_gap)
+    row_map = {(int(row["scale"]), str(row["method"])): row for row in rows}
+    for group_index, group in enumerate(groups):
+        group_x = x + group_w * group_index + group_w / 2
+        for series_index, name in enumerate(series):
+            row = row_map.get((group, name))
+            if not row:
+                continue
+            value = float(row[value_key] or 0)
+            bar_x = group_x - (len(series) * (bar_w + bar_gap) - bar_gap) / 2 + series_index * (bar_w + bar_gap)
+            bar_height = 0 if max_value == 0 else value / max_value * h
+            label_y = y + h - bar_height - 7 - (series_index % 2) * 12
+            parts.append(text(bar_x + bar_w / 2, label_y, f"{value:.{decimals}f}", 8, "600", PALETTE["slate"], "middle"))
+    return "\n".join(parts)
+
+
+def generate_week6_performance_visualization() -> Path:
+    """Portfolio quality/runtime trade-off on the baseline profile."""
+    data = load_json(WEEK6_JSON)["aggregate"]
+    baseline = [row for row in data if row["profile"] == "baseline"]
+    scales = sorted({int(row["scale"]) for row in baseline})
+    methods = [
+        "B_nearest_customer",
+        "D_composite_inter_route",
+        "E_fixed_portfolio",
+        "E_adaptive_portfolio",
+    ]
+    colors = {
+        "B_nearest_customer": PALETTE["baseline"],
+        "D_composite_inter_route": PALETTE["amber"],
+        "E_fixed_portfolio": PALETTE["purple"],
+        "E_adaptive_portfolio": PALETTE["tested"],
+    }
+    body = [
+        text(40, 42, "Week 6 portfolio + UCB1: measured performance (baseline profile)", 24, "800"),
+        text(40, 68, "Means over 12 locally generated instances per scale; labels are read from week6_results.json", 14, "400", PALETTE["muted"]),
+        panel(40, 95, 500, 520, "Mean feasible objective", "Total route distance — lower is better"),
+        panel(560, 95, 500, 520, "Mean runtime", "Wall-clock seconds — lower is faster"),
+        draw_annotated_grouped_bars(baseline, 105, 180, 390, 330, scales, methods, "mean_objective_feasible", colors, 2),
+        draw_annotated_grouped_bars(baseline, 625, 180, 390, 330, scales, methods, "mean_runtime_sec", colors, 3),
+        text(300, 560, "Customers", 13, "700", PALETTE["slate"], "middle"),
+        text(820, 560, "Customers", 13, "700", PALETTE["slate"], "middle"),
+        legend([(short_method(method), colors[method]) for method in methods], 80, 650),
+    ]
+    path = OUT_DIR / "week6_performance_summary.svg"
+    write_svg(path, "\n".join(body), 1100, 700)
+    return path
+
+
+def generate_week6_operator_visualization() -> Path:
+    """Summarize actual UCB1 operator selections and rewards from all trace rows."""
+    trace = load_json(WEEK6_JSON)["adaptive_trace"]
+    actions = ["two_opt", "relocate", "swap"]
+    colors = {
+        "two_opt": PALETTE["green"],
+        "relocate": PALETTE["tested"],
+        "swap": PALETTE["purple"],
+    }
+    rows = []
+    for action in actions:
+        selected = [row for row in trace if row["action"] == action]
+        rows.append(
+            {
+                "action": action,
+                "selections": len(selected),
+                "accepted": sum(bool(row["accepted"]) for row in selected),
+                "mean_reward": mean(float(row["reward"]) for row in selected),
+            }
+        )
+    best_reward_row = max(rows, key=lambda row: float(row["mean_reward"]))
+
+    def action_bars(value_key: str, x: int, y: int, w: int, h: int, decimals: int) -> str:
+        values = [float(row[value_key]) for row in rows]
+        max_value = max(values) * 1.18
+        parts = [draw_axes(x, y, w, h, max_value)]
+        group_w = w / len(rows)
+        bar_w = 62
+        for index, row in enumerate(rows):
+            value = float(row[value_key])
+            center_x = x + group_w * index + group_w / 2
+            bar_height = value / max_value * h
+            parts.append(rect(center_x - bar_w / 2, y + h - bar_height, bar_w, bar_height, colors[str(row["action"])], rx=3))
+            parts.append(text(center_x, y + h - bar_height - 9, f"{value:.{decimals}f}", 12, "700", PALETTE["slate"], "middle"))
+            parts.append(text(center_x, y + h + 24, row["action"], 12, "600", PALETTE["slate"], "middle"))
+        return "\n".join(parts)
+
+    body = [
+        text(40, 42, "Week 6 adaptive operator selection: observed UCB1 behavior", 25, "800"),
+        text(40, 68, f"All {len(trace)} trace rows from the local 3-profile × 3-scale experiment", 14, "400", PALETTE["muted"]),
+        panel(40, 95, 500, 520, "Operator selections", "How often UCB1 selected each action"),
+        panel(560, 95, 500, 520, "Mean normalized reward", "Accepted relative improvement, averaged over all selections"),
+        action_bars("selections", 105, 180, 390, 330, 0),
+        action_bars("mean_reward", 625, 180, 390, 330, 5),
+        text(300, 560, "Operator", 13, "700", PALETTE["slate"], "middle"),
+        text(820, 560, "Operator", 13, "700", PALETTE["slate"], "middle"),
+        text(
+            550,
+            650,
+            f"{best_reward_row['action']} was selected {best_reward_row['selections']} times and achieved "
+            f"the highest mean reward ({float(best_reward_row['mean_reward']):.5f})",
+            13,
+            "600",
+            PALETTE["slate"],
+            "middle",
+        ),
+    ]
+    path = OUT_DIR / "week6_adaptive_operator_summary.svg"
+    write_svg(path, "\n".join(body), 1100, 700)
+    return path
+
+
+def load_week6_instance(scale: int = 50):
+    """Rebuild one Week 6 instance and load its measured per-method routes."""
+    sys.path.insert(0, str(ROOT / "src" / "experiments" / "week3"))
+    sys.path.insert(0, str(ROOT / "src" / "experiments" / "week4"))
+    from compare_week3_baselines import generate_instance  # noqa: E402
+    from compare_week4_methods import apply_profile  # noqa: E402
+
+    data = load_json(WEEK6_JSON)["instances"]
+    baseline_rows = [
+        row for row in data
+        if int(row["scale"]) == scale and row["profile"] == "baseline"
+    ]
+    selected_seed = min(int(row["seed"]) for row in baseline_rows)
+    instance = apply_profile(generate_instance(scale, selected_seed), "baseline")
+    rows = [row for row in baseline_rows if int(row["seed"]) == selected_seed]
+    return instance, rows
+
+
+def generate_week6_route_visualization() -> Path:
+    """Route footprints for Week 5 D, fixed portfolio, and adaptive portfolio."""
+    instance, rows = load_week6_instance(scale=50)
+    by_method = {str(row["method"]): row for row in rows}
+    methods = ["D_composite_inter_route", "E_fixed_portfolio", "E_adaptive_portfolio"]
+    colors = {
+        "D_composite_inter_route": PALETTE["amber"],
+        "E_fixed_portfolio": PALETTE["purple"],
+        "E_adaptive_portfolio": PALETTE["tested"],
+    }
+    panels = []
+    panel_w, panel_h = 330, 520
+    for index, method in enumerate(methods):
+        panel_x = 40 + index * (panel_w + 20)
+        row = dict(by_method[method])
+        row["objective_distance"] = row["objective"]
+        panels.append(draw_route_panel(instance, row, panel_x, 95, panel_w, panel_h, colors[method]))
+    body = [
+        text(40, 42, "Week 6 representative route footprint (same local instance)", 25, "800"),
+        text(40, 68, "Week 5 D → fixed portfolio → UCB1 adaptive portfolio on the same 50-customer seed", 14, "400", PALETTE["muted"]),
+        *panels,
+    ]
+    path = OUT_DIR / "week6_representative_routes.svg"
+    write_svg(path, "\n".join(body), 1060, 660)
+    return path
+
+
 def generate_index(paths: list[Path]) -> Path:
     week3 = load_json(WEEK3_JSON)
     comparison = week3["comparison"]
     lines = [
         "# Research Visualization Index",
         "",
-        "Generated from the existing Week 2, Week 3, Week 4, and Week 5 experiment result files.",
+        "Generated from the existing Week 2–Week 6 experiment result files.",
         "",
         "## Figures",
         "",
@@ -572,6 +753,50 @@ def generate_index(paths: list[Path]) -> Path:
             "",
         ]
     )
+
+    week6 = load_json(WEEK6_JSON)
+    week6_cmp = [
+        row for row in week6["comparisons"]
+        if row["tested_method"] == "E_adaptive_portfolio"
+        and row["reference_method"] == "D_composite_inter_route"
+    ]
+    profile_order = {"baseline": 0, "tight_tw": 1, "small_battery": 2}
+    profile_labels = {"baseline": "baseline", "tight_tw": "tight TW", "small_battery": "small battery"}
+    lines.extend(
+        [
+            "## Week 6 headline deltas (E-adaptive vs Week 5 D)",
+            "",
+            "Negative objective percentage means E-adaptive finds shorter feasible routes.",
+            "Feasibility delta is zero in every cell.",
+            "",
+            "| Profile | Customers | Objective delta (%) | Runtime delta (s) | W/T/L |",
+            "|---|---:|---:|---:|---:|",
+        ]
+    )
+    for row in sorted(week6_cmp, key=lambda item: (profile_order[str(item["profile"])], int(item["scale"]))):
+        lines.append(
+            f"| {profile_labels[str(row['profile'])]} | {row['scale']} | "
+            f"{row['mean_feasible_objective_pct']:+.2f} | {row['mean_runtime_delta_sec']:+.3f} | "
+            f"{row['wins']}/{row['ties']}/{row['losses']} |"
+        )
+    lines.extend(
+        [
+            "",
+            "The integrated portfolio improves mean route quality in all nine cells. The",
+            "adaptive method does not win every instance, so the figures and full table also",
+            "show its losses and runtime trade-off rather than only aggregate gains.",
+            "",
+            "## Detailed Week 6 PNG figures",
+            "",
+            "- [Week 6 workflow](../experiments/week6/results/week6_workflow.png)",
+            "- [Week 6 objective and feasibility](../experiments/week6/results/week6_objective_feasibility.png)",
+            "- [Week 6 quality/runtime trade-off](../experiments/week6/results/week6_quality_runtime.png)",
+            "- [Week 6 operator heatmap](../experiments/week6/results/week6_operator_heatmap.png)",
+            "- [Week 6 adaptive convergence](../experiments/week6/results/week6_convergence.png)",
+            "- [Week 6 improvement distribution](../experiments/week6/results/week6_improvement_distribution.png)",
+            "",
+        ]
+    )
     path = OUT_DIR / "research_visualizations.md"
     path.write_text("\n".join(lines), encoding="utf-8")
     return path
@@ -588,6 +813,9 @@ def main() -> None:
         generate_week4_route_visualization(),
         generate_week5_performance_visualization(),
         generate_week5_route_visualization(),
+        generate_week6_performance_visualization(),
+        generate_week6_operator_visualization(),
+        generate_week6_route_visualization(),
     ]
     index = generate_index(paths)
     for path in [*paths, index]:

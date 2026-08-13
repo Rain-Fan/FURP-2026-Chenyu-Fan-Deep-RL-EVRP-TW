@@ -131,4 +131,7 @@ Generated:
 - `src/results/week4_representative_routes.svg`
 - `src/results/week5_performance_summary.svg`
 - `src/results/week5_representative_routes.svg`
+- `src/results/week6_performance_summary.svg`
+- `src/results/week6_adaptive_operator_summary.svg`
+- `src/results/week6_representative_routes.svg`
 - `src/results/research_visualizations.md`

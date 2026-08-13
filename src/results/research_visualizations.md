@@ -13,12 +13,9 @@ Generated from the existing Week 2–Week 6 experiment result files.
 - [week4_representative_routes.svg](week4_representative_routes.svg)
 - [week5_performance_summary.svg](week5_performance_summary.svg)
 - [week5_representative_routes.svg](week5_representative_routes.svg)
-- [Week 6 workflow](../experiments/week6/results/week6_workflow.png)
-- [Week 6 objective and feasibility](../experiments/week6/results/week6_objective_feasibility.png)
-- [Week 6 quality/runtime trade-off](../experiments/week6/results/week6_quality_runtime.png)
-- [Week 6 operator heatmap](../experiments/week6/results/week6_operator_heatmap.png)
-- [Week 6 adaptive convergence](../experiments/week6/results/week6_convergence.png)
-- [Week 6 improvement distribution](../experiments/week6/results/week6_improvement_distribution.png)
+- [week6_performance_summary.svg](week6_performance_summary.svg)
+- [week6_adaptive_operator_summary.svg](week6_adaptive_operator_summary.svg)
+- [week6_representative_routes.svg](week6_representative_routes.svg)
 
 ## Week 3 headline deltas
 
@@ -71,14 +68,23 @@ Feasibility delta is zero in every cell.
 |---|---:|---:|---:|---:|
 | baseline | 20 | -3.85 | +0.009 | 6/6/0 |
 | baseline | 50 | -7.29 | +0.074 | 10/0/2 |
-| baseline | 100 | -6.01 | +0.289 | 10/0/2 |
+| baseline | 100 | -6.01 | +0.288 | 10/0/2 |
 | tight TW | 20 | -3.30 | +0.009 | 7/5/0 |
 | tight TW | 50 | -4.49 | +0.070 | 8/2/2 |
 | tight TW | 100 | -5.27 | +0.243 | 11/0/1 |
-| small battery | 20 | -6.57 | +0.007 | 10/1/0 |
+| small battery | 20 | -6.57 | +0.006 | 10/1/0 |
 | small battery | 50 | -6.53 | +0.068 | 11/0/1 |
 | small battery | 100 | -4.32 | +0.256 | 10/1/1 |
 
 The integrated portfolio improves mean route quality in all nine cells. The
 adaptive method does not win every instance, so the figures and full table also
 show its losses and runtime trade-off rather than only aggregate gains.
+
+## Detailed Week 6 PNG figures
+
+- [Week 6 workflow](../experiments/week6/results/week6_workflow.png)
+- [Week 6 objective and feasibility](../experiments/week6/results/week6_objective_feasibility.png)
+- [Week 6 quality/runtime trade-off](../experiments/week6/results/week6_quality_runtime.png)
+- [Week 6 operator heatmap](../experiments/week6/results/week6_operator_heatmap.png)
+- [Week 6 adaptive convergence](../experiments/week6/results/week6_convergence.png)
+- [Week 6 improvement distribution](../experiments/week6/results/week6_improvement_distribution.png)
