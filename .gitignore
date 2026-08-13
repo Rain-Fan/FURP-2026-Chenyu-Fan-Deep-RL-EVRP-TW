@@ -24,6 +24,7 @@ Thumbs.db
 *.csv
 *.tsv
 !src/experiments/week6/results/*.csv
+!src/experiments/week7/results/*.csv
 *.zip
 *.tar.gz
 *.h5
