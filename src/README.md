@@ -13,7 +13,8 @@ src/
     week2/              EVRP-TW baseline comparison
     week3/              controlled greedy-policy comparison
     week4/              composite-score method improvement + 2-opt
-    week5/              inter-route local search + consolidation (new)
+    week5/              inter-route local search + consolidation
+    week6/              integrated portfolio + adaptive operator selection (new)
   results/              figures generated from local result files
 ```
 
@@ -60,6 +61,20 @@ python3 src/experiments/week5/reproducibility_check.py --scales 20 50 100 --inst
 
 # Generate the week5 matplotlib figures from the committed results
 python3 src/experiments/week5/visualize_week5.py
+```
+
+Week 6:
+
+```bash
+# Automated unit, integration, schema, reproducibility, and figure tests
+python3 -m unittest discover -s src/experiments/week6/tests -v
+
+# B/D/E-fixed/E-adaptive comparison: 432 method-instance runs
+python3 src/experiments/week6/compare_week6_methods.py --scales 20 50 100 --profiles baseline tight_tw small_battery --instances-per-scale 12 --seed 20260813 --adaptive-steps 12 --patience 4
+
+# Three-repeat deterministic signature check and generated figures
+python3 src/experiments/week6/reproducibility_check.py --scales 20 50 100 --instances-per-scale 3 --repeats 3 --profiles baseline tight_tw small_battery --seed 20260813
+python3 src/experiments/week6/visualize_week6.py
 ```
 
 Research visualizations:

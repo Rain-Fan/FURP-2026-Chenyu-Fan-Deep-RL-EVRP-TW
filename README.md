@@ -40,6 +40,11 @@ implemented and committed components include:
 - Week 3: Controlled greedy-policy comparison and a feasibility-first greedy baseline reproduction (see `src/experiments/week3/`).
 - Week 4: Composite-score greedy method `C_composite_score` with feasibility-aware 2-opt local search and controlled experiments comparing methods A/B/C (see `src/experiments/week4/`).
 - Week 5: Consolidation week — Method D `D_composite_inter_route` adds inter-route local search (or-opt relocation + swap) on top of Method C, a reproducibility/determinism check, and a project checkpoint note (see `src/experiments/week5/` and `docs/week5_checkpoint.md`).
+- Week 6: Integrated nearest/composite construction portfolio with fixed and
+  UCB1-adaptive operator selection, a complete MDP design, 432 controlled runs,
+  learning-ready traces, and six generated figures (see
+  `src/experiments/week6/`, `docs/week6_integration.md`, and
+  `docs/week6_mdp_design.md`).
 - Result tables, route visualisations, run logs, and diagnostic reports under `src/experiments/*/results/` and `src/results/`.
 
 Main evaluation metrics used in experiments: feasibility rate, feasible route cost (objective), route distance, vehicles used, runtime, time-window violations, battery/charging violations, and coverage violations. Experiments currently assume homogeneous vehicles, deterministic Euclidean travel distances, linear energy consumption, and full recharging at stations unless noted in the experiment README.
@@ -65,6 +70,8 @@ python3 src/experiments/week2/compare_week2_baselines.py --scales 50 100 200 --s
 python3 src/experiments/week3/compare_week3_baselines.py --scales 20 50 100 --instances-per-scale 12 --seed 20260630
 python3 src/experiments/week4/compare_week4_methods.py
 python3 src/experiments/week5/compare_week5_methods.py --scales 20 50 100 --instances-per-scale 12 --seed 20260713
+python3 src/experiments/week6/compare_week6_methods.py --scales 20 50 100 --profiles baseline tight_tw small_battery --instances-per-scale 12 --seed 20260813 --adaptive-steps 12 --patience 4
+python3 src/experiments/week6/visualize_week6.py
 ```
 
 ---
@@ -84,7 +91,8 @@ This structure is **mandatory** — please keep it intact.
  │   ├── week2/            ← EVRP-TW baseline comparison
  │   ├── week3/            ← controlled greedy-policy comparison
  │   ├── week4/            ← composite-score method and further experiments
- │   └── week5/            ← inter-route local search + consolidation checkpoint
+ │   ├── week5/            ← inter-route local search + consolidation checkpoint
+ │   └── week6/            ← integrated portfolio + adaptive operator selection
  └── results/              ← selected figures and compact results
 FURP_Showcase.pdf         ← your poster / presentation PDF, in the repo root
 ```
@@ -143,6 +151,8 @@ Any **leave of absence** or **withdrawal** must be notified to us **by email** �
 - [x] Added Week 3 baseline reproduction with runtime and feasibility logs
 - [x] Added Week 4 composite-score method and controlled experiments
 - [x] Added Week 5 inter-route local search, reproducibility check, and checkpoint note
+- [x] Added Week 6 integrated portfolio, adaptive operator traces, MDP design,
+      tests, reproducibility evidence, and visualizations
 - [x] Started `docs/00_weekly.md`
 - [x] Created my first file in `docs/meeting_notes/`
 - [ ] Confirm the final cited paper and formal experimental protocol (see `docs/reading_notes/`)
