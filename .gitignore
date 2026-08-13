@@ -17,11 +17,13 @@ build/
 Thumbs.db
 .idea/
 .vscode/
+.worktrees/
 *.swp
 
 # Data & large files (link to sources instead of committing)
 *.csv
 *.tsv
+!src/experiments/week6/results/*.csv
 *.zip
 *.tar.gz
 *.h5
