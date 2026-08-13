@@ -150,7 +150,8 @@ def _representative_routes(payload, output_dir: Path) -> None:
             ax.plot(points[:, 0], points[:, 1], color=COLORS[method], linewidth=0.9, alpha=0.65)
         ax.scatter([node.x for node in instance.customers], [node.y for node in instance.customers], s=7, color="#94a3b8")
         ax.scatter(instance.depot.x, instance.depot.y, s=45, color="#059669", marker="*")
-        ax.set_title(f"{LABELS[method]}\nobj={row['objective']}", fontsize=9)
+        objective = "N/A" if row["objective"] is None else f"{float(row['objective']):.1f}"
+        ax.set_title(f"{LABELS[method]}\nobj={objective}", fontsize=9)
         ax.set_aspect("equal")
         ax.axis("off")
     fig.suptitle(f"Same held-out instance: {chosen['profile']}, n={chosen['scale']}, seed={chosen['seed']}", fontsize=14, fontweight="bold")

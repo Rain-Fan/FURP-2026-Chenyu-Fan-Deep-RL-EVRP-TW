@@ -7,6 +7,7 @@ have a current reproducible generation path.
 ## Reproduced Locally
 
 Run date: 2026-07-03 (Weeks 1-3), 2026-07-12 (Week 4), 2026-07-17 (Week 5), 2026-08-13 (Week 6)
+and 2026-08-13 (Week 7 self-directed RL extension)
 
 Week 1:
 
@@ -114,6 +115,29 @@ Generated:
 - `src/experiments/week6/results/run_log.txt`
 - `src/experiments/week6/results/week6_*.png` (six figures)
 
+Week 7:
+
+```bash
+python3 -m unittest discover -s src/experiments/week7/tests -p 'test_*.py' -v
+python3 src/experiments/week7/train_week7_rl.py --scales 20 50 100 --profiles baseline tight_tw small_battery --train-instances 8 --eval-instances 6 --train-seed 20270013 --eval-seed 20280013 --epochs 3 --max-steps 12 --patience 4 --hidden-dim 32 --batch-size 32 --replay-capacity 5000 --learning-rate 0.001 --gamma 0.95 --target-sync 100 --agent-seed 20260813
+python3 src/experiments/week7/visualize_week7.py
+python3 src/experiments/week7/reproducibility_check.py
+```
+
+Generated:
+
+- `src/experiments/week7/results/week7_results.json`
+- `src/experiments/week7/results/week7_aggregate.csv`
+- `src/experiments/week7/results/week7_comparison.csv`
+- `src/experiments/week7/results/week7_instances.csv`
+- `src/experiments/week7/results/week7_training_history.csv`
+- `src/experiments/week7/results/week7_results.md`
+- `src/experiments/week7/results/dqn_checkpoint.npz`
+- `src/experiments/week7/results/dqn_checkpoint_manifest.json`
+- `src/experiments/week7/results/reproducibility_report.{json,md}`
+- `src/experiments/week7/results/run_log.txt`
+- `src/experiments/week7/results/week7_*.png` (six figures)
+
 Visualizations:
 
 ```bash
@@ -134,4 +158,7 @@ Generated:
 - `src/results/week6_performance_summary.svg`
 - `src/results/week6_adaptive_operator_summary.svg`
 - `src/results/week6_representative_routes.svg`
+- `src/results/week7_heldout_performance.svg`
+- `src/results/week7_training_summary.svg`
+- `src/results/week7_representative_routes.svg`
 - `src/results/research_visualizations.md`

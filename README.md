@@ -45,6 +45,11 @@ implemented and committed components include:
   learning-ready traces, and six generated figures (see
   `src/experiments/week6/`, `docs/week6_integration.md`, and
   `docs/week6_mdp_design.md`).
+- Week 7: Self-directed complete RL extension — a NumPy Double DQN controls
+  2-opt/relocate/swap in the Week 6 portfolio, with disjoint training/held-out
+  seeds, 432 training episodes, 216 held-out method runs, a reproducible model
+  checkpoint, and honest UCB1 ablations (see `src/experiments/week7/` and
+  `docs/week7_rl_extension.md`).
 - Result tables, route visualisations, run logs, and diagnostic reports under `src/experiments/*/results/` and `src/results/`.
 
 Main evaluation metrics used in experiments: feasibility rate, feasible route cost (objective), route distance, vehicles used, runtime, time-window violations, battery/charging violations, and coverage violations. Experiments currently assume homogeneous vehicles, deterministic Euclidean travel distances, linear energy consumption, and full recharging at stations unless noted in the experiment README.
@@ -72,6 +77,8 @@ python3 src/experiments/week4/compare_week4_methods.py
 python3 src/experiments/week5/compare_week5_methods.py --scales 20 50 100 --instances-per-scale 12 --seed 20260713
 python3 src/experiments/week6/compare_week6_methods.py --scales 20 50 100 --profiles baseline tight_tw small_battery --instances-per-scale 12 --seed 20260813 --adaptive-steps 12 --patience 4
 python3 src/experiments/week6/visualize_week6.py
+python3 src/experiments/week7/train_week7_rl.py --scales 20 50 100 --profiles baseline tight_tw small_battery --train-instances 8 --eval-instances 6 --train-seed 20270013 --eval-seed 20280013 --epochs 3 --max-steps 12 --patience 4
+python3 src/experiments/week7/visualize_week7.py
 ```
 
 ---
@@ -92,7 +99,8 @@ This structure is **mandatory** — please keep it intact.
  │   ├── week3/            ← controlled greedy-policy comparison
  │   ├── week4/            ← composite-score method and further experiments
  │   ├── week5/            ← inter-route local search + consolidation checkpoint
- │   └── week6/            ← integrated portfolio + adaptive operator selection
+ │   ├── week6/            ← integrated portfolio + adaptive operator selection
+ │   └── week7/            ← complete Double-DQN operator-selection prototype
  └── results/              ← selected figures and compact results
 FURP_Showcase.pdf         ← your poster / presentation PDF, in the repo root
 ```
@@ -153,6 +161,8 @@ Any **leave of absence** or **withdrawal** must be notified to us **by email** �
 - [x] Added Week 5 inter-route local search, reproducibility check, and checkpoint note
 - [x] Added Week 6 integrated portfolio, adaptive operator traces, MDP design,
       tests, reproducibility evidence, and visualizations
+- [x] Added Week 7 Double-DQN MDP environment, training/held-out evaluation,
+      checkpoint, ablations, reproducibility evidence, and visualizations
 - [x] Started `docs/00_weekly.md`
 - [x] Created my first file in `docs/meeting_notes/`
 - [ ] Confirm the final cited paper and formal experimental protocol (see `docs/reading_notes/`)

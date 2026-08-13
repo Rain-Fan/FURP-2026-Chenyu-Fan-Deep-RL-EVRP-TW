@@ -17,6 +17,7 @@ WEEK3_JSON = ROOT / "src" / "experiments" / "week3" / "results" / "week3_results
 WEEK4_JSON = ROOT / "src" / "experiments" / "week4" / "results" / "week4_results.json"
 WEEK5_JSON = ROOT / "src" / "experiments" / "week5" / "results" / "week5_results.json"
 WEEK6_JSON = ROOT / "src" / "experiments" / "week6" / "results" / "week6_results.json"
+WEEK7_JSON = ROOT / "src" / "experiments" / "week7" / "results" / "week7_results.json"
 
 PALETTE = {
     "tested": "#dc2626",
@@ -146,6 +147,7 @@ def short_method(name: str) -> str:
         "D_composite_inter_route": "D: +inter-route",
         "E_fixed_portfolio": "E-fixed: portfolio",
         "E_adaptive_portfolio": "E-adaptive: UCB1",
+        "F_dqn_portfolio": "F: Double DQN",
     }
     return mapping.get(name, name)
 
@@ -245,10 +247,15 @@ def transform_points(nodes, x: int, y: int, w: int, h: int):
     return project
 
 
-def draw_route_panel(instance, result: dict[str, object], x: int, y: int, w: int, h: int, color: str) -> str:
+def draw_route_panel(instance, result: dict[str, object], x: int, y: int, w: int, h: int, color: str, *, compact: bool = False) -> str:
     nodes = instance.nodes
     project = transform_points(nodes, x + 22, y + 70, w - 44, h - 105)
-    parts = [panel(x, y, w, h, short_method(str(result["method"])), f"seed={result['seed']}, objective={float(result['objective_distance']):.1f}, feasible={result['feasible']}")]
+    subtitle = (
+        f"seed={result['seed']}, obj={float(result['objective_distance']):.1f}"
+        if compact
+        else f"seed={result['seed']}, objective={float(result['objective_distance']):.1f}, feasible={result['feasible']}"
+    )
+    parts = [panel(x, y, w, h, short_method(str(result["method"])), subtitle)]
     for route in result["routes"]:
         points = [project(instance.node(int(idx))) for idx in route]
         parts.append(polyline(points, color, 1.3, 0.45))
@@ -260,7 +267,8 @@ def draw_route_panel(instance, result: dict[str, object], x: int, y: int, w: int
         parts.append(rect(px - 4, py - 4, 8, 8, PALETTE["amber"], "white", 1))
     dx, dy = project(instance.depot)
     parts.append(circle(dx, dy, 7, PALETTE["green"], "white", 1.5))
-    parts.append(text(x + 18, y + h - 18, "green depot, amber charging stations, gray customers", 11, "400", PALETTE["muted"]))
+    footer = "depot / stations / customers" if compact else "green depot, amber charging stations, gray customers"
+    parts.append(text(x + 18, y + h - 18, footer, 11, "400", PALETTE["muted"]))
     return "\n".join(parts)
 
 
@@ -659,13 +667,123 @@ def generate_week6_route_visualization() -> Path:
     return path
 
 
+# ---------------------------------------------------------------------------
+# Week 7: trainable Double-DQN extension visualizations
+# ---------------------------------------------------------------------------
+
+def generate_week7_performance_visualization() -> Path:
+    """Held-out quality/runtime comparison for D, E-fixed, UCB1, and DQN."""
+    data = load_json(WEEK7_JSON)["aggregate"]
+    baseline = [row for row in data if row["profile"] == "baseline"]
+    scales = sorted({int(row["scale"]) for row in baseline})
+    methods = ["D_composite_inter_route", "E_fixed_portfolio", "E_adaptive_portfolio", "F_dqn_portfolio"]
+    colors = {
+        "D_composite_inter_route": PALETTE["amber"],
+        "E_fixed_portfolio": PALETTE["purple"],
+        "E_adaptive_portfolio": PALETTE["baseline"],
+        "F_dqn_portfolio": PALETTE["tested"],
+    }
+    body = [
+        text(40, 42, "Week 7 Double DQN: held-out EVRP-TW performance", 25, "800"),
+        text(40, 68, "Six unseen seeds per scale; all objective labels come from independently validated feasible routes", 14, "400", PALETTE["muted"]),
+        panel(40, 95, 500, 520, "Mean feasible objective", "Baseline profile — lower is better"),
+        panel(560, 95, 500, 520, "Mean runtime", "Real wall-clock seconds — lower is faster"),
+        draw_annotated_grouped_bars(baseline, 105, 180, 390, 330, scales, methods, "mean_objective_feasible", colors, 2),
+        draw_annotated_grouped_bars(baseline, 625, 180, 390, 330, scales, methods, "mean_runtime_sec", colors, 3),
+        text(300, 560, "Customers", 13, "700", PALETTE["slate"], "middle"),
+        text(820, 560, "Customers", 13, "700", PALETTE["slate"], "middle"),
+        legend([(short_method(method), colors[method]) for method in methods], 95, 650),
+    ]
+    path = OUT_DIR / "week7_heldout_performance.svg"
+    write_svg(path, "\n".join(body), 1100, 700)
+    return path
+
+
+def generate_week7_training_visualization() -> Path:
+    """Epoch-level return and distance-improvement summaries from real training."""
+    payload = load_json(WEEK7_JSON)
+    history = payload["training_history"]
+    epochs = sorted({int(row["epoch"]) for row in history})
+    returns = [mean(float(row["return"]) for row in history if int(row["epoch"]) == epoch) for epoch in epochs]
+    gains = [mean(float(row["improvement_pct"]) for row in history if int(row["epoch"]) == epoch) for epoch in epochs]
+
+    def line_chart(values: list[float], x: int, y: int, w: int, h: int, color: str, digits: int) -> str:
+        min_value = min(0.0, min(values))
+        max_value = max(values) * 1.18 if max(values) > 0 else 1.0
+        parts = [draw_axes(x, y, w, h, max_value)]
+        points = []
+        for index, value in enumerate(values):
+            px = x + (index + 0.5) * w / len(values)
+            py = scale_y(value, min_value, max_value, y, y + h)
+            points.append((px, py))
+            parts.append(circle(px, py, 5, color))
+            parts.append(text(px, py - 12, f"{value:.{digits}f}", 11, "700", PALETTE["slate"], "middle"))
+            parts.append(text(px, y + h + 24, f"epoch {epochs[index] + 1}", 11, "600", PALETTE["slate"], "middle"))
+        parts.append(polyline(points, color, 2.8, 0.9))
+        return "\n".join(parts)
+
+    model_hash = str(payload["metadata"]["model_parameter_hash"])
+    body = [
+        text(40, 42, "Week 7 Double-DQN training summary", 26, "800"),
+        text(40, 68, f"{len(history)} real training episodes; model hash {model_hash[:12]}", 14, "400", PALETTE["muted"]),
+        panel(40, 95, 500, 520, "Mean episode return", "Average across profiles, scales, seeds, and construction sources"),
+        panel(560, 95, 500, 520, "Mean distance improvement", "Improvement from the feasible 2-opt warm start (%)"),
+        line_chart(returns, 105, 180, 390, 330, PALETTE["baseline"], 4),
+        line_chart(gains, 625, 180, 390, 330, PALETTE["green"], 2),
+        text(300, 560, "Training epoch", 13, "700", PALETTE["slate"], "middle"),
+        text(820, 560, "Training epoch", 13, "700", PALETTE["slate"], "middle"),
+        text(550, 650, "Training and held-out evaluation use disjoint seed sets (overlap = 0)", 13, "600", PALETTE["slate"], "middle"),
+    ]
+    path = OUT_DIR / "week7_training_summary.svg"
+    write_svg(path, "\n".join(body), 1100, 700)
+    return path
+
+
+def load_week7_instance(scale: int = 50):
+    sys.path.insert(0, str(ROOT / "src" / "experiments" / "week3"))
+    sys.path.insert(0, str(ROOT / "src" / "experiments" / "week4"))
+    from compare_week3_baselines import generate_instance  # noqa: E402
+    from compare_week4_methods import apply_profile  # noqa: E402
+
+    rows = [row for row in load_json(WEEK7_JSON)["instances"] if row["profile"] == "baseline" and int(row["scale"]) == scale]
+    seed = min(int(row["seed"]) for row in rows)
+    instance = apply_profile(generate_instance(scale, seed), "baseline")
+    return instance, [row for row in rows if int(row["seed"]) == seed]
+
+
+def generate_week7_route_visualization() -> Path:
+    instance, rows = load_week7_instance(50)
+    by_method = {str(row["method"]): row for row in rows}
+    methods = ["D_composite_inter_route", "E_fixed_portfolio", "E_adaptive_portfolio", "F_dqn_portfolio"]
+    colors = {
+        "D_composite_inter_route": PALETTE["amber"],
+        "E_fixed_portfolio": PALETTE["purple"],
+        "E_adaptive_portfolio": PALETTE["baseline"],
+        "F_dqn_portfolio": PALETTE["tested"],
+    }
+    panels = []
+    panel_w, panel_h = 250, 500
+    for index, method in enumerate(methods):
+        row = dict(by_method[method])
+        row["objective_distance"] = row["objective"]
+        panels.append(draw_route_panel(instance, row, 25 + index * 270, 95, panel_w, panel_h, colors[method], compact=True))
+    body = [
+        text(25, 42, "Week 7 held-out route footprint (same unseen instance)", 25, "800"),
+        text(25, 68, "Fixed search, UCB1, and Double DQN share construction sources, operators, budget, and validator", 14, "400", PALETTE["muted"]),
+        *panels,
+    ]
+    path = OUT_DIR / "week7_representative_routes.svg"
+    write_svg(path, "\n".join(body), 1100, 640)
+    return path
+
+
 def generate_index(paths: list[Path]) -> Path:
     week3 = load_json(WEEK3_JSON)
     comparison = week3["comparison"]
     lines = [
         "# Research Visualization Index",
         "",
-        "Generated from the existing Week 2–Week 6 experiment result files.",
+        "Generated from the existing Week 2–Week 7 experiment result files.",
         "",
         "## Figures",
         "",
@@ -797,6 +915,34 @@ def generate_index(paths: list[Path]) -> Path:
             "",
         ]
     )
+    week7 = load_json(WEEK7_JSON)
+    week7_cmp = [row for row in week7["comparisons"] if row["reference_method"] == "E_adaptive_portfolio"]
+    lines.extend([
+        "## Week 7 headline deltas (Double DQN vs Week 6 UCB1)", "",
+        "Negative objective percentage means Double DQN is shorter on held-out seeds.",
+        "All feasibility deltas are zero; mixed quality results are retained.", "",
+        "| Profile | Customers | Objective delta (%) | Runtime delta (s) | W/T/L |",
+        "|---|---:|---:|---:|---:|",
+    ])
+    profile_order = {"baseline": 0, "tight_tw": 1, "small_battery": 2}
+    labels = {"baseline": "baseline", "tight_tw": "tight TW", "small_battery": "small battery"}
+    for row in sorted(week7_cmp, key=lambda item: (profile_order[str(item["profile"])], int(item["scale"]))):
+        lines.append(
+            f"| {labels[str(row['profile'])]} | {row['scale']} | {row['mean_feasible_objective_pct']:+.2f} | "
+            f"{row['mean_runtime_delta_sec']:+.3f} | {row['wins']}/{row['ties']}/{row['losses']} |"
+        )
+    lines.extend([
+        "", "Double DQN is shorter in five of nine cells, tied in one, and worse in three.",
+        "The clearest negative case is baseline n=100 (+3.65% distance), so the prototype",
+        "does not support a claim that learned selection universally beats UCB1.", "",
+        "## Detailed Week 7 PNG figures", "",
+        "- [Training curve](../experiments/week7/results/week7_training_curve.png)",
+        "- [Held-out objective and feasibility](../experiments/week7/results/week7_objective_feasibility.png)",
+        "- [Quality/runtime trade-off](../experiments/week7/results/week7_quality_runtime.png)",
+        "- [Action selection](../experiments/week7/results/week7_action_selection.png)",
+        "- [Policy-state heatmap](../experiments/week7/results/week7_policy_state_heatmap.png)",
+        "- [Representative routes](../experiments/week7/results/week7_representative_routes.png)", "",
+    ])
     path = OUT_DIR / "research_visualizations.md"
     path.write_text("\n".join(lines), encoding="utf-8")
     return path
@@ -816,6 +962,9 @@ def main() -> None:
         generate_week6_performance_visualization(),
         generate_week6_operator_visualization(),
         generate_week6_route_visualization(),
+        generate_week7_performance_visualization(),
+        generate_week7_training_visualization(),
+        generate_week7_route_visualization(),
     ]
     index = generate_index(paths)
     for path in [*paths, index]:

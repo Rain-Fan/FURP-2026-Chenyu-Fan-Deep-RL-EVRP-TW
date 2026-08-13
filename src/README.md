@@ -14,7 +14,8 @@ src/
     week3/              controlled greedy-policy comparison
     week4/              composite-score method improvement + 2-opt
     week5/              inter-route local search + consolidation
-    week6/              integrated portfolio + adaptive operator selection (new)
+    week6/              integrated portfolio + adaptive operator selection
+    week7/              complete Double-DQN operator-selection prototype (new)
   results/              figures generated from local result files
 ```
 
@@ -75,6 +76,19 @@ python3 src/experiments/week6/compare_week6_methods.py --scales 20 50 100 --prof
 # Three-repeat deterministic signature check and generated figures
 python3 src/experiments/week6/reproducibility_check.py --scales 20 50 100 --instances-per-scale 3 --repeats 3 --profiles baseline tight_tw small_battery --seed 20260813
 python3 src/experiments/week6/visualize_week6.py
+```
+
+Week 7:
+
+```bash
+# MDP, DQN, integration, reproducibility, schema, and figure tests
+python3 -m unittest discover -s src/experiments/week7/tests -p 'test_*.py' -v
+
+# 432 training episodes plus 216 held-out D/E-fixed/UCB1/DQN runs
+python3 src/experiments/week7/train_week7_rl.py --scales 20 50 100 --profiles baseline tight_tw small_battery --train-instances 8 --eval-instances 6 --train-seed 20270013 --eval-seed 20280013 --epochs 3 --max-steps 12 --patience 4 --hidden-dim 32 --batch-size 32 --replay-capacity 5000 --learning-rate 0.001 --gamma 0.95 --target-sync 100 --agent-seed 20260813
+
+python3 src/experiments/week7/visualize_week7.py
+python3 src/experiments/week7/reproducibility_check.py
 ```
 
 Research visualizations:

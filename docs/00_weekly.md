@@ -30,6 +30,54 @@
 <!-- =================  YOUR ENTRIES BELOW  ================= -->
 
 
+### Week 7 — 2026-08-13 (self-directed research extension)
+
+**Attended this week's meeting:** Not recorded
+
+**Progress this week**
+- Converted the complete Week 6 operator-selection MDP into a trainable NumPy
+  Double DQN with a 12→32→3 MLP, replay buffer, epsilon-greedy exploration,
+  Huber loss, Adam, target network, Double-DQN targets, and NPZ checkpoints.
+- Preserved the same nearest/composite construction portfolio, 2-opt/relocate/
+  swap operators, 12-step/4-patience budget, and independent EVRP-TW validator
+  so DQN differs from Week 6 UCB1 only in action selection.
+- Used disjoint training and evaluation seeds. Ran 432 real training episodes,
+  4,388 transitions, 4,357 optimizer updates, and 216 held-out method-instance
+  evaluations across three profiles and scales 20/50/100.
+- DQN improves mean feasible distance over Week 5 D in all nine cells by
+  1.62%-8.20%. Against Week 6 UCB1 it is better in five cells, tied in one, and
+  worse in three; baseline n=100 is an explicit negative result (+3.65%).
+- Generated JSON/CSV/Markdown/log/checkpoint artifacts, six PNGs, three
+  cross-week SVGs, 14 Week 7 tests, and a reproducibility report with two
+  deterministic signature checks and zero mismatches.
+
+**Challenges & blockers**
+- DQN loses all six paired baseline n=100 cases against UCB1, showing that the
+  compact global state does not fully represent large-instance route geometry.
+- All four methods fail the same small-battery n=20 held-out seed because both
+  construction sources are infeasible before operator selection starts.
+- Training and held-out data are seed-separated but still synthetic; benchmark
+  generalization remains untested.
+
+**Next steps**
+- Add a station-insertion / construction-repair stage so RL can receive a
+  feasible state on the shared small-battery failure.
+- Add route-aware or graph-pooled state features and ablate them against the
+  current 12-value MLP state.
+- Evaluate the fixed, UCB1, and DQN portfolios on Schneider EVRP-TW benchmarks
+  before making broader Deep-RL claims.
+
+**Hours spent (optional):** 32 hours
+
+**Links (optional):**
+- Week 7 research note: `docs/week7_rl_extension.md`
+- Week 7 code and commands: `src/experiments/week7/README.md`
+- Generated result report: `src/experiments/week7/results/week7_results.md`
+- Reproducibility report: `src/experiments/week7/results/reproducibility_report.md`
+- Model checkpoint: `src/experiments/week7/results/dqn_checkpoint.npz`
+- Figures: `src/experiments/week7/results/week7_*.png`
+
+
 ### Week 6 — 2026-08-13
 
 **Attended this week's meeting:** Not recorded

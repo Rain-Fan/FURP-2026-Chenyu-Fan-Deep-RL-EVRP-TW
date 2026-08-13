@@ -1,6 +1,6 @@
 # Research Visualization Index
 
-Generated from the existing Week 2–Week 6 experiment result files.
+Generated from the existing Week 2–Week 7 experiment result files.
 
 ## Figures
 
@@ -16,6 +16,9 @@ Generated from the existing Week 2–Week 6 experiment result files.
 - [week6_performance_summary.svg](week6_performance_summary.svg)
 - [week6_adaptive_operator_summary.svg](week6_adaptive_operator_summary.svg)
 - [week6_representative_routes.svg](week6_representative_routes.svg)
+- [week7_heldout_performance.svg](week7_heldout_performance.svg)
+- [week7_training_summary.svg](week7_training_summary.svg)
+- [week7_representative_routes.svg](week7_representative_routes.svg)
 
 ## Week 3 headline deltas
 
@@ -88,3 +91,33 @@ show its losses and runtime trade-off rather than only aggregate gains.
 - [Week 6 operator heatmap](../experiments/week6/results/week6_operator_heatmap.png)
 - [Week 6 adaptive convergence](../experiments/week6/results/week6_convergence.png)
 - [Week 6 improvement distribution](../experiments/week6/results/week6_improvement_distribution.png)
+
+## Week 7 headline deltas (Double DQN vs Week 6 UCB1)
+
+Negative objective percentage means Double DQN is shorter on held-out seeds.
+All feasibility deltas are zero; mixed quality results are retained.
+
+| Profile | Customers | Objective delta (%) | Runtime delta (s) | W/T/L |
+|---|---:|---:|---:|---:|
+| baseline | 20 | -0.55 | -0.000 | 2/3/1 |
+| baseline | 50 | +0.70 | +0.014 | 1/3/2 |
+| baseline | 100 | +3.65 | -0.143 | 0/0/6 |
+| tight TW | 20 | -0.21 | +0.000 | 2/3/1 |
+| tight TW | 50 | -1.01 | +0.032 | 2/4/0 |
+| tight TW | 100 | -0.16 | +0.092 | 3/0/3 |
+| small battery | 20 | +0.00 | +0.003 | 0/5/0 |
+| small battery | 50 | +0.43 | +0.033 | 1/4/1 |
+| small battery | 100 | -0.95 | +0.050 | 4/1/1 |
+
+Double DQN is shorter in five of nine cells, tied in one, and worse in three.
+The clearest negative case is baseline n=100 (+3.65% distance), so the prototype
+does not support a claim that learned selection universally beats UCB1.
+
+## Detailed Week 7 PNG figures
+
+- [Training curve](../experiments/week7/results/week7_training_curve.png)
+- [Held-out objective and feasibility](../experiments/week7/results/week7_objective_feasibility.png)
+- [Quality/runtime trade-off](../experiments/week7/results/week7_quality_runtime.png)
+- [Action selection](../experiments/week7/results/week7_action_selection.png)
+- [Policy-state heatmap](../experiments/week7/results/week7_policy_state_heatmap.png)
+- [Representative routes](../experiments/week7/results/week7_representative_routes.png)

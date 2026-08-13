@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regression tests for the consolidated Week 6 result visualizations."""
+"""Regression tests for consolidated Week 6 and Week 7 visualizations."""
 
 from __future__ import annotations
 
@@ -48,6 +48,40 @@ class Week6ResearchVisualizationTests(unittest.TestCase):
             index = (output_dir / "research_visualizations.md").read_text(encoding="utf-8")
             self.assertIn("week6_performance_summary.svg", index)
             self.assertIn("Week 6 headline deltas", index)
+
+    def test_main_generates_week7_figures_from_the_held_out_result_bundle(self) -> None:
+        with tempfile.TemporaryDirectory(dir=visualizations.ROOT) as tmp:
+            original_out_dir = visualizations.OUT_DIR
+            visualizations.OUT_DIR = Path(tmp)
+            try:
+                with redirect_stdout(StringIO()):
+                    visualizations.main()
+            finally:
+                visualizations.OUT_DIR = original_out_dir
+
+            output_dir = Path(tmp)
+            performance = output_dir / "week7_heldout_performance.svg"
+            training = output_dir / "week7_training_summary.svg"
+            routes = output_dir / "week7_representative_routes.svg"
+            self.assertTrue(performance.is_file())
+            self.assertTrue(training.is_file())
+            self.assertTrue(routes.is_file())
+
+            performance_svg = performance.read_text(encoding="utf-8")
+            self.assertIn("383.33", performance_svg)
+            self.assertIn("980.95", performance_svg)
+
+            training_svg = training.read_text(encoding="utf-8")
+            self.assertIn("432 real training episodes", training_svg)
+            self.assertIn("8b5b85cad33a", training_svg)
+
+            route_svg = routes.read_text(encoding="utf-8")
+            self.assertIn("seed=20330013", route_svg)
+            self.assertIn("obj=626.3", route_svg)
+
+            index = (output_dir / "research_visualizations.md").read_text(encoding="utf-8")
+            self.assertIn("week7_heldout_performance.svg", index)
+            self.assertIn("Week 7 headline deltas", index)
 
 
 if __name__ == "__main__":
