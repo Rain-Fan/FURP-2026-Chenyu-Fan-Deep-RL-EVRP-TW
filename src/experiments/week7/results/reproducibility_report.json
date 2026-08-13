@@ -1,0 +1,55 @@
+{
+  "checks": 2,
+  "repeats": 2,
+  "mismatch_count": 0,
+  "model_hashes": [
+    "b9d781d93184f0f40e15d9c593d9656ce0765a37e49210926b7d51862eae653e",
+    "b9d781d93184f0f40e15d9c593d9656ce0765a37e49210926b7d51862eae653e"
+  ],
+  "result_hashes": [
+    "b705c17ad89b183b931475e041f38e5ded91717cffc53f3d1b13958361433dea",
+    "b705c17ad89b183b931475e041f38e5ded91717cffc53f3d1b13958361433dea"
+  ],
+  "runs": [
+    {
+      "repeat": 0,
+      "model_hash": "b9d781d93184f0f40e15d9c593d9656ce0765a37e49210926b7d51862eae653e",
+      "result_hash": "b705c17ad89b183b931475e041f38e5ded91717cffc53f3d1b13958361433dea",
+      "training_episodes": 32,
+      "held_out_method_runs": 32
+    },
+    {
+      "repeat": 1,
+      "model_hash": "b9d781d93184f0f40e15d9c593d9656ce0765a37e49210926b7d51862eae653e",
+      "result_hash": "b705c17ad89b183b931475e041f38e5ded91717cffc53f3d1b13958361433dea",
+      "training_episodes": 32,
+      "held_out_method_runs": 32
+    }
+  ],
+  "config": {
+    "scales": [
+      20,
+      50
+    ],
+    "profiles": [
+      "baseline",
+      "tight_tw"
+    ],
+    "train_instances": 2,
+    "eval_instances": 2,
+    "train_seed": 30300013,
+    "eval_seed": 40400013,
+    "epochs": 2,
+    "max_steps": 6,
+    "patience": 3,
+    "hidden_dim": 16,
+    "batch_size": 8,
+    "replay_capacity": 500,
+    "learning_rate": 0.001,
+    "gamma": 0.95,
+    "target_sync": 20,
+    "agent_seed": 20260813,
+    "epsilon_start": 1.0,
+    "epsilon_end": 0.05
+  }
+}

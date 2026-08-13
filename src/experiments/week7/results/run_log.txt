@@ -1,0 +1,12 @@
+Week 7 Double-DQN local run log
+
+Run started: 2026-08-13 18:22:10 CST
+Command: src/experiments/week7/train_week7_rl.py --scales 20 50 100 --profiles baseline tight_tw small_battery --train-instances 8 --eval-instances 6 --train-seed 20270013 --eval-seed 20280013 --epochs 3 --max-steps 12 --patience 4 --hidden-dim 32 --batch-size 32 --replay-capacity 5000 --learning-rate 0.001 --gamma 0.95 --target-sync 100 --agent-seed 20260813
+Python: 3.14.0
+NumPy: 2.5.0
+Platform: macOS-15.6-arm64-arm-64bit-Mach-O
+Training episodes: 432
+Held-out method runs: 216
+Seed overlap: []
+Independent validation failures: 0
+Model parameter hash: 8b5b85cad33a3b91aed76441ebbb1dbee7a1ca73c49272f858d0be0a1f2d0de9

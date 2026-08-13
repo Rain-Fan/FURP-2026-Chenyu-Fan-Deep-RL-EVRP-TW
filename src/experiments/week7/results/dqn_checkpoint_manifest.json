@@ -1,0 +1,15 @@
+{
+  "format": "week7_numpy_double_dqn_v1",
+  "state_dim": 12,
+  "hidden_dim": 32,
+  "action_dim": 3,
+  "action_order": [
+    "two_opt",
+    "relocate",
+    "swap"
+  ],
+  "seed": 20260813,
+  "train_steps": 4357,
+  "gamma": 0.95,
+  "sha256": "8b5b85cad33a3b91aed76441ebbb1dbee7a1ca73c49272f858d0be0a1f2d0de9"
+}
