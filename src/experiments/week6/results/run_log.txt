@@ -1,0 +1,46 @@
+Week 6 integrated portfolio experiment local run log
+
+Run started: 2026-08-13 17:29:49 CST
+Command: src/experiments/week6/compare_week6_methods.py --scales 20 50 100 --profiles baseline tight_tw small_battery --instances-per-scale 12 --seed 20260813 --adaptive-steps 12 --patience 4
+Python: 3.14.0
+Platform: macOS-15.6-arm64-arm-64bit-Mach-O
+Method runs: 432
+Adaptive trace rows: 2364
+
+Aggregate results:
+- profile=baseline, scale=20, method=B_nearest_customer, feasible=12/12, mean_objective=477.27232692046084, runtime=0.000266
+- profile=baseline, scale=20, method=D_composite_inter_route, feasible=12/12, mean_objective=421.5464372864041, runtime=0.006252
+- profile=baseline, scale=20, method=E_fixed_portfolio, feasible=12/12, mean_objective=406.75395919091835, runtime=0.012044
+- profile=baseline, scale=20, method=E_adaptive_portfolio, feasible=12/12, mean_objective=405.3215860242452, runtime=0.015490
+- profile=baseline, scale=50, method=B_nearest_customer, feasible=12/12, mean_objective=704.5523126381903, runtime=0.001645
+- profile=baseline, scale=50, method=D_composite_inter_route, feasible=12/12, mean_objective=675.4336583316473, runtime=0.116132
+- profile=baseline, scale=50, method=E_fixed_portfolio, feasible=12/12, mean_objective=623.7526061594899, runtime=0.212197
+- profile=baseline, scale=50, method=E_adaptive_portfolio, feasible=12/12, mean_objective=626.1755387414174, runtime=0.190270
+- profile=baseline, scale=100, method=B_nearest_customer, feasible=12/12, mean_objective=1128.9326079587902, runtime=0.007395
+- profile=baseline, scale=100, method=D_composite_inter_route, feasible=12/12, mean_objective=1006.7629627971148, runtime=0.924082
+- profile=baseline, scale=100, method=E_fixed_portfolio, feasible=12/12, mean_objective=943.5560577547074, runtime=1.803978
+- profile=baseline, scale=100, method=E_adaptive_portfolio, feasible=12/12, mean_objective=946.2827553902415, runtime=1.212568
+- profile=tight_tw, scale=20, method=B_nearest_customer, feasible=12/12, mean_objective=480.4009280142956, runtime=0.000273
+- profile=tight_tw, scale=20, method=D_composite_inter_route, feasible=12/12, mean_objective=421.00963932547285, runtime=0.006655
+- profile=tight_tw, scale=20, method=E_fixed_portfolio, feasible=12/12, mean_objective=408.72923290643774, runtime=0.012072
+- profile=tight_tw, scale=20, method=E_adaptive_portfolio, feasible=12/12, mean_objective=407.1247886614269, runtime=0.015598
+- profile=tight_tw, scale=50, method=B_nearest_customer, feasible=12/12, mean_objective=711.6613903769553, runtime=0.001435
+- profile=tight_tw, scale=50, method=D_composite_inter_route, feasible=12/12, mean_objective=651.8028985233963, runtime=0.117561
+- profile=tight_tw, scale=50, method=E_fixed_portfolio, feasible=12/12, mean_objective=624.5914343973035, runtime=0.201290
+- profile=tight_tw, scale=50, method=E_adaptive_portfolio, feasible=12/12, mean_objective=622.544882665241, runtime=0.187896
+- profile=tight_tw, scale=100, method=B_nearest_customer, feasible=12/12, mean_objective=1135.9755996954707, runtime=0.007325
+- profile=tight_tw, scale=100, method=D_composite_inter_route, feasible=12/12, mean_objective=1012.1402320846369, runtime=0.948134
+- profile=tight_tw, scale=100, method=E_fixed_portfolio, feasible=12/12, mean_objective=950.4024660986538, runtime=1.872617
+- profile=tight_tw, scale=100, method=E_adaptive_portfolio, feasible=12/12, mean_objective=958.8426359495552, runtime=1.191284
+- profile=small_battery, scale=20, method=B_nearest_customer, feasible=10/12, mean_objective=491.9497541742511, runtime=0.000271
+- profile=small_battery, scale=20, method=D_composite_inter_route, feasible=11/12, mean_objective=468.2916472521776, runtime=0.006802
+- profile=small_battery, scale=20, method=E_fixed_portfolio, feasible=11/12, mean_objective=444.75739379572906, runtime=0.011441
+- profile=small_battery, scale=20, method=E_adaptive_portfolio, feasible=11/12, mean_objective=437.52299965489334, runtime=0.013256
+- profile=small_battery, scale=50, method=B_nearest_customer, feasible=12/12, mean_objective=790.1489244952476, runtime=0.001422
+- profile=small_battery, scale=50, method=D_composite_inter_route, feasible=12/12, mean_objective=727.4505342355704, runtime=0.095130
+- profile=small_battery, scale=50, method=E_fixed_portfolio, feasible=12/12, mean_objective=677.4746907458307, runtime=0.186841
+- profile=small_battery, scale=50, method=E_adaptive_portfolio, feasible=12/12, mean_objective=679.9237551148046, runtime=0.162659
+- profile=small_battery, scale=100, method=B_nearest_customer, feasible=12/12, mean_objective=1165.3720513052522, runtime=0.006782
+- profile=small_battery, scale=100, method=D_composite_inter_route, feasible=12/12, mean_objective=1039.9446330625574, runtime=0.740414
+- profile=small_battery, scale=100, method=E_fixed_portfolio, feasible=12/12, mean_objective=990.1873668875922, runtime=1.619952
+- profile=small_battery, scale=100, method=E_adaptive_portfolio, feasible=12/12, mean_objective=994.9784738705815, runtime=0.996815
