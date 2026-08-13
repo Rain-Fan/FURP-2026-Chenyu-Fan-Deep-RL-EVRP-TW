@@ -30,6 +30,49 @@
 <!-- =================  YOUR ENTRIES BELOW  ================= -->
 
 
+### Week 6 — 2026-08-13
+
+**Attended this week's meeting:** Not recorded
+
+**Progress this week**
+- Followed Lab 6 Track B as the main path and Track C as a lightweight
+  extension: combined nearest and composite construction, independent
+  validation, 2-opt, relocate, and swap into one portfolio workflow.
+- Added E-fixed (exhaustive fixed search on both construction candidates) and
+  E-adaptive (deterministic UCB1 operator selection), with B and Week 5 D as
+  controlled references.
+- Ran 3 profiles x 3 scales x 12 seeds x 4 methods = 432 method-instance runs.
+  E-adaptive improves mean feasible distance over D in all nine cells by
+  3.30%-7.29% without lowering feasibility relative to D.
+- Recorded 2,364 learning-ready action transitions. Relocate has the highest
+  observed mean normalized reward (0.0214), followed by swap (0.0067) and
+  2-opt (0.0022).
+- Added six generated visualizations, a complete MDP design, 23 automated tests,
+  and a reproducibility matrix with 108/108 checks passing and zero mismatches.
+
+**Challenges & blockers**
+- E-adaptive does not beat E-fixed in every aggregate cell; it trades a small
+  quality gap in five cells for substantially lower n=100 runtime.
+- One portfolio instance remains infeasible because both construction sources
+  fail before local search; this needs construction/station repair.
+- Results still use synthetic instances rather than Schneider benchmarks.
+
+**Next steps**
+- Add construction-stage station insertion/repair and rerun the feasibility
+  comparison.
+- Evaluate B/D/E-fixed/E-adaptive on standard Schneider EVRP-TW instances.
+- Use seed-separated traces to test a small contextual policy only if it beats
+  fixed and UCB1 baselines on held-out instances.
+
+**Links (optional):**
+- Week 6 integration note: `docs/week6_integration.md`
+- Complete MDP design: `docs/week6_mdp_design.md`
+- Week 6 code and commands: `src/experiments/week6/README.md`
+- Generated results: `src/experiments/week6/results/week6_results.md`
+- Reproducibility report: `src/experiments/week6/results/reproducibility_report.md`
+- Figures: `src/experiments/week6/results/week6_*.png`
+
+
 ### Week 5 — 2026-07-13
 
 **Attended this week's meeting:** Yes
