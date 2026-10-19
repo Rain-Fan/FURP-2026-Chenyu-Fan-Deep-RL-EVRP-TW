@@ -50,6 +50,9 @@ implemented and committed components include:
   seeds, 432 training episodes, 216 held-out method runs, a reproducible model
   checkpoint, and honest UCB1 ablations (see `src/experiments/week7/` and
   `docs/week7_rl_extension.md`).
+- Final report: a complete evidence-based account of the problem formulation,
+  method progression, experimental design, held-out results, failure analysis,
+  reproducibility, and limitations (see [`docs/final_report.md`](docs/final_report.md)).
 - Result tables, route visualisations, run logs, and diagnostic reports under `src/experiments/*/results/` and `src/results/`.
 
 Main evaluation metrics used in experiments: feasibility rate, feasible route cost (objective), route distance, vehicles used, runtime, time-window violations, battery/charging violations, and coverage violations. Experiments currently assume homogeneous vehicles, deterministic Euclidean travel distances, linear energy consumption, and full recharging at stations unless noted in the experiment README.
@@ -90,6 +93,7 @@ This structure is **mandatory** — please keep it intact.
 ```
 /docs
  ├── 00_weekly.md         ← update EVERY week: progress, challenges, next steps
+ ├── final_report.md       ← complete final research report
  └── meeting_notes/       ← key takeaways from all team meetings
 /src
  ├── data/                 dataset notes or placeholders
@@ -106,6 +110,8 @@ FURP_Showcase.pdf         ← your poster / presentation PDF, in the repo root
 ```
 
 - **`docs/00_weekly.md`** — your weekly progress log. This is the first thing we check.
+- **`docs/final_report.md`** — the complete final research report, with links
+  to code, tables, figures, logs, and reproducibility evidence.
 - **`docs/meeting_notes/`** — one file per meeting with key takeaways and action items.
 - **`src/experiments/`** — week-by-week reproducible experiments and results.
 - **`src/results/`** — selected figures and compact research outputs.
@@ -163,10 +169,11 @@ Any **leave of absence** or **withdrawal** must be notified to us **by email** �
       tests, reproducibility evidence, and visualizations
 - [x] Added Week 7 Double-DQN MDP environment, training/held-out evaluation,
       checkpoint, ablations, reproducibility evidence, and visualizations
+- [x] Added the complete evidence-based final research report
 - [x] Started `docs/00_weekly.md`
 - [x] Created my first file in `docs/meeting_notes/`
 - [ ] Confirm the final cited paper and formal experimental protocol (see `docs/reading_notes/`)
-- [ ] Add `FURP_Showcase.pdf` to the repo root before the Showcase
+- [x] Add `FURP_Showcase.pdf` to the repo root before the Showcase
 
 ---
 
