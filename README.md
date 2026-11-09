@@ -172,7 +172,7 @@ Any **leave of absence** or **withdrawal** must be notified to us **by email** â
 - [x] Added the complete evidence-based final research report
 - [x] Started `docs/00_weekly.md`
 - [x] Created my first file in `docs/meeting_notes/`
-- [ ] Confirm the final cited paper and formal experimental protocol (see `docs/reading_notes/`)
+- [x] Confirm the final cited paper and formal experimental protocol (see `docs/reading_notes/`)
 - [x] Add `FURP_Showcase.pdf` to the repo root before the Showcase
 
 ---
